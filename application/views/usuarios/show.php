@@ -1,14 +1,14 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Usuarios <?=  $site_nombre ?></h1>
+    <h1 class="mt-4">Usuarios</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Unifi Manager</li>
+        <li class="breadcrumb-item">Proquo MKT</li>
         <li class="breadcrumb-item active">Usuarios </li>
     </ol>
     <div class="mainDiv">
         <div class="content_pagina" style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios  $site_nombre", "0,3,6", false, false, false);
+                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios", "0", false, false, false);
                 ?>
             </div>
         </div>
@@ -85,8 +85,6 @@
             $('#modalUsuariosTitulo').text('Nuevo usuario');
             idUsuario = -1;
         });
-
-        site_id = '<?php echo addslashes($site_id); ?>';
 
     });
 

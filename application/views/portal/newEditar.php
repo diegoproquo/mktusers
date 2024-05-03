@@ -3,7 +3,7 @@
     <div style="width:88%; margin: 0 auto;">
         <h1 class="mt-4">Portal cautivo</h1>
         <div class="breadcrumb mb-1" style="position: relative;">
-            <li class="breadcrumb-item">Unifi Manager</li>
+            <li class="breadcrumb-item">Proquo MKT</li>
             <li class="breadcrumb-item active">Usuarios</li>
             <div class="alert alert-info" role="alert" id="alertCambios" style="position: absolute; top: 10px; right: 10px; font-size: 14px; padding: 0.25rem 0.5rem; display:none;">
                 Tiene cambios sin guardar

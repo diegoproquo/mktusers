@@ -46,7 +46,7 @@ class Login extends CI_Controller
                 );
                 $this->UsuariosModel->actualizarLastLogin($usuario_db->ID);
                 $this->session->set_userdata($user);
-                redirect(base_url()."Dashboard/?site=". $usuario_db->SITE_ID,);
+                redirect(base_url()."Dashboard");
                 return;
             } else {
                 $this->session->set_flashdata('error', 'Contraseña incorrecta');
