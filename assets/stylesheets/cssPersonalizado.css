@@ -1,0 +1,193 @@
+    /* Dropdown Button */
+    .dropbtn {
+        background-color: #04AA6D;
+        color: white;
+        padding: 8px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+    }
+
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+    .dropdown:hover .dropbtn {
+        background-color: #3e8e41;
+    }
+
+    .btn-primary {
+        font-weight: 600;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0 !important;
+    }
+
+    /*Para el select2*/
+    .custom-select {
+        min-width: 200px !important;
+    }
+
+    .header_pagina {
+        padding-top: 30px;
+        padding-left: 100px;
+    }
+
+    .header_pagina h2 {
+        font-weight: 500;
+    }
+
+    .content_pagina {
+        padding-left: 100px;
+        padding-right: 100px;
+        padding-top: 50px;
+    }
+
+    .tab-content {
+        padding: 50px;
+        padding-bottom: 10px !important;
+        padding-top: 30px !important;
+    }
+
+    .footer_pagina {
+        padding-top: 30px;
+        padding-left: 100px;
+    }
+
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #737373;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    /*Alert de sucess personalizado*/
+    .alertSuccessCustom {
+        padding: 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        position: fixed;
+        z-index: 1000;
+        width: 300px;
+        left: 50%;
+        top: -100px;
+        /* Posición inicial arriba de la pantalla */
+        transform: translateX(-50%);
+        opacity: 0;
+        animation: slideIn 0.5s ease forwards;
+        display: none;
+    }
+
+    @keyframes slideIn {
+        0% {
+            top: -100px;
+            opacity: 0;
+        }
+
+        /* Posición y opacidad inicial */
+        100% {
+            top: 50px;
+            opacity: 1;
+        }
+
+        /* Posición final y opacidad */
+    }
+
+    .alertErrorCustom {
+        padding: 20px;
+        background-color: #da1b1b;
+        color: white;
+        text-align: center;
+        position: fixed;
+        z-index: 1000;
+        width: 300px;
+        left: 50%;
+        top: -100px;
+        /* Posición inicial arriba de la pantalla */
+        transform: translateX(-50%);
+        opacity: 0;
+        animation: slideIn 0.5s ease forwards;
+        display: none;
+    }
+
+    @keyframes slideIn {
+        0% {
+            top: -100px;
+            opacity: 0;
+        }
+
+        /* Posición y opacidad inicial */
+        100% {
+            top: 50px;
+            opacity: 1;
+        }
+
+        /* Posición final y opacidad */
+    }
+
+    @keyframes slideOut {
+        0% {
+            top: 50px;
+            opacity: 1;
+        }
+
+        100% {
+            top: -100px;
+            opacity: 0;
+        }
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
+
+    .help-block a {
+        display: inline;
+        margin-left: 5px;
+    }
