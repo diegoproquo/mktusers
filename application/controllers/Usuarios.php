@@ -41,30 +41,50 @@ class Usuarios extends CI_Controller
 	{
 		$datos = $this->input->post('datos');
 
-		//NUevo
-		if ($datos['id'] == -1) {
-			$id = $this->ObtenerUltimoIdModel->obtenerUltimoId('tbl_usuarios');
-			$this->UsuariosModel->nuevoUsuario($id, $datos['nombre'], $datos['usuario'], $datos['password'], $datos['rol'], $datos['site_id'], null);
-		}
+		$ip = '192.168.88.1'; // IP del MikroTik
+		$login = 'admin'; // Usuario de administrador
+		$password = 'terminal'; // Contraseña de administrador
 
-		//Editar
-		else {
-			$this->UsuariosModel->guardarCambios($datos['id'], $datos['nombre'], $datos['usuario'], $datos['password'], $datos['rol'], $datos['site_id'], null);
-		}
+		$this->addHotspotUser($datos['usuario'], $datos['password'], 'default');
 
-		$data = $this->MostrarRecargarDatos($datos['site_id']);
+		$data = $this->MostrarRecargarDatos();
 
 		echo json_encode(array(true, $data));
 	}
 
-	public function EliminarUsuario()
+	public function addHotspotUser($username, $password, $profile)
 	{
-		$datos = $this->input->post('datos');
 
-		$this->UsuariosModel->eliminar($datos['id']);
+		require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
-		$data = $this->MostrarRecargarDatos($datos['site_id']);
-		echo json_encode(array(true, $data));
+		$config = (new Config())
+			->set('timeout', 5)
+			->set('host', '192.168.88.1')
+			->set('user', 'admin')
+			->set('pass', 'terminal');
+
+		$client = new Client($config);
+
+		try {
+			// Conectarse al dispositivo MikroTik
+			$client->connect();
+
+			// Verificar si la conexión fue exitosa
+
+			// Construir la consulta para agregar el usuario de hotspot
+			$query = new Query('/ip/hotspot/user/add');
+			$query->add('=name=' . $username);
+			$query->add('=password=' . $password);
+			$query->add('=profile=' . $profile);
+
+			// Enviar la consulta al dispositivo MikroTik
+			$response = $client->query($query)->read();
+
+			
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+
 	}
 
 	function MostrarRecargarDatos()
@@ -97,7 +117,7 @@ class Usuarios extends CI_Controller
 
 
 		foreach ($usuarios as $item) {
-			$item['-'] = '
+			$item['dynamic'] = '
 			<div class="dropdown" style="position: static;">
 			<button class="dropbtn"><i class="fas fa-ellipsis-vertical"></i></button>
 			<div class="dropdown-content" style="cursor:pointer">
@@ -111,12 +131,5 @@ class Usuarios extends CI_Controller
 		return $usuarios;
 	}
 
-	function getUsuario()
-	{
-		$datos = $this->input->post('datos');
 
-		$usuario = $this->UsuariosModel->uno($datos['id']);
-
-		echo json_encode($usuario);
-	}
 }

@@ -133,21 +133,22 @@
 			<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
 				<div class="sb-sidenav-menu">
 					<div class="nav">
-						<div class="sb-sidenav-menu-heading">Principal</div>
+						<div class="sb-sidenav-menu-heading">Estadísticas</div>
 						<a class="nav-link" onclick="IrA('Dashboard', false)">
-							<div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+							<div class="sb-nav-link-icon"><i class="fas fa-chart-simple"></i></div>
 							Dashboard
 						</a>
 
+						<div class="sb-sidenav-menu-heading">Gestión</div>
 						<a class="nav-link" onclick="IrA('Usuarios/show', false)">
 							<div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
 							Usuarios
 						</a>
 
-						<!--<a class="nav-link" onclick="IrA('Informes/newEditar', false)">
-							<div class="sb-nav-link-icon"><i class="fas fa-envelope"></i></div>
-							Informes
-						</a>-->
+						<a class="nav-link" onclick="IrA('Perfiles/show', false)">
+							<div class="sb-nav-link-icon"><i class="fas fa-address-card"></i></div>
+							Perfiles
+						</a>
 
 						 
 

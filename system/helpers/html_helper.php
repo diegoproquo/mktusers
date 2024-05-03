@@ -587,7 +587,7 @@ function dataTablePersonalizada($columns, $data, $slug, $targets = 0, $targetCla
 <?php
 }
 
-function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false)
+function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false, $singleCheck = false)
 {
 ?>
 	<div class="card mb-4">
@@ -596,7 +596,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 			<?= $titulo ?>
 		</div>
 		<div class="card-body">
-			<table class="table table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>" data-unique-id="ID">
+			<table class="table table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>" data-unique-id="ID" data-single-select="<?= $singleCheck ?>" data-click-to-select="<?= $singleCheck ?>">
 				<thead>
 					<tr>
 						<?php

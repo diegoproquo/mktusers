@@ -5,10 +5,10 @@
         <li class="breadcrumb-item active">Usuarios </li>
     </ol>
     <div class="mainDiv">
-        <div class="content_pagina" style="text-align: center;">
+        <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios", "0", false, false, false);
+                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios", "0", false, false, false, true);
                 ?>
             </div>
         </div>
@@ -32,12 +32,6 @@
             <div class="modal-body">
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Nombre</label>
-                        <input id="inputNombre" type="text" class="form-control" />
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-12">
                         <label>Usuario</label>
                         <input id="inputUsuario" type="text" class="form-control" />
                     </div>
@@ -52,15 +46,6 @@
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
                         <input id="inputPasswordConfirmar" type="password" class="form-control" />
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label>Rol</label>
-                        <select class="form-control" id="selectRol">
-                            <option value="0" selected="selected">Usuario</option>
-                            <option value="1">Administrador</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -99,11 +84,8 @@
         }
 
         datos['id'] = idUsuario;
-        datos['nombre'] = $('#inputNombre').val();
         datos['usuario'] = $('#inputUsuario').val();
         datos['password'] = $('#inputPassword').val();
-        datos['rol'] = $('#selectRol').val();
-        datos['site_id'] = site_id;
 
         $.ajax({
             type: 'POST',
