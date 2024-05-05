@@ -48,6 +48,17 @@
                         <input id="inputPasswordConfirmar" type="password" class="form-control" />
                     </div>
                 </div>
+                <select class="sites select2-container--modal" id="selectPerfiles" style="width: 50%;">
+                    <?php
+
+                    foreach ($perfiles as $perfil) {
+                    ?>
+                        <option value="<?= $perfil->{'name'} ?>"> <?= $perfil->{'name'} ?> </option>
+                    <?php
+                    }
+                    ?>
+
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -86,6 +97,7 @@
         datos['id'] = idUsuario;
         datos['usuario'] = $('#inputUsuario').val();
         datos['password'] = $('#inputPassword').val();
+        datos['perfil'] = $('#selectPerfiles').val();
 
         $.ajax({
             type: 'POST',

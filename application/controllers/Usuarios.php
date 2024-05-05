@@ -28,6 +28,8 @@ class Usuarios extends CI_Controller
 		
 		$data['data'] = $this->MKTModel->MostrarRecargarDatosUsuarios();
 
+		$data['perfiles'] = $this->MKTModel->MostrarRecargarDatosPerfiles();
+
 		$this->load->view('plantillas/header');
 		$this->load->view('usuarios/show', $data);
 		$this->load->view('plantillas/footer');
@@ -38,7 +40,7 @@ class Usuarios extends CI_Controller
 	{
 		$datos = $this->input->post('datos');
 
-		$this->MKTModel->addHotspotUser($datos['usuario'], $datos['password'], 'default');
+		$this->MKTModel->addHotspotUser($datos['usuario'], $datos['password'], $datos['perfil']);
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 
