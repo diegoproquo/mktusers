@@ -5,7 +5,8 @@ use \RouterOS\Config;
 use \RouterOS\Client;
 use \RouterOS\Query;
 
-class Usuarios extends CI_Controller
+
+class Perfiles extends CI_Controller
 {
 
 	public function __construct()
@@ -15,25 +16,35 @@ class Usuarios extends CI_Controller
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->helper('html');
+
+		/*if (!$this->session->userdata('logged_in')) {
+			redirect(base_url() . "Login");
+			return;
+		}*/
 	}
 
 	public function show()
+	
 	{
-
 
 		$columna1 = ".id";
 		$columna2 = "name";
-		$columna3 = "uptime";
-		$columna4 = "bytes-in";
-		$columna5 = "bytes-out";
-		$columna6 = "-";
+		$columna3 = "idle-timeout";
+		$columna4 = "keepalive-timeout";
+		$columna5 = "status-autorefresh";
+		$columna6 = "shared-users";
+		$columna7 = "add-mac-cookie";
+		$columna8 = "mac-cookie-timeout";
+		$columna9 = "adress-list";
+		$columna10 = "transparent-proxy";
+		$columna11 = "default";
 
-		$data['columns'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['columns'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9, $columna10, $columna11);
 
 		$data['data'] = $this->MostrarRecargarDatos();
 
 		$this->load->view('plantillas/header');
-		$this->load->view('usuarios/show', $data);
+		$this->load->view('perfiles/show', $data);
 		$this->load->view('plantillas/footer');
 	}
 
@@ -41,18 +52,14 @@ class Usuarios extends CI_Controller
 	{
 		$datos = $this->input->post('datos');
 
-		$ip = '192.168.88.1'; // IP del MikroTik
-		$login = 'admin'; // Usuario de administrador
-		$password = 'terminal'; // Contraseña de administrador
-
-		$this->addHotspotUser($datos['usuario'], $datos['password'], 'default');
+		$this->addUserProfile($datos['nombre'], $datos['rateUpload'],$datos['rateDownload'],$datos['macCookie'],$datos['cookieTimeout']);
 
 		$data = $this->MostrarRecargarDatos();
 
 		echo json_encode(array(true, $data));
 	}
 
-	public function addHotspotUser($username, $password, $profile)
+	public function addUserProfile($nombre, $rateUpload, $rateDownload, $macCookie, $cookieTimeout)
 	{
 
 		require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
@@ -66,21 +73,25 @@ class Usuarios extends CI_Controller
 		$client = new Client($config);
 
 		try {
-			// Conectarse al dispositivo MikroTik
+
 			$client->connect();
 
-			$query = new Query('/ip/hotspot/user/add');
-			$query->add('=name=' . $username);
-			$query->add('=password=' . $password);
-			$query->add('=profile=' . $profile);
+			//REVISAR AQUI
+
+			$query = new Query('/ip/hotspot/user/profile/add');
+			
+			$query->add('=name=' . $nombre);
+			$query->add('=password=' . $rateUpload);
+			$query->add('=profile=' . $rateDownload);
+			$query->add('=profile=' . $macCookie);
+			$query->add('=profile=' . $cookieTimeout);
 
 			// Enviar la consulta al dispositivo MikroTik
 			$response = $client->query($query)->read();
-			
+
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
-
 	}
 
 	function MostrarRecargarDatos()
@@ -101,31 +112,27 @@ class Usuarios extends CI_Controller
 			// Intentar conectarse
 			$client->connect();
 
-			// Consulta para obtener la lista de usuarios del hotspot
-			$query = new Query('/ip/hotspot/user/print');
+			// Consulta para obtener la lista de perfiles de usuario del hotspot
+			$query = new Query('/ip/hotspot/user/profile/print');
 
 			// Enviar la consulta al MikroTik
-			$usuarios = $client->query($query)->read();
-
+			$perfiles = $client->query($query)->read();
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
 
 
-		foreach ($usuarios as $item) {
-			$item['dynamic'] = '
+		foreach ($perfiles as $item) {
+			$item['-'] = '
 			<div class="dropdown" style="position: static;">
 			<button class="dropbtn"><i class="fas fa-ellipsis-vertical"></i></button>
 			<div class="dropdown-content" style="cursor:pointer">
-			  <a data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUsuario(' . $item['.id'] . ')">Editar</a>
+			  <a data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarPerfil(' . $item['.id'] . ')">Editar</a>
 			  <a onclick="ClicEliminarUsuario(' . $item['.id'] . ')" >Eliminar</a>
 			</div>
 		  </div> ';
-
 		}
 
-		return $usuarios;
+		return $perfiles;
 	}
-
-
 }

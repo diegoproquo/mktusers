@@ -26,35 +26,35 @@ class Login extends CI_Controller
 
     public function iniciarSesion()
     {
-        $ipadress = $this->input->post('ipadress');
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        $host = $this->input->post('host');
+        $user = $this->input->post('user');
+        $pass = $this->input->post('pass');
 
         require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
+        $config = (new Config())
+            ->set('timeout', 5)
+            ->set('host', $host)
+            ->set('user', $user)
+            ->set('pass', $pass);
+
+        $client = new Client($config);
+
         try {
-            $config = (new Config())
-                ->set('timeout', 5)
-                ->set('host', $ipadress)
-                ->set('user', $username)
-                ->set('pass', $password);
-
-            $client = new Client($config);
-
+            
             $conexion = $client->connect();
 
             if ($conexion == true) {
-                    $session_data = array(
-                        'ipadress'  => $ipadress,
-                        'username'  => $username,
-                        'password'  => $password,
-                        'logged_in' => true
-                    );
+                $session_data = array(
+                    'host'  => $host,
+                    'user'  => $user,
+                    'pass'  => $pass,
+                    'logged_in' => true
+                );
 
-                    $this->session->set_userdata($session_data);
-                    redirect(base_url() . "Dashboard");
-                    return;
-                
+                $this->session->set_userdata($session_data);
+                redirect(base_url() . "Dashboard");
+                return;
             } else {
                 $this->session->set_flashdata('error', 'No ha sido posible conectarse con el Mikrotik');
                 redirect(base_url() . "Login");

@@ -57,9 +57,9 @@
     <form class="form-signin" method="post" action="Login/iniciarSesion" onsubmit="return loading()">
 
         <h2 class="form-signin-heading">Login MKT</h2>
-        <input type="text" class="form-control" name="ipadress" placeholder="Dirección IP" required="" autofocus="" />
-        <input type="text" class="form-control" name="username" placeholder="Usuario" required="" />
-        <input type="password" class="form-control" name="password" placeholder="Contraseña" required="" />
+        <input type="text" class="form-control" name="host" placeholder="Dirección IP" required="" autofocus="" />
+        <input type="text" class="form-control" name="user" placeholder="Usuario" required="" />
+        <input type="password" class="form-control" name="pass" placeholder="Contraseña" required="" />
 
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="btnLogin">Login</button>
 
