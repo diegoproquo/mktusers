@@ -1,74 +1,76 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use \RouterOS\Config;
+use \RouterOS\Client;
+use \RouterOS\Query;
+
 class Login extends CI_Controller
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        
-        $this->load->library('session');
-		$this->load->helper('url');
 
+        $this->load->library('session');
+        $this->load->helper('url');
     }
 
     public function index()
     {
-        $this->load->library('session');
         $this->load->view('plantillas/login/header');
-        $this->load->view('login/show');
+        $this->load->view('login/show2');
         $this->load->view('plantillas/login/footer');
     }
 
 
     public function iniciarSesion()
     {
-        $this->load->library('session');
-        $this->load->helper('url');
-        $this->load->model('UsuariosModel');
-        $usuario = $this->input->post('usuario');
-        $contrasena = $this->input->post('password');
+        $ipadress = $this->input->post('ipadress');
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
 
+        require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
-        // Buscar el usuario en la base de datos
-        $usuario_db = $this->UsuariosModel->obtenerUsuarioPorNombre($usuario);
+        try {
+            $config = (new Config())
+                ->set('timeout', 5)
+                ->set('host', $ipadress)
+                ->set('user', $username)
+                ->set('pass', $password);
 
+            $client = new Client($config);
 
-        if ($usuario_db) {
-            if (password_verify($contrasena, $usuario_db->PASSWORD)) {
-                $user = array(
-                    'id'  => $usuario_db->ID,
-                    'nombre'  => $usuario_db->NOMBRE,
-                    'usuario'  => $usuario,
-                    'site_id'  => $usuario_db->SITE_ID,
-                    'adm'  => $usuario_db->ROL,
-                    'logged_in' => true
-                );
-                $this->UsuariosModel->actualizarLastLogin($usuario_db->ID);
-                $this->session->set_userdata($user);
-                redirect(base_url()."Dashboard");
-                return;
+            $conexion = $client->connect();
+
+            if ($conexion == true) {
+                    $session_data = array(
+                        'ipadress'  => $ipadress,
+                        'username'  => $username,
+                        'password'  => $password,
+                        'logged_in' => true
+                    );
+
+                    $this->session->set_userdata($session_data);
+                    redirect(base_url() . "Dashboard");
+                    return;
+                
             } else {
-                $this->session->set_flashdata('error', 'Contraseña incorrecta');
-                redirect(base_url()."Login");
+                $this->session->set_flashdata('error', 'No ha sido posible conectarse con el Mikrotik');
+                redirect(base_url() . "Login");
                 return;
             }
-        } else {
-            $this->session->set_flashdata('error', 'Usuario no encontrado');
-            redirect(base_url()."Login");
+        } catch (\Exception $e) {
+            $this->session->set_flashdata('error', "Error: " . $e->getMessage() . "\n");
+            redirect(base_url() . "Login");
             return;
         }
-
-        $this->session->set_flashdata('error', 'Algo no salió como se esperaba');
-        redirect(base_url()."Login");
-        return;
-
     }
 
     public function logout()
     {
         session_destroy();
-        redirect(base_url()."Login");
+        redirect(base_url() . "Login");
         return;
     }
 }
