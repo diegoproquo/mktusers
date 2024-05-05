@@ -1,5 +1,5 @@
 </main>
-<footer class="py-4 bg-light" style="position:relative; bottom:-300px;">
+<footer class="py-4 bg-light" style="position:relative; bottom:-250px;">
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-center small">
             <div>&copy; <a href="https://www.tecnologiasencilla.com/">Proquo Tecnología Sencilla SL</a> 2024</div>
