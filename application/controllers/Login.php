@@ -32,16 +32,16 @@ class Login extends CI_Controller
 
         require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
-        $config = (new Config())
-            ->set('timeout', 5)
-            ->set('host', $host)
-            ->set('user', $user)
-            ->set('pass', $pass);
-
-        $client = new Client($config);
-
         try {
-            
+
+            $config = (new Config())
+                ->set('timeout', 5)
+                ->set('host', $host)
+                ->set('user', $user)
+                ->set('pass', $pass);
+
+            $client = new Client($config);
+
             $conexion = $client->connect();
 
             if ($conexion == true) {

@@ -8,7 +8,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-               //bootstrapTablePersonalizada($columns, $data, "datatablePerfiles", "Perfiles", "0", false, false, false, true);
+                bootstrapTablePersonalizada($columns, $data, "datatablePerfiles", "Perfiles", "0", false, false, false, true);
                 ?>
             </div>
         </div>
@@ -40,6 +40,13 @@
 
                 <div class="row mt-2">
                     <div class="col-md-12">
+                        <label>Usuarios simultáneos</label>
+                        <input id="inputSharedUsers" type="number" class="form-control" min="1" max="5" />
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
                         <label for="checkboxRateLimit" class="form-label">Rate limit</label>
                         <input class="form-check-input  ml-2" type="checkbox" id="checkboxRateLimit" />
                     </div>
@@ -47,36 +54,37 @@
 
                 <div class="row mt-2" id="rowRateLimit" style="display:none">
                     <div class="col-md-6">
-                        <label>Upload</label>
+                        <label>Upload (en Mbps)</label>
                         <input id="inputRateUpload" type="number" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Download </label>
+                        <label>Download (en Mbps)</label>
                         <input id="inputRateDownload" type="number" class="form-control" />
                     </div>
                 </div>
-            
 
-            <div class="row mt-2">
-                <div class="col-md-12">
-                    <label for="checkboxMacCookie" class="form-label">Mac cookie</label>
-                    <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
-                </div>
-            </div>
 
-            <div class="row mt-2" id="rowCookieTimeout" style="display:none">
-                <div class="col-md-12">
-                    <label>Mac-cookie timeout </label>
-                    <input id="inputMacCookieTimeout" type="number" class="form-control" />
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="checkboxMacCookie" class="form-label">Mac cookie</label>
+                        <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
+                    </div>
                 </div>
+
+                <div class="row mt-2" id="rowCookieTimeout" style="display:none">
+                    <div class="col-md-6">
+                        <label>Cookie timeout (en días)</label>
+                        <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" />
+                    </div>
+                </div>
+
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="GuardarEditarPerfil()">Guardar</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="GuardarEditarPerfil()">Guardar</button>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 
@@ -94,14 +102,7 @@
         });
 
 
-        $('#inputMacCookie').change(function() {
-            if ($(this).is(':checked')) {
-                $('#rowCookieTimeout').show();
-            } else {
-                $('#rowCookieTimeout').hide();
-            }
-        });
-
+        // Listener para mostrar o esconder inputs de rate limit en funcion del checkbox
         $('#checkboxRateLimit').change(function() {
             if ($(this).is(':checked')) {
                 $('#rowRateLimit').show();
@@ -110,6 +111,50 @@
             }
         });
 
+        // lIstener para controlar el input de los usuarios simultaneos
+        var inputSharedUsers = document.getElementById('inputSharedUsers');
+        inputSharedUsers.addEventListener('input', function() {
+            // Obtiene el valor actual del input como un número
+            var value = parseInt(inputSharedUsers.value);
+
+            // Verifica si el valor está fuera del rango permitido
+            if (value < 1) {
+                // Si es menor que 1, establece el valor en 1
+                inputSharedUsers.value = 1;
+            } else if (value > 5) {
+                // Si es mayor que 5, establece el valor en 5
+                inputSharedUsers.value = 5;
+            }
+        });
+
+
+        // Listener para mostrar o esconder inputs de cookie timeout en funcion del checkbox
+        $('#checkboxMacCookie').change(function() {
+            if ($(this).is(':checked')) {
+                $('#rowCookieTimeout').show();
+            } else {
+                $('#rowCookieTimeout').hide();
+            }
+        });
+
+
+        // lIstener para controlar el input de la cookie de sesion
+        var inputCookieTimeout = document.getElementById('inputCookieTimeout');
+        inputCookieTimeout.addEventListener('input', function() {
+            // Obtiene el valor actual del input como un número
+            var value = parseInt(inputCookieTimeout.value);
+
+            // Verifica si el valor está fuera del rango permitido
+            if (value < 1) {
+                // Si es menor que 1, establece el valor en 1
+                inputCookieTimeout.value = 1;
+            } else if (value > 5) {
+                // Si es mayor que 5, establece el valor en 5
+                inputCookieTimeout.value = 30;
+            }
+        });
+
+
     });
 
 
@@ -117,12 +162,27 @@
     function GuardarEditarPerfil() {
         var datos = {};
 
+        if ($('#checkboxRateLimit').is(':checked')) {
+            if ($('#inputRateUpload').val() == "" || $('#inputRateDownload').val() == "") var rate = null;
+            else var rate = $('#inputRateUpload').val() + 'M/' + $('#inputRateDownload').val() + 'M';
+        } else {
+            var rate = null;
+        }
+
         datos['id'] = idPerfil;
         datos['nombre'] = $('#inputNombre').val();
-        datos['rateUpload'] = $('#inputRateUpload').val();
-        datos['rateDownload'] = $('#inputRateDownload').val();
-        datos['macCookie'] = $('#checkboxMacCookie').prop('checked');
-        datos['cookieTimeout'] = $('#inputMacCookieTimeout').val();
+        datos['sharedUsers'] = $('#inputSharedUsers').val();
+        datos['rate'] = rate;
+
+        var cookie = $('#checkboxMacCookie').prop('checked') ? 'true' : 'false';
+        datos['macCookie'] = cookie;
+
+        if (cookie == 'false') datos['macCookieTimeout'] = null;
+        else {
+            if ($('#inputCookieTimeout').val() == "") datos['macCookieTimeout'] = '3d';
+            else datos['macCookieTimeout'] = $('#inputCookieTimeout').val() + 'd';
+        }
+
 
         $.ajax({
             type: 'POST',

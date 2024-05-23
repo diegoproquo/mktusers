@@ -1,10 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use \RouterOS\Config;
-use \RouterOS\Client;
-use \RouterOS\Query;
-
 class Dashboard extends CI_Controller
 {
 
@@ -15,22 +11,35 @@ class Dashboard extends CI_Controller
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->helper('html');
+		$this->load->model('MKTModel');
 	}
 
 	public function index()
 	{
-		// Uso de la función
-		/*$ip = '192.168.88.1'; // IP del MikroTik
-		$login = 'admin'; // Usuario de administrador
-		$password = 'terminal'; // Contraseña de administrador
-		$username = 'nuevo_usuario'; // Nombre de usuario para el nuevo usuario de hotspot
-		$profile = 'default'; // Perfil de hotspot que se aplicará al nuevo usuario
 
-		$this->addHotspotUser($ip, $login, $password, $username, $profile);
-*/
+		$columna1 = ".id";
+		$columna2 = "user";
+		$columna3 = "uptime";
+		$columna4 = "address";
+		$columna5 = "mac-address";
+		$columna6 = "-";
 
+		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['data_usuarios_activos'] = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
+
+		
+		$columna1 = ".id";
+		$columna2 = "name";
+		$columna3 = "uptime";
+		$columna4 = "bytes-in";
+		$columna5 = "bytes-out";
+		$columna6 = "-";
+
+		$data['columns_ultimas_conexiones'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['data_ultimas_conexiones'] = $this->MKTModel->MostrarRecargarUltimasConexiones();
+		
 		$this->load->view('plantillas/header');
-		$this->load->view('dashboard/show');
+		$this->load->view('dashboard/show', $data);
 		$this->load->view('plantillas/footer');
 	}
 

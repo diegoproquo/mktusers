@@ -28,6 +28,7 @@ class Usuarios extends CI_Controller
 		
 		$data['data'] = $this->MKTModel->MostrarRecargarDatosUsuarios();
 
+		//TODO comprobar si se cargan bien los perfiles en el select
 		$data['perfiles'] = $this->MKTModel->MostrarRecargarDatosPerfiles();
 
 		$this->load->view('plantillas/header');

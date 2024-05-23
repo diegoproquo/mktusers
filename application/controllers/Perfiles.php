@@ -35,7 +35,7 @@ class Perfiles extends CI_Controller
 
 		$data['columns'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9, $columna10, $columna11);
 
-		$data['data'] = $this->MKTModel->MostrarRecargarDatosPefiles();
+		$data['data'] = $this->MKTModel->MostrarRecargarDatosPerfiles();
 
 		$this->load->view('plantillas/header');
 		$this->load->view('perfiles/show', $data);
@@ -47,7 +47,7 @@ class Perfiles extends CI_Controller
 		$datos = $this->input->post('datos');
 
 		// TODO comprobar este metodo con un MKT conectado
-		$this->MKTModel->addUserProfile($datos['nombre'], $datos['rateUpload'],$datos['rateDownload'],$datos['macCookie'],$datos['cookieTimeout']);
+		$this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'],'24h');
 
 		$data = $this->MKTModel->MostrarRecargarDatosPerfiles();
 

@@ -154,9 +154,7 @@
 
 					</div>
 				</div>
-				<div class="sb-sidenav-footer">
-					<div class="small">Sesión iniciada como:</div> <span><?php echo $this->session->userdata('nombre'); ?></span>
-				</div>
+
 			</nav>
 		</div>
 

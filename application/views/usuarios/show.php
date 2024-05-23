@@ -48,17 +48,23 @@
                         <input id="inputPasswordConfirmar" type="password" class="form-control" />
                     </div>
                 </div>
-                <select class="sites select2-container--modal" id="selectPerfiles" style="width: 50%;">
-                    <?php
+                <div class="row mt-2">
+                <div class="col-md-12">
+                <label for="selectPerfiles" class="form-label">Perfiles</label>
+                    <select class="form-control" id="selectPerfiles">
+                        <?php
 
-                    foreach ($perfiles as $perfil) {
-                    ?>
-                        <option value="<?= $perfil->{'name'} ?>"> <?= $perfil->{'name'} ?> </option>
-                    <?php
-                    }
-                    ?>
+                        foreach ($perfiles as $perfil) {
+                        ?>
+                            <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                        <?php
+                        }
+                        ?>
 
-                </select>
+                    </select>
+                </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -186,5 +192,4 @@
         $('#inputPasswordConfirmar').val("");
         $('#selectRol').val(0);
     }
-
 </script>
