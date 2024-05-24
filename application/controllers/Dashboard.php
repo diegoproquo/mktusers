@@ -22,8 +22,9 @@ class Dashboard extends CI_Controller
 		$columna3 = "uptime";
 		$columna4 = "address";
 		$columna5 = "mac-address";
+		$columna6 = "-";
 
-		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5);
+		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
 		$data['data_usuarios_activos'] = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
 
 		
@@ -41,6 +42,13 @@ class Dashboard extends CI_Controller
 		$this->load->view('plantillas/footer');
 	}
 
+	public function ExpulsarUsuario(){
+		$datos = $this->input->post('datos');
+		$this->MKTModel->expulsarUsuario($datos['id']);
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
+		echo json_encode(array(true, $data));
+	}
 
 
 }

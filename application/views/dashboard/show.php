@@ -17,7 +17,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns_ultimas_conexiones, $data_ultimas_conexiones, "datatableUltimasConexiones", "Últimas conexiones", "", false, false, false);
+                bootstrapTablePersonalizada($columns_ultimas_conexiones, $data_ultimas_conexiones, "datatableUltimasConexiones", "Últimas conexiones", "", false, false, false);
                 ?>
             </div>
         </div>
@@ -33,40 +33,31 @@
 <script>
     $(document).ready(function() {
 
+
     });
 
-
-
-    function FiltrarTabla() {
-
+    function ExpulsarUsuario(id) {
         var datos = {};
+        datos['id'] = id;
 
-        datos['fechaInicio'] = $('#inputFechaInicio').val();
-        datos['fechaFin'] = $('#inputFechaFin').val();
-        datos['site_id'] = <?= json_encode($site_id) ?>;
-
-        //Mostramos el loading
-        var $table = $('#datatableConexiones')
-        $table.bootstrapTable('showLoading')
+        console.log(id);
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Dashboard/FiltrarTabla',
+            url: '<?= base_url() ?>/Dashboard/ExpulsarUsuario',
             dataType: 'json',
             data: {
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableConexiones', response[1]);
-                $table.bootstrapTable('hideLoading');
-
+                RecargarTabla('datatableUsuariosActivos', response[1]);
+                MostrarAlertCorrecto("Usuario expulsado correctamente");
             },
             error: function(error) {
                 console.log("error");
                 console.log(error);
-
+                MostrarAlertError("Algo no ha ido según lo esperado");
             }
         });
-
     }
 </script>

@@ -83,17 +83,6 @@ class MKTModel extends CI_Model
 			// Enviar la consulta al MikroTik
 			$usuarios = $client->query($query)->read();
 
-			foreach ($usuarios as $item) {
-				$item['dynamic'] = '
-				<div class="dropdown" style="position: static;">
-				<button class="dropbtn"><i class="fas fa-ellipsis-vertical"></i></button>
-				<div class="dropdown-content" style="cursor:pointer">
-				  <a data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUsuario(' . $item['.id'] . ')">Editar</a>
-				  <a onclick="ClicEliminarUsuario(' . $item['.id'] . ')" >Eliminar</a>
-				</div>
-			  </div> ';
-			}
-
 			return $usuarios;
 
 		} catch (\Exception $e) {
@@ -114,6 +103,12 @@ class MKTModel extends CI_Model
 
 			// Enviar la consulta al dispositivo MikroTik
 			$response = $client->query($query)->read();
+
+			foreach($response as &$item){
+				$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\''.$item[".id"].'\')" title="Cerrar sesión"><i class="fa fa-xmark" style="color:red; font-size:20px; cursor:pointer;"></i></a>';
+			}
+						
+			unset($item);
 
 			return $response;
 
@@ -223,8 +218,7 @@ class MKTModel extends CI_Model
 		}
 	}
 
-	// TODO FALTA PROBARLA Y DESPUES IMPLEMENTARLA. EL COMANDO PARA EXPULSAR FUNCIONA
-	public function expelActiveUser($username)
+	public function expulsarUsuario($id)
 	{
 		$client = $this->conexionMKT();
 
@@ -232,29 +226,11 @@ class MKTModel extends CI_Model
 			// Intentar conectarse
 			$client->connect();
 
-			// Primero, obtenemos la lista de usuarios activos
-			$query = new Query('/ip/hotspot/active/print');
-			$activeUsers = $client->query($query)->read();
-
-			// Buscamos el usuario activo por nombre de usuario
-			$userId = null;
-			foreach ($activeUsers as $user) {
-				if ($user['user'] === $username) {
-					$userId = $user['.id'];
-					break;
-				}
-			}
-
 			// Si encontramos al usuario, procedemos a expulsarlo
-			if ($userId !== null) {
-				$removeQuery = new Query('/ip/hotspot/active/remove');
-				$removeQuery->add('=.id=' . $userId);
-				$client->query($removeQuery)->read();
+			$removeQuery = new Query('/ip/hotspot/active/remove');
+			$removeQuery->add('=.id=' . $id);
+			$client->query($removeQuery)->read();
 
-				return "User {$username} has been expelled.";
-			} else {
-				return "User {$username} is not currently active.";
-			}
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}

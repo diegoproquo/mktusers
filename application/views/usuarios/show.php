@@ -100,7 +100,7 @@
             idUsuario = -1;
         });
 
-        // Deshabilitar modales si no hay ninguna fila seleccionada
+        // Deshabilitar botones si no hay ninguna fila seleccionada
         var $table = $('#datatableUsuarios')
         var $btnEliminarUsuarios = $('#btnEliminarUsuarios')
         var $btnHabilitarUsuario = $('#btnHabilitarUsuario')
@@ -148,13 +148,7 @@
 
     });
 
-    function ObtenerFilasCheckeadas() {
-        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
-        var rowDetailsArray = checkedRows.map(function(row) {
-            return row;
-        });
-        return rowDetailsArray;
-    }
+
 
     function NuevoUsuario() {
         var datos = {};
@@ -277,6 +271,13 @@
         });
     }
 
+    function ObtenerFilasCheckeadas() {
+        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
+        var rowDetailsArray = checkedRows.map(function(row) {
+            return row;
+        });
+        return rowDetailsArray;
+    }
 
     function DeshabilitarBotones(){
         $("#btnEliminarUsuarios").prop("disabled",true);

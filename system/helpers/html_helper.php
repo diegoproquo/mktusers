@@ -586,6 +586,7 @@ function dataTablePersonalizada($columns, $data, $slug, $targets = 0, $targetCla
 	</script>
 <?php
 }
+
 function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false)
 {
 ?>
@@ -700,7 +701,7 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 			<?= $titulo ?>
 		</div>
 		<div class="card-body">
-			<table class="table table-hover table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-click-to-select="true" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>" >
+			<table class="table table-hover table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-click-to-select="true" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>">
 				<thead>
 					<tr>
 						<?php
@@ -777,6 +778,8 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 					endforeach; ?>
 				],
 				data: <?= json_encode($data) ?>
+
+
 			});
 
 			// Cambiamos de ingles a castellano el tooltip de los botones y la barra de búsqueda
