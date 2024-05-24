@@ -22,9 +22,8 @@ class Dashboard extends CI_Controller
 		$columna3 = "uptime";
 		$columna4 = "address";
 		$columna5 = "mac-address";
-		$columna6 = "-";
 
-		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5);
 		$data['data_usuarios_activos'] = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
 
 		
@@ -33,9 +32,8 @@ class Dashboard extends CI_Controller
 		$columna3 = "uptime";
 		$columna4 = "bytes-in";
 		$columna5 = "bytes-out";
-		$columna6 = "-";
 
-		$data['columns_ultimas_conexiones'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['columns_ultimas_conexiones'] = array($columna1, $columna2, $columna3, $columna4, $columna5);
 		$data['data_ultimas_conexiones'] = $this->MKTModel->MostrarRecargarUltimasConexiones();
 		
 		$this->load->view('plantillas/header');

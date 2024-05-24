@@ -17,15 +17,16 @@ class Usuarios extends CI_Controller
 	public function show()
 	{
 
+		$columna0 = "-";
 		$columna1 = ".id";
 		$columna2 = "name";
 		$columna3 = "uptime";
 		$columna4 = "bytes-in";
 		$columna5 = "bytes-out";
-		$columna6 = "-";
+		$columna6 = "comment";
 
-		$data['columns'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
-		
+		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+
 		$data['data'] = $this->MKTModel->MostrarRecargarDatosUsuarios();
 
 		//TODO comprobar si se cargan bien los perfiles en el select
@@ -37,18 +38,20 @@ class Usuarios extends CI_Controller
 	}
 
 
-	public function GuardarEditar()
+	public function NuevoUsuario()
 	{
 		$datos = $this->input->post('datos');
-
-		$this->MKTModel->addHotspotUser($datos['usuario'], $datos['password'], $datos['perfil']);
-
+		$this->MKTModel->nuevoUsuarioHotspot($datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-
 		echo json_encode(array(true, $data));
 	}
 
+	public function EliminarUsuarios()
+	{
+		$datos = $this->input->post('datos');
+		$this->MKTModel->eliminarUsuario($datos['usuarios']);
 
-
-
+		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		echo json_encode(array(true, $data));
+	}
 }

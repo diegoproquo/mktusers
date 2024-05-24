@@ -8,7 +8,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios", "0", false, false, false, true);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "", false, false, false);
                 ?>
             </div>
         </div>
@@ -49,26 +49,32 @@
                     </div>
                 </div>
                 <div class="row mt-2">
-                <div class="col-md-12">
-                <label for="selectPerfiles" class="form-label">Perfiles</label>
-                    <select class="form-control" id="selectPerfiles">
-                        <?php
+                    <div class="col-md-12">
+                        <label for="selectPerfiles" class="form-label">Perfiles</label>
+                        <select class="form-control" id="selectPerfiles">
+                            <?php
 
-                        foreach ($perfiles as $perfil) {
-                        ?>
-                            <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
-                        <?php
-                        }
-                        ?>
+                            foreach ($perfiles as $perfil) {
+                            ?>
+                                <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                            <?php
+                            }
+                            ?>
 
-                    </select>
+                        </select>
+                    </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label>Comentario</label>
+                        <input id="inpuComentario" type="text" class="form-control" />
+                    </div>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="NuevoUsuario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -78,9 +84,10 @@
 <script>
     var idUsuario = -1;
     var site_id;
+
     $(document).ready(function() {
 
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button>');
+        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button> <button id="btnEliminarUsuarios" class="btn btn-danger ms-1">Eliminar usuario</button>');
 
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
@@ -88,34 +95,38 @@
             idUsuario = -1;
         });
 
+        $('#btnEliminarUsuarios').click(function() {
+            var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
+            var rowDetailsArray = checkedRows.map(function(row) {
+                return row;
+            });
+
+            EliminarUsuarios(rowDetailsArray);
+        });
+
+
     });
 
 
+    function EliminarUsuarios(rows) {
 
-    function GuardarEditarUsuario() {
+/*        var rowDetails = rows.map(function(row) {
+            return JSON.stringify(row);
+        });*/
+
         var datos = {};
-
-        if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
-            alert("Las contraseñas no coinciden");
-            return;
-        }
-
-        datos['id'] = idUsuario;
-        datos['usuario'] = $('#inputUsuario').val();
-        datos['password'] = $('#inputPassword').val();
-        datos['perfil'] = $('#selectPerfiles').val();
+        datos['usuarios'] = rows;
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/GuardarEditar',
+            url: '<?= base_url() ?>/Usuarios/EliminarUsuarios',
             dataType: 'json',
             data: {
                 datos: datos
             },
             success: function(response) {
                 RecargarTabla('datatableUsuarios', response[1]);
-                $('#btnCerrarModal').click();
-                MostrarAlertCorrecto("Datos guardados correctamente");
+                MostrarAlertCorrecto("Usuario eliminado correctamente");
             },
             error: function(error) {
                 console.log("error");
@@ -127,69 +138,52 @@
 
     }
 
-    function ClicEliminarUsuario(id) {
-        var borrar = prompt("Introduzca 1234 para borrar el usuario")
-        if (borrar != "1234") {
-            return;
-        } else {
 
-            idUsuario = id;
-            var datos = {};
-
-            datos['id'] = idUsuario;
-            datos['site_id'] = site_id;
-
-            $.ajax({
-                type: 'POST',
-                url: '<?= base_url() ?>/Usuarios/EliminarUsuario',
-                dataType: 'json',
-                data: {
-                    datos: datos
-                },
-                success: function(response) {
-                    RecargarTabla('datatableUsuarios', response[1]);
-                    MostrarAlertCorrecto("Usuario eliminado correctamente");
-                },
-                error: function(error) {
-                    console.log("error");
-                    console.log(error);
-                    MostrarAlertError("Algo no ha ido según lo esperado");
-
-                }
-            });
-        }
-    }
-
-    function ClicEditarUsuario(id) {
+    function NuevoUsuario() {
         var datos = {};
-        $('#modalUsuariosTitulo').text("Editar usuario");
 
-        idUsuario = id;
+        if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
+            alert("Las contraseñas no coinciden");
+            return;
+        }
+
         datos['id'] = idUsuario;
+        datos['usuario'] = $('#inputUsuario').val();
+        datos['password'] = $('#inputPassword').val();
+        datos['perfil'] = $('#selectPerfiles').val();
+        datos['comentario'] = $('#inpuComentario').val();
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/getUsuario',
+            url: '<?= base_url() ?>/Usuarios/NuevoUsuario',
             dataType: 'json',
             data: {
                 datos: datos
             },
             success: function(response) {
-                $('#inputNombre').val(response['NOMBRE']);
-                $('#inputUsuario').val(response['USUARIO']);
-                $('#inputPassword').val(response['PASSWORD']);
-                $('#inputPasswordConfirmar').val(response['PASSWORD']);
-                $('#selectRol').val(response['ROL']).trigger('change');
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Uusario añadido correctamente");
+                $('#btnCerrarModal').click();
+                LimpiarDatosModal();
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+
             }
         });
 
     }
 
+
     function LimpiarDatosModal() {
-        $('#inputNombre').val("");
         $('#inputUsuario').val("");
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
-        $('#selectRol').val(0);
+        $('#inpuComentario').val("");
+
     }
+
+
 </script>

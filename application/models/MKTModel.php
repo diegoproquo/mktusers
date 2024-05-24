@@ -40,9 +40,11 @@ class MKTModel extends CI_Model
 		}
 	}
 
+
+
 	// * SECTION USUARIOS: Código relacionado con USUARIOS Hotspot
 
-	public function addHotspotUser($username, $password, $profile)
+	public function nuevoUsuarioHotspot($username, $password, $profile, $comentario)
 	{
 
 		$client = $this->conexionMKT();
@@ -56,9 +58,11 @@ class MKTModel extends CI_Model
 			$query->add('=name=' . $username);
 			$query->add('=password=' . $password);
 			$query->add('=profile=' . $profile);
+			$query->add('=comment=' . $comentario);
 
 			// Enviar la consulta al dispositivo MikroTik
 			$response = $client->query($query)->read();
+
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
@@ -91,6 +95,7 @@ class MKTModel extends CI_Model
 			}
 
 			return $usuarios;
+
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
@@ -111,6 +116,7 @@ class MKTModel extends CI_Model
 			$response = $client->query($query)->read();
 
 			return $response;
+
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
@@ -132,30 +138,134 @@ class MKTModel extends CI_Model
 			$usuarios = $client->query($query)->read();
 
 			return $usuarios;
+
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+	}
+
+	public function eliminarUsuario($usuarios)
+	{
+		$client = $this->conexionMKT();
+
+		try {
+
+			$client->connect();
+
+			foreach ($usuarios as $user) {
+				$id = $user['0'];
+
+				// Crear la consulta para eliminar al usuario
+				$query = new Query('/ip/hotspot/user/remove');
+				$query->add('=.id=' . $id);
+
+				// Enviar la consulta al MikroTik
+				$response = $client->query($query)->read();
+
+			}
+
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+	}
+
+	// TODO FALTA PROBARLA Y DESPUES IMPLEMENTARLA. EL COMANDO PARA EXPULSAR FUNCIONA
+	public function expelActiveUser($username)
+	{
+		$client = $this->conexionMKT();
+
+		try {
+			// Intentar conectarse
+			$client->connect();
+
+			// Primero, obtenemos la lista de usuarios activos
+			$query = new Query('/ip/hotspot/active/print');
+			$activeUsers = $client->query($query)->read();
+
+			// Buscamos el usuario activo por nombre de usuario
+			$userId = null;
+			foreach ($activeUsers as $user) {
+				if ($user['user'] === $username) {
+					$userId = $user['.id'];
+					break;
+				}
+			}
+
+			// Si encontramos al usuario, procedemos a expulsarlo
+			if ($userId !== null) {
+				$removeQuery = new Query('/ip/hotspot/active/remove');
+				$removeQuery->add('=.id=' . $userId);
+				$client->query($removeQuery)->read();
+
+				return "User {$username} has been expelled.";
+			} else {
+				return "User {$username} is not currently active.";
+			}
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
 	}
 
 
+	// TODO DESHABILITAR LA CUENTA DE UN USUARIO. FALTA PROBAR E IMPLEMENTAR
+	public function disableUser($username)
+	{
+		$client = $this->conexionMKT();
+
+		try {
+			// Intentar conectarse
+			$client->connect();
+
+			// Primero, obtenemos la lista de usuarios del Hotspot
+			$query = new Query('/ip/hotspot/user/print');
+			$users = $client->query($query)->read();
+
+			// Buscamos al usuario por nombre de usuario
+			$userId = null;
+			foreach ($users as $user) {
+				if ($user['name'] === $username) {
+					$userId = $user['.id'];
+					break;
+				}
+			}
+
+			// Si encontramos al usuario, procedemos a deshabilitarlo
+			if ($userId !== null) {
+				$disableQuery = new Query('/ip/hotspot/user/set');
+				$disableQuery->add('=.id=' . $userId);
+				$disableQuery->add('=disabled=yes');
+				$client->query($disableQuery)->read();
+
+				return "User {$username} has been disabled.";
+			} else {
+				return "User {$username} not found.";
+			}
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+	}
+
+
+
+
 	// * SECTION PERFILES: Código relacionado con PERFILES Hotspot
 	public function addUserProfile($nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $sessionTimeout)
 	{
 		$client = $this->conexionMKT();
-	
+
 		try {
 
 			$client->connect();
-	
+
 			// Consulta para añadir un perfil de usuario al hotspot
 			$query = new Query('/ip/hotspot/user/profile/add');
-	
+
 			$query->add('=name=' . $nombre);
-	
+
 			if (!is_null($rateLimit) && $rateLimit !== '') {
 				$query->add('=rate-limit=' . $rateLimit);
 			}
-	
+
 			$query->add('=shared-users=' . $sharedUsers);
 			$query->add('=add-mac-cookie=' . $macCookie);
 
@@ -166,16 +276,19 @@ class MKTModel extends CI_Model
 			$query->add('=session-timeout=' . $sessionTimeout);
 
 			$query->add('=keepalive-timeout=' . '3h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
-	
+
 			// Enviar la consulta al dispositivo MikroTik
 			$response = $client->query($query)->read();
-	
+
 			return $response;
+
+			
+
 		} catch (\Exception $e) {
 			echo "Error: " . $e->getMessage() . "\n";
 		}
 	}
-	
+
 
 
 	public function MostrarRecargarDatosPerfiles()
@@ -217,5 +330,7 @@ class MKTModel extends CI_Model
 		}
 
 		return $perfiles;
+
+		
 	}
 }
