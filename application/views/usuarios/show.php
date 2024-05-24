@@ -1,14 +1,14 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Usuarios <?=  $site_nombre ?></h1>
+    <h1 class="mt-4">Usuarios</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Unifi Manager</li>
+        <li class="breadcrumb-item">Proquo MKT</li>
         <li class="breadcrumb-item active">Usuarios </li>
     </ol>
     <div class="mainDiv">
-        <div class="content_pagina" style="text-align: center;">
+        <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatableUsuarios", "Usuarios  $site_nombre", "0,3,6", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "", false, false, false);
                 ?>
             </div>
         </div>
@@ -32,12 +32,6 @@
             <div class="modal-body">
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Nombre</label>
-                        <input id="inputNombre" type="text" class="form-control" />
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-12">
                         <label>Usuario</label>
                         <input id="inputUsuario" type="text" class="form-control" />
                     </div>
@@ -56,17 +50,31 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Rol</label>
-                        <select class="form-control" id="selectRol">
-                            <option value="0" selected="selected">Usuario</option>
-                            <option value="1">Administrador</option>
+                        <label for="selectPerfiles" class="form-label">Perfiles</label>
+                        <select class="form-control" id="selectPerfiles">
+                            <?php
+
+                            foreach ($perfiles as $perfil) {
+                            ?>
+                                <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                            <?php
+                            }
+                            ?>
+
                         </select>
                     </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label>Comentario</label>
+                        <input id="inpuComentario" type="text" class="form-control" />
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="NuevoUsuario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -76,23 +84,73 @@
 <script>
     var idUsuario = -1;
     var site_id;
+
     $(document).ready(function() {
 
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button>');
+        // Añadir botones a la toolbar
+        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-success ms-1" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button> ' +
+            '<button id="btnEliminarUsuarios" disabled onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
+            '<button id="btnHabilitarUsuario" disabled onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
+            '<button id="btnDeshabilitarUsuario" disabled onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
 
+        // Control de la modal
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
             $('#modalUsuariosTitulo').text('Nuevo usuario');
             idUsuario = -1;
         });
 
-        site_id = '<?php echo addslashes($site_id); ?>';
+        // Deshabilitar botones si no hay ninguna fila seleccionada
+        var $table = $('#datatableUsuarios')
+        var $btnEliminarUsuarios = $('#btnEliminarUsuarios')
+        var $btnHabilitarUsuario = $('#btnHabilitarUsuario')
+        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario')
+        $(function() {
+            $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
+                $btnEliminarUsuarios.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                $btnHabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                $btnDeshabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
+            })
+            $btnEliminarUsuarios.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnEliminarUsuarios', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnEliminarUsuarios.prop('disabled', true)
+            });
+            $btnHabilitarUsuario.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnHabilitarUsuario', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnHabilitarUsuario.prop('disabled', true)
+            });
+            $btnDeshabilitarUsuario.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnDeshabilitarUsuario', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnDeshabilitarUsuario.prop('disabled', true)
+            })
+        })
 
     });
 
 
 
-    function GuardarEditarUsuario() {
+    function NuevoUsuario() {
         var datos = {};
 
         if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
@@ -101,98 +159,137 @@
         }
 
         datos['id'] = idUsuario;
-        datos['nombre'] = $('#inputNombre').val();
         datos['usuario'] = $('#inputUsuario').val();
         datos['password'] = $('#inputPassword').val();
-        datos['rol'] = $('#selectRol').val();
-        datos['site_id'] = site_id;
+        datos['perfil'] = $('#selectPerfiles').val();
+        datos['comentario'] = $('#inpuComentario').val();
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/GuardarEditar',
+            url: '<?= base_url() ?>/Usuarios/NuevoUsuario',
             dataType: 'json',
             data: {
                 datos: datos
             },
             success: function(response) {
                 RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Uusario añadido correctamente");
                 $('#btnCerrarModal').click();
-                MostrarAlertCorrecto("Datos guardados correctamente");
+                LimpiarDatosModal();
             },
             error: function(error) {
                 console.log("error");
                 console.log(error);
                 MostrarAlertError("Algo no ha ido según lo esperado");
-
             }
         });
-
     }
 
-    function ClicEliminarUsuario(id) {
-        var borrar = prompt("Introduzca 1234 para borrar el usuario")
-        if (borrar != "1234") {
-            return;
-        } else {
+    function EliminarUsuarios() {
 
-            idUsuario = id;
-            var datos = {};
+        rows = ObtenerFilasCheckeadas();
 
-            datos['id'] = idUsuario;
-            datos['site_id'] = site_id;
-
-            $.ajax({
-                type: 'POST',
-                url: '<?= base_url() ?>/Usuarios/EliminarUsuario',
-                dataType: 'json',
-                data: {
-                    datos: datos
-                },
-                success: function(response) {
-                    RecargarTabla('datatableUsuarios', response[1]);
-                    MostrarAlertCorrecto("Usuario eliminado correctamente");
-                },
-                error: function(error) {
-                    console.log("error");
-                    console.log(error);
-                    MostrarAlertError("Algo no ha ido según lo esperado");
-
-                }
-            });
-        }
-    }
-
-    function ClicEditarUsuario(id) {
         var datos = {};
-        $('#modalUsuariosTitulo').text("Editar usuario");
-
-        idUsuario = id;
-        datos['id'] = idUsuario;
+        datos['usuarios'] = rows;
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/getUsuario',
+            url: '<?= base_url() ?>/Usuarios/EliminarUsuarios',
             dataType: 'json',
             data: {
                 datos: datos
             },
             success: function(response) {
-                $('#inputNombre').val(response['NOMBRE']);
-                $('#inputUsuario').val(response['USUARIO']);
-                $('#inputPassword').val(response['PASSWORD']);
-                $('#inputPasswordConfirmar').val(response['PASSWORD']);
-                $('#selectRol').val(response['ROL']).trigger('change');
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario eliminado correctamente");
+                DeshabilitarBotones();
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
             }
         });
+    }
 
+    function HabilitarUsuarios() {
+
+        rows = ObtenerFilasCheckeadas();
+
+        var datos = {};
+        datos['usuarios'] = rows;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/HabilitarUsuarios',
+            dataType: 'json',
+            data: {
+                datos: datos
+            },
+            success: function(response) {
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario habilitado correctamente");
+                DeshabilitarBotones();
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
+
+            }
+        });
+    }
+
+    function DeshabilitarUsuarios() {
+
+        rows = ObtenerFilasCheckeadas();
+
+        var datos = {};
+        datos['usuarios'] = rows;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/DeshabilitarUsuarios',
+            dataType: 'json',
+            data: {
+                datos: datos
+            },
+            success: function(response) {
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario deshabilitado correctamente");
+                DeshabilitarBotones();
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
+
+            }
+        });
+    }
+
+    function ObtenerFilasCheckeadas() {
+        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
+        var rowDetailsArray = checkedRows.map(function(row) {
+            return row;
+        });
+        return rowDetailsArray;
+    }
+
+    function DeshabilitarBotones(){
+        $("#btnEliminarUsuarios").prop("disabled",true);
+        $("#btnHabilitarUsuario").prop("disabled",true);
+        $("#btnDeshabilitarUsuario").prop("disabled",true);
     }
 
     function LimpiarDatosModal() {
-        $('#inputNombre').val("");
         $('#inputUsuario').val("");
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
-        $('#selectRol').val(0);
-    }
+        $('#inpuComentario').val("");
 
+    }
 </script>

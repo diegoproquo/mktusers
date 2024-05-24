@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-	<title>Proquo Wifi</title>
+	<title>Proquo MKT</title>
 
 	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -97,7 +97,7 @@
 
 	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand" onclick="IrA('Dashboard', false)" style="cursor:pointer; color:white; width:125px ">Proquo Wifi</a>
+		<a class="navbar-brand" onclick="IrA('Dashboard', false)" style="cursor:pointer; color:white; width:125px ">Proquo MKT</a>
 		<img src="<?= base_url() ?>assets/img/ProQuo_whitetrans_big.png" width="72" style="margin-right:30px" />
 		<!-- Sidebar Toggle-->
 		<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
@@ -110,13 +110,6 @@
 		</form>-->
 		<!-- Navbar-->
 		<ul class="d-none navbar-nav d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-
-			<li class="nav-item dropdown me-2">
-				<a class="nav-link dropdown-toggle" id="navbarDropdownSite" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul id="dropdownSites" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownSite">
-
-				</ul>
-			</li>
 
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarDropdownSesion" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -140,95 +133,28 @@
 			<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
 				<div class="sb-sidenav-menu">
 					<div class="nav">
-						<div class="sb-sidenav-menu-heading">Principal</div>
+						<div class="sb-sidenav-menu-heading">Estadísticas</div>
 						<a class="nav-link" onclick="IrA('Dashboard', false)">
-							<div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+							<div class="sb-nav-link-icon"><i class="fas fa-chart-simple"></i></div>
 							Dashboard
 						</a>
 
-						<div id="testCollapseTitulo" class="sb-sidenav-menu-heading" style="display:none">Pruebas</div>
-
-
-						<a style="display:none" id="tituloTest" style="display:none" class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseTest" aria-expanded="false" aria-controls="collapseTest">
-							<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-							Test
-							<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						<div class="sb-sidenav-menu-heading">Gestión</div>
+						<a class="nav-link" onclick="IrA('Usuarios/show', false)">
+							<div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+							Usuarios
 						</a>
 
-						<div style="display:none" class="collapse" id="collapseTest" aria-labelledby="headingTest" data-bs-parent="#sidenavAccordion">
-							<nav class="sb-sidenav-menu-nested nav">
-								<a class="nav-link" onclick="IrA('Prueba', false)">Prueba de conexión</a>
-							</nav>
-							<nav class="sb-sidenav-menu-nested nav">
-								<a class="nav-link" target="_blank" href="http://localhost/unifi_manager/guest/s/<?= $site_id ?>/?ap=9c:05:d6:3d:b7:7a&id=48:68:4a:9f:09:7a&t=1707411668&url=http://www.msftconnecttest.com%2Fredirect&ssid=test">
-									Prueba registro
-								</a>
-							</nav>
-							<nav class="sb-sidenav-menu-nested nav">
-								<a class="nav-link collapsed" id="sidenavAccordionPages" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTestDiv" aria-expanded="false" aria-controls="collapseTestDiv">
-									Formularios custom
-									<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-								</a>
-								<div class="collapse" id="collapseTestDiv" aria-labelledby="headingOne" data-bs-parent="#collapseTest">
-									<nav class="sb-sidenav-menu-nested nav">
-										<a class="nav-link" onclick="IrA('Portal/plantilla', true)">
-											Formulario custom
-										</a>
-										<a class="nav-link" onclick="IrA('Portal/plantilla2', true)">
-											Formulario custom 2
-										</a>
-										<a class="nav-link" onclick="IrA('Portal/plantilla3', true)">
-											Formulario custom 3
-										</a>
-										<a class="nav-link" onclick="IrA('Portal/plantilla4', true)">
-											Formulario custom 4
-										</a>
-									</nav>
-								</div>
-							</nav>
-						</div>
-
-
-
-						<div class="sb-sidenav-menu-heading">Configuración</div>
-
-
-						<a class="nav-link" onclick="IrA('Portal/newEditar', false)">
-							<div class="sb-nav-link-icon"><i class="fas fa-image"></i></div>
-							Portal cautivo
+						<a class="nav-link" onclick="IrA('Perfiles/show', false)">
+							<div class="sb-nav-link-icon"><i class="fas fa-address-card"></i></div>
+							Perfiles
 						</a>
 
-						<a class="nav-link" onclick="IrA('Informes/newEditar', false)">
-							<div class="sb-nav-link-icon"><i class="fas fa-envelope"></i></div>
-							Informes
-						</a>
-
-						<a class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#ajustes" aria-expanded="false" aria-controls="ajustes" id="navAjustes" style="display:none">
-							<div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
-							Ajustes
-							<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-						</a>
-
-						<div class="collapse" id="ajustes" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-							<nav class="sb-sidenav-menu-nested nav" id="navUsuarios" style="display:none">
-								<a class="nav-link" onclick="IrA('Usuarios/show', false)">
-									<div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-									Usuarios
-								</a>
-							</nav>
-							<nav class="sb-sidenav-menu-nested nav" id="navSites">
-								<a class="nav-link" onclick="IrA('Sites/show', false)">
-									<div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
-									Sites
-								</a>
-							</nav>
-						</div>
+						 
 
 					</div>
 				</div>
-				<div class="sb-sidenav-footer">
-					<div class="small">Sesión iniciada como:</div> <span><?php echo $this->session->userdata('nombre'); ?></span>
-				</div>
+
 			</nav>
 		</div>
 
@@ -245,58 +171,13 @@
 			<main>
 
 				<script>
-					var site_id = '<?php echo addslashes($site_id); ?>';
-					var site_nombre = '<?php echo addslashes($site_nombre); ?>';
-
-					$('#navbarDropdownSite').text(site_nombre);
 
 					function IrA(pagina, abrirOtraPestaña) {
-						if (abrirOtraPestaña == true) window.open("<?= base_url() ?>" + pagina + "/?site=" + site_id);
-						else window.location.replace("<?= base_url() ?>" + pagina + "/?site=" + site_id);
+						if (abrirOtraPestaña == true) window.open("<?= base_url() ?>" + pagina );
+						else window.location.replace("<?= base_url() ?>" + pagina );
 					}
 
-					function ObtenerSitesBD() {
-						$.ajax({
-							type: 'POST',
-							url: '<?= base_url() ?>/Sites/ObtenerSitesBD',
-							dataType: 'json',
-							success: function(response) {
 
-								if (response[0] == true) {
-									//Mostramos pestañas del sidebar ocultas
-									$('#navUsuarios').show();
-									$('#navAjustes').show();
-									//$('#tituloTest').show();
-									//$('#testCollapseTitulo').show();
-
-									// Cargamos select del header
-									var currentUrl = window.location.href;
-									var separator = currentUrl.indexOf('?') !== -1 ? '&' : '?';
-									var sites = response[1];
-									for (i = 0; i < sites.length; i++) {
-										$('#navAjustes').show();
-										var url = currentUrl + separator + "site=" + encodeURIComponent(sites[i]['SITE_ID'])
-										var newLink = $('<a>').addClass('dropdown-item').attr('href', url).text(sites[i]['NOMBRE']);
-										var newListItem = $('<li>').append(newLink);
-										$('#dropdownSites').append(newListItem);
-									}
-								} else { //Si no es admin actuamos
-									$('#dropdownSites').remove();
-									$('#navSites').remove();
-									$('#navUsuarios').remove();
-									$('#navAjustes').remove();
-
-									//Quitar pestaña de test
-									$('#sidenavAccordionPages').remove();
-									$('#collapseTest').remove();
-									$('#tituloTest').remove();
-									$('#testCollapseTitulo').remove();
-								}
-							}
-						});
-					}
-
-					ObtenerSitesBD();
 
 
 					//FUNCIONES COMUNES

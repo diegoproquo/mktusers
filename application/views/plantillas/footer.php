@@ -3,7 +3,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-center small">
             <div>&copy; <a href="https://www.tecnologiasencilla.com/">Proquo Tecnología Sencilla SL</a> 2024</div>
-            <a style="position:absolute; right:20px">Versión 1.09</a>
+            <a style="position:absolute; right:20px">Versión Beta</a>
         </div>
     </div>
 
