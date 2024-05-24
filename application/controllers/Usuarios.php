@@ -24,8 +24,9 @@ class Usuarios extends CI_Controller
 		$columna4 = "bytes-in";
 		$columna5 = "bytes-out";
 		$columna6 = "comment";
+		$columna7 = "disabled";
 
-		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
+		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7);
 
 		$data['data'] = $this->MKTModel->MostrarRecargarDatosUsuarios();
 
@@ -49,7 +50,16 @@ class Usuarios extends CI_Controller
 	public function EliminarUsuarios()
 	{
 		$datos = $this->input->post('datos');
-		$this->MKTModel->eliminarUsuario($datos['usuarios']);
+		$this->MKTModel->eliminarUsuarios($datos['usuarios']);
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		echo json_encode(array(true, $data));
+	}
+
+	public function DeshabilitarUsuarios()
+	{
+		$datos = $this->input->post('datos');
+		$this->MKTModel->deshabilitarUsuarios($datos['usuarios']);
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		echo json_encode(array(true, $data));

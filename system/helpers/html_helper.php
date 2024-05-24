@@ -682,7 +682,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 <?php
 }
 
-//Para añadir checkbox se hace con el data-checkbox="true"
+//Para añadir checkbox se hace con el data-checkbox="true. Tambien se añade una columna inicial vacia"
 // !IMPORTANT La funcion para controlar la obtencion de los checkbox esta en Usuarios/show  
 
 function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false)

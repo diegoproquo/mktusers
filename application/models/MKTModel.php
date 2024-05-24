@@ -144,7 +144,7 @@ class MKTModel extends CI_Model
 		}
 	}
 
-	public function eliminarUsuario($usuarios)
+	public function eliminarUsuarios($usuarios)
 	{
 		$client = $this->conexionMKT();
 
@@ -158,6 +158,33 @@ class MKTModel extends CI_Model
 				// Crear la consulta para eliminar al usuario
 				$query = new Query('/ip/hotspot/user/remove');
 				$query->add('=.id=' . $id);
+
+				// Enviar la consulta al MikroTik
+				$response = $client->query($query)->read();
+
+			}
+
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+	}
+
+	public function deshabilitarUsuarios($usuarios)
+	{
+		$client = $this->conexionMKT();
+
+		try {
+
+			$client->connect();
+
+			foreach ($usuarios as $user) {
+				$id = $user['0'];
+
+				// Crear la consulta para eliminar al usuario
+				$query = new Query('/ip/hotspot/user/set');
+				$query->add('=.id=' . $id);
+				$query->add('=disabled=yes');
+				$client->query($query)->read();
 
 				// Enviar la consulta al MikroTik
 				$response = $client->query($query)->read();
@@ -205,47 +232,6 @@ class MKTModel extends CI_Model
 			echo "Error: " . $e->getMessage() . "\n";
 		}
 	}
-
-
-	// TODO DESHABILITAR LA CUENTA DE UN USUARIO. FALTA PROBAR E IMPLEMENTAR
-	public function disableUser($username)
-	{
-		$client = $this->conexionMKT();
-
-		try {
-			// Intentar conectarse
-			$client->connect();
-
-			// Primero, obtenemos la lista de usuarios del Hotspot
-			$query = new Query('/ip/hotspot/user/print');
-			$users = $client->query($query)->read();
-
-			// Buscamos al usuario por nombre de usuario
-			$userId = null;
-			foreach ($users as $user) {
-				if ($user['name'] === $username) {
-					$userId = $user['.id'];
-					break;
-				}
-			}
-
-			// Si encontramos al usuario, procedemos a deshabilitarlo
-			if ($userId !== null) {
-				$disableQuery = new Query('/ip/hotspot/user/set');
-				$disableQuery->add('=.id=' . $userId);
-				$disableQuery->add('=disabled=yes');
-				$client->query($disableQuery)->read();
-
-				return "User {$username} has been disabled.";
-			} else {
-				return "User {$username} not found.";
-			}
-		} catch (\Exception $e) {
-			echo "Error: " . $e->getMessage() . "\n";
-		}
-	}
-
-
 
 
 	// * SECTION PERFILES: Código relacionado con PERFILES Hotspot

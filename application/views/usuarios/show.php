@@ -87,7 +87,7 @@
 
     $(document).ready(function() {
 
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button> <button id="btnEliminarUsuarios" class="btn btn-danger ms-1">Eliminar usuario</button>');
+        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button> <button id="btnEliminarUsuarios" class="btn btn-danger ms-1">Eliminar usuario</button> <button id="btnDeshabilitarUsuario" class="btn btn-warning ms-1">Deshabilitar usuario</button>');
 
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
@@ -100,44 +100,19 @@
             var rowDetailsArray = checkedRows.map(function(row) {
                 return row;
             });
-
             EliminarUsuarios(rowDetailsArray);
+        });
+
+        $('#btnDeshabilitarUsuario').click(function() {
+            var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
+            var rowDetailsArray = checkedRows.map(function(row) {
+                return row;
+            });
+            DeshabilitarUsuarios(rowDetailsArray);
         });
 
 
     });
-
-
-    function EliminarUsuarios(rows) {
-
-/*        var rowDetails = rows.map(function(row) {
-            return JSON.stringify(row);
-        });*/
-
-        var datos = {};
-        datos['usuarios'] = rows;
-
-        $.ajax({
-            type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/EliminarUsuarios',
-            dataType: 'json',
-            data: {
-                datos: datos
-            },
-            success: function(response) {
-                RecargarTabla('datatableUsuarios', response[1]);
-                MostrarAlertCorrecto("Usuario eliminado correctamente");
-            },
-            error: function(error) {
-                console.log("error");
-                console.log(error);
-                MostrarAlertError("Algo no ha ido según lo esperado");
-
-            }
-        });
-
-    }
-
 
     function NuevoUsuario() {
         var datos = {};
@@ -170,11 +145,61 @@
                 console.log("error");
                 console.log(error);
                 MostrarAlertError("Algo no ha ido según lo esperado");
+            }
+        });
+    }
+
+    function EliminarUsuarios(rows) {
+
+        var datos = {};
+        datos['usuarios'] = rows;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/EliminarUsuarios',
+            dataType: 'json',
+            data: {
+                datos: datos
+            },
+            success: function(response) {
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario eliminado correctamente");
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
 
             }
         });
-
     }
+
+    function DeshabilitarUsuarios(rows) {
+
+        var datos = {};
+        datos['usuarios'] = rows;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/DeshabilitarUsuarios',
+            dataType: 'json',
+            data: {
+                datos: datos
+            },
+            success: function(response) {
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario deshabilitado correctamente");
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+
+            }
+        });
+    }
+
+
 
 
     function LimpiarDatosModal() {
@@ -184,6 +209,4 @@
         $('#inpuComentario').val("");
 
     }
-
-
 </script>
