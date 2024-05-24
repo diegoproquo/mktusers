@@ -87,7 +87,12 @@
 
     $(document).ready(function() {
 
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo usuario</button> <button id="btnEliminarUsuarios" class="btn btn-danger ms-1">Eliminar usuario</button> <button id="btnDeshabilitarUsuario" class="btn btn-warning ms-1">Deshabilitar usuario</button>');
+        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-success ms-1" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button> ' +
+            '<button id="btnEliminarUsuarios" onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
+            '<button id="btnHabilitarUsuario" onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
+            '<button id="btnDeshabilitarUsuario" onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
+
+
 
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
@@ -95,24 +100,15 @@
             idUsuario = -1;
         });
 
-        $('#btnEliminarUsuarios').click(function() {
-            var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
-            var rowDetailsArray = checkedRows.map(function(row) {
-                return row;
-            });
-            EliminarUsuarios(rowDetailsArray);
-        });
-
-        $('#btnDeshabilitarUsuario').click(function() {
-            var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
-            var rowDetailsArray = checkedRows.map(function(row) {
-                return row;
-            });
-            DeshabilitarUsuarios(rowDetailsArray);
-        });
-
-
     });
+
+    function ObtenerFilasCheckeadas() {
+        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
+        var rowDetailsArray = checkedRows.map(function(row) {
+            return row;
+        });
+        return rowDetailsArray;
+    }
 
     function NuevoUsuario() {
         var datos = {};
@@ -149,7 +145,9 @@
         });
     }
 
-    function EliminarUsuarios(rows) {
+    function EliminarUsuarios() {
+
+        rows = ObtenerFilasCheckeadas();
 
         var datos = {};
         datos['usuarios'] = rows;
@@ -174,7 +172,36 @@
         });
     }
 
-    function DeshabilitarUsuarios(rows) {
+    function HabilitarUsuarios() {
+
+        rows = ObtenerFilasCheckeadas();
+
+        var datos = {};
+        datos['usuarios'] = rows;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/HabilitarUsuarios',
+            dataType: 'json',
+            data: {
+                datos: datos
+            },
+            success: function(response) {
+                RecargarTabla('datatableUsuarios', response[1]);
+                MostrarAlertCorrecto("Usuario habilitado correctamente");
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+
+            }
+        });
+    }
+
+    function DeshabilitarUsuarios() {
+
+        rows = ObtenerFilasCheckeadas();
 
         var datos = {};
         datos['usuarios'] = rows;

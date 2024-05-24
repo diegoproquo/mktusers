@@ -56,6 +56,15 @@ class Usuarios extends CI_Controller
 		echo json_encode(array(true, $data));
 	}
 
+	public function HabilitarUsuarios()
+	{
+		$datos = $this->input->post('datos');
+		$this->MKTModel->habilitarUsuarios($datos['usuarios']);
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		echo json_encode(array(true, $data));
+	}
+
 	public function DeshabilitarUsuarios()
 	{
 		$datos = $this->input->post('datos');

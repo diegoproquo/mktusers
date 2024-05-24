@@ -169,6 +169,33 @@ class MKTModel extends CI_Model
 		}
 	}
 
+	public function habilitarUsuarios($usuarios)
+	{
+		$client = $this->conexionMKT();
+
+		try {
+
+			$client->connect();
+
+			foreach ($usuarios as $user) {
+				$id = $user['0'];
+
+				// Crear la consulta para eliminar al usuario
+				$query = new Query('/ip/hotspot/user/set');
+				$query->add('=.id=' . $id);
+				$query->add('=disabled=no');
+				$client->query($query)->read();
+
+				// Enviar la consulta al MikroTik
+				$response = $client->query($query)->read();
+
+			}
+
+		} catch (\Exception $e) {
+			echo "Error: " . $e->getMessage() . "\n";
+		}
+	}
+
 	public function deshabilitarUsuarios($usuarios)
 	{
 		$client = $this->conexionMKT();
