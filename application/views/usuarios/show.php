@@ -87,18 +87,64 @@
 
     $(document).ready(function() {
 
+        // Añadir botones a la toolbar
         $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-success ms-1" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button> ' +
-            '<button id="btnEliminarUsuarios" onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
-            '<button id="btnHabilitarUsuario" onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
-            '<button id="btnDeshabilitarUsuario" onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
+            '<button id="btnEliminarUsuarios" disabled onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
+            '<button id="btnHabilitarUsuario" disabled onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
+            '<button id="btnDeshabilitarUsuario" disabled onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
 
-
-
+        // Control de la modal
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
             $('#modalUsuariosTitulo').text('Nuevo usuario');
             idUsuario = -1;
         });
+
+        // Deshabilitar modales si no hay ninguna fila seleccionada
+        var $table = $('#datatableUsuarios')
+        var $btnEliminarUsuarios = $('#btnEliminarUsuarios')
+        var $btnHabilitarUsuario = $('#btnHabilitarUsuario')
+        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario')
+        $(function() {
+            $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
+                $btnEliminarUsuarios.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                $btnHabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                $btnDeshabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
+            })
+            $btnEliminarUsuarios.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnEliminarUsuarios', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnEliminarUsuarios.prop('disabled', true)
+            });
+            $btnHabilitarUsuario.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnHabilitarUsuario', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnHabilitarUsuario.prop('disabled', true)
+            });
+            $btnDeshabilitarUsuario.click(function() {
+                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
+                    return row.id
+                })
+
+                $table.bootstrapTable('btnDeshabilitarUsuario', {
+                    field: 'id',
+                    values: ids
+                })
+                $btnDeshabilitarUsuario.prop('disabled', true)
+            })
+        })
 
     });
 
@@ -162,12 +208,13 @@
             success: function(response) {
                 RecargarTabla('datatableUsuarios', response[1]);
                 MostrarAlertCorrecto("Usuario eliminado correctamente");
+                DeshabilitarBotones();
             },
             error: function(error) {
                 console.log("error");
                 console.log(error);
                 MostrarAlertError("Algo no ha ido según lo esperado");
-
+                DeshabilitarBotones();
             }
         });
     }
@@ -189,11 +236,13 @@
             success: function(response) {
                 RecargarTabla('datatableUsuarios', response[1]);
                 MostrarAlertCorrecto("Usuario habilitado correctamente");
+                DeshabilitarBotones();
             },
             error: function(error) {
                 console.log("error");
                 console.log(error);
                 MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
 
             }
         });
@@ -216,18 +265,24 @@
             success: function(response) {
                 RecargarTabla('datatableUsuarios', response[1]);
                 MostrarAlertCorrecto("Usuario deshabilitado correctamente");
+                DeshabilitarBotones();
             },
             error: function(error) {
                 console.log("error");
                 console.log(error);
                 MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
 
             }
         });
     }
 
 
-
+    function DeshabilitarBotones(){
+        $("#btnEliminarUsuarios").prop("disabled",true);
+        $("#btnHabilitarUsuario").prop("disabled",true);
+        $("#btnDeshabilitarUsuario").prop("disabled",true);
+    }
 
     function LimpiarDatosModal() {
         $('#inputUsuario').val("");
