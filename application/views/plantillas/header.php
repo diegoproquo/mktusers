@@ -116,9 +116,9 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center">
                 <div class="sidebar-brand-icon">
-                    <img src="<?= base_url() ?>assets/img/ProQuo_whitetrans_big.png" width="72" />
+                    <img src="<?= base_url() ?>assets/img/ProQuo_whitetrans_big.png" width="102" />
                 </div>
-                <div class="sidebar-brand-text mx-3">ProQuo MKT </div>
+                <!-- <div class="sidebar-brand-text mx-3">ProQuo MKT </div> -->
             </a>
 
             <!-- Divider -->
@@ -168,7 +168,7 @@
                     <ul class="navbar-nav ml-auto">
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownSesion" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownSesion" role="button" data-bs-toggle="dropdown"><i class="fas fa-user"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownSesion">
 
                                 <li><a class="dropdown-item" href="<?php echo base_url('Login/logout'); ?>">Cerrar sesión</a></li>

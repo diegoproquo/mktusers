@@ -26,11 +26,14 @@ class Login extends CI_Controller
 
     public function iniciarSesion()
     {
+
+
+
         $host = $this->input->post('host');
         $user = $this->input->post('user');
         $pass = $this->input->post('pass');
 
-        require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
+		require_once $_ENV['AUTOLOAD'];
 
         try {
 

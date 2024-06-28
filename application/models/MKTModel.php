@@ -6,22 +6,22 @@ use \RouterOS\Query;
 
 class MKTModel extends CI_Model
 {
-	public $host;
-	public $user;
-	public $pass;
+	private $host;
+	private $user;
+	private $pass;
 
 	public function __construct()
 	{
-		$this->host = $this->session->userdata('host');
-		$this->user = $this->session->userdata('user');
-		$this->pass = $this->session->userdata('pass');
+		$this->host =  $_ENV['MIKROTIK_HOST'];
+        $this->user =  $_ENV['MIKROTIK_USER'];
+        $this->pass = $_ENV['MIKROTIK_PASS'];
 	}
 
 	// * SECTION COMUN
 
 	private function conexionMKT()
 	{
-		require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
+		require_once $_ENV['AUTOLOAD'];
 
 		// !IMPORTANT
 		//TODO repasar como funciona este try catch y si se devuelve bien la instacia $client (lo ideal seria poder implementar MostrarAlertError)
