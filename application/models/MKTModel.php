@@ -23,6 +23,7 @@ class MKTModel extends CI_Model
 	{
 		require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
+		// !IMPORTANT
 		//TODO repasar como funciona este try catch y si se devuelve bien la instacia $client (lo ideal seria poder implementar MostrarAlertError)
 		try {
 			$config = (new Config())
@@ -283,16 +284,8 @@ class MKTModel extends CI_Model
 	public function MostrarRecargarDatosPerfiles()
 	{
 
-		require_once 'C:\Proyectos\mktusers\vendor\autoload.php';
 
-		$config = (new Config())
-			->set('timeout', 5)
-			->set('host', '192.168.88.1') // Cambia esta IP por la del MikroTik
-			->set('user', 'admin') // Cambia estas credenciales según las tuyas
-			->set('pass', 'terminal');
-
-		// Crear un cliente y conectarse al dispositivo MikroTik
-		$client = new Client($config);
+		$client = $this->conexionMKT();
 
 		try {
 			// Intentar conectarse

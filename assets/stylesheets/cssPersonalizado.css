@@ -82,8 +82,9 @@
     }
 
     .footer_pagina {
-        padding-top: 30px;
-        padding-left: 100px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
     }
 
     .help-block {
