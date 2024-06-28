@@ -93,7 +93,12 @@
     var site_id;
     $(document).ready(function() {
 
-        $('.search-input').after('<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo perfil</button>');
+        var conexionMKT = <?= json_encode($conexionMKT) ?>;
+        if (conexionMKT == false) MostrarAlertErrorMKT();
+        
+        $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
+            '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo perfil</button>' +
+            '</div>');
 
         $('#btnNuevoPerfil').on('click', function() {
             LimpiarDatosModal();
@@ -192,9 +197,17 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatablePerfiles', response[1]);
-                $('#btnCerrarModal').click();
-                MostrarAlertCorrecto("Datos guardados correctamente");
+                if (response[0] == true) {
+                    RecargarTabla('datatablePerfiles', response[1]);
+                    $('#btnCerrarModal').click();
+                    MostrarAlertCorrecto("Datos guardados correctamente");
+                    LimpiarDatosModal();
+                } else {
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                    MostrarAlertErrorMKT();
+                }
+
             },
             error: function(error) {
                 console.log("error");

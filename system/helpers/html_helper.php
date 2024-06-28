@@ -745,10 +745,20 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 	<!-- Inicialización de Bootstrap Table -->
 	<script>
 		$(document).ready(function() {
+			function rowAttributes(row, index) {
+				if (row["disabled"] === "true") {
+					return {
+						class: 'table-danger'
+					};
+				}
+				return {};
+			}
+
 			// Función para inicializar la tabla
 			$('#<?= $idTable ?>').bootstrapTable({
 				pagination: true, // Habilita la paginación
 				pageSize: 10, // Establece el número de filas por página
+				rowAttributes: rowAttributes,
 				locale: 'es-ES',
 				formatShowingRows: function(pageFrom, pageTo, totalRows) {
 					return 'Mostrando ' + pageFrom + ' a ' + pageTo + ' de ' + totalRows + ' registros';

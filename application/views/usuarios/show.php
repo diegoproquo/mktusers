@@ -87,11 +87,17 @@
 
     $(document).ready(function() {
 
+        var conexionMKT = <?= json_encode($conexionMKT) ?>;
+        if (conexionMKT == false) MostrarAlertErrorMKT();
+        
         // Añadir botones a la toolbar
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-success ms-1" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button> ' +
-            '<button id="btnEliminarUsuarios" disabled onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
-            '<button id="btnHabilitarUsuario" disabled onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
-            '<button id="btnDeshabilitarUsuario" disabled onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
+        $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
+            '<button id="btnNuevoUsuario" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
+            '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
+            '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-primary ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
+            '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
+            '</div>');
+
 
         // Control de la modal
         $('#btnNuevoUsuario').on('click', function() {
@@ -172,10 +178,16 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableUsuarios', response[1]);
-                MostrarAlertCorrecto("Uusario añadido correctamente");
-                $('#btnCerrarModal').click();
-                LimpiarDatosModal();
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuarios', response[1]);
+                    MostrarAlertCorrecto("Uusario añadido correctamente");
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                } else {
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                    MostrarAlertErrorMKT();
+                }
             },
             error: function(error) {
                 console.log("error");
@@ -200,9 +212,15 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableUsuarios', response[1]);
-                MostrarAlertCorrecto("Usuario eliminado correctamente");
-                DeshabilitarBotones();
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuarios', response[1]);
+                    MostrarAlertCorrecto("Usuario eliminado correctamente");
+                    DeshabilitarBotones();
+                } else {
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                    MostrarAlertErrorMKT();
+                }
             },
             error: function(error) {
                 console.log("error");
@@ -228,9 +246,15 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableUsuarios', response[1]);
-                MostrarAlertCorrecto("Usuario habilitado correctamente");
-                DeshabilitarBotones();
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuarios', response[1]);
+                    MostrarAlertCorrecto("Usuario habilitado correctamente");
+                    DeshabilitarBotones();
+                } else {
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                    MostrarAlertErrorMKT();
+                }
             },
             error: function(error) {
                 console.log("error");
@@ -257,9 +281,15 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableUsuarios', response[1]);
-                MostrarAlertCorrecto("Usuario deshabilitado correctamente");
-                DeshabilitarBotones();
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuarios', response[1]);
+                    MostrarAlertCorrecto("Usuario deshabilitado correctamente");
+                    DeshabilitarBotones();
+                } else {
+                    $('#btnCerrarModal').click();
+                    LimpiarDatosModal();
+                    MostrarAlertErrorMKT();
+                }
             },
             error: function(error) {
                 console.log("error");
@@ -279,10 +309,10 @@
         return rowDetailsArray;
     }
 
-    function DeshabilitarBotones(){
-        $("#btnEliminarUsuarios").prop("disabled",true);
-        $("#btnHabilitarUsuario").prop("disabled",true);
-        $("#btnDeshabilitarUsuario").prop("disabled",true);
+    function DeshabilitarBotones() {
+        $("#btnEliminarUsuarios").prop("disabled", true);
+        $("#btnHabilitarUsuario").prop("disabled", true);
+        $("#btnDeshabilitarUsuario").prop("disabled", true);
     }
 
     function LimpiarDatosModal() {

@@ -25,9 +25,11 @@ class Dashboard extends CI_Controller
 		$columna6 = "-";
 
 		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6);
-		$data['data_usuarios_activos'] = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
+		$data_usuarios_activos = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
 
-		
+		$data['data_usuarios_activos'] = $data_usuarios_activos[0];
+		$data['conexionMKT'] = $data_usuarios_activos[1];		
+
 		$columna1 = ".id";
 		$columna2 = "name";
 		$columna3 = "uptime";
@@ -35,20 +37,27 @@ class Dashboard extends CI_Controller
 		$columna5 = "bytes-out";
 
 		$data['columns_ultimas_conexiones'] = array($columna1, $columna2, $columna3, $columna4, $columna5);
-		$data['data_ultimas_conexiones'] = $this->MKTModel->MostrarRecargarUltimasConexiones();
-		
+		$data_ultimas_conexiones = $this->MKTModel->MostrarRecargarUltimasConexiones();
+		$data['data_ultimas_conexiones'] = $data_ultimas_conexiones[0];
+		$data['conexionMKT'] = $data_ultimas_conexiones[1];
+
 		$this->load->view('plantillas/header');
 		$this->load->view('dashboard/show', $data);
 		$this->load->view('plantillas/footer');
 	}
 
-	public function ExpulsarUsuario(){
+	public function ExpulsarUsuario()
+	{
+
+		$conexionMKT = true;
 		$datos = $this->input->post('datos');
-		$this->MKTModel->expulsarUsuario($datos['id']);
+
+		$data = $this->MKTModel->expulsarUsuario($datos['id']);
+		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
-		echo json_encode(array(true, $data));
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
-
-
 }

@@ -1,4 +1,4 @@
-<div class="container-fluid px-4">
+<div class="container-fluid px-4" style="width: 85%;">
     <h1 class="mt-4">Dashboard</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item">Proquo MKT</li>
@@ -33,6 +33,8 @@
 <script>
     $(document).ready(function() {
 
+        var conexionMKT = <?= json_encode($conexionMKT) ?>;
+        if (conexionMKT == false) MostrarAlertErrorMKT();
 
     });
 
@@ -50,8 +52,10 @@
                 datos: datos
             },
             success: function(response) {
-                RecargarTabla('datatableUsuariosActivos', response[1]);
-                MostrarAlertCorrecto("Usuario expulsado correctamente");
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuariosActivos', response[1]);
+                    MostrarAlertCorrecto("Usuario expulsado correctamente");
+                } else MostrarAlertErrorMKT();
             },
             error: function(error) {
                 console.log("error");
