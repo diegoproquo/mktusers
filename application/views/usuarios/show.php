@@ -88,10 +88,14 @@
     $(document).ready(function() {
 
         // Añadir botones a la toolbar
-        $('.search-input').after('<button id="btnNuevoUsuario" class="btn btn-sm btn-success ms-1" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button> ' +
-            '<button id="btnEliminarUsuarios" disabled onclick="EliminarUsuarios()" class="btn btn-sm btn-danger ms-1"><i class="fas fa-minus"></i> Eliminar</button> ' +
-            '<button id="btnHabilitarUsuario" disabled onclick="HabilitarUsuarios()" class="btn btn-sm btn-primary ms-1"><i class="fas fa-check"></i> Habilitar</button>' +
-            '<button id="btnDeshabilitarUsuario" disabled onclick="DeshabilitarUsuarios()" class="btn btn-sm btn-warning ms-1"><i class="fas fa-xmark"></i> Deshabilitar</button>');
+        $('.fixed-table-toolbar').append('<div class="btn-group" role="group" aria-label="Botones de acción">' +
+        '<button id="btnNuevoUsuario" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
+        '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
+        '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-primary ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
+        '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
+    '</div>');
+
+
 
         // Control de la modal
         $('#btnNuevoUsuario').on('click', function() {

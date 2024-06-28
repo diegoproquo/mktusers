@@ -167,22 +167,10 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownSesion" role="button" data-bs-toggle="dropdown"><i class="fas fa-user"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownSesion">
-
-                                <li><a class="dropdown-item" href="<?php echo base_url('Login/logout'); ?>">Cerrar sesión</a></li>
-                            </ul>
-                        </li>
 						
                     </ul>
 
                 </nav>
-
-
-
-           
-
 
 
     <div class="alertSuccessCustom alert-success" id="alertSuccess">
