@@ -2,8 +2,8 @@
 
 
 <footer class="sticky-footer bg-white footer_pagina" style="position: fixed;bottom: 0;width: 100%;">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
+    <div class="container">
+        <div class="copyright text-center">
         <div>&copy; <a href="https://www.tecnologiasencilla.com/">Proquo Tecnología Sencilla SL</a> 2024</div>
         <a style="position:absolute; right:20px">Versión Beta</a>
         </div>

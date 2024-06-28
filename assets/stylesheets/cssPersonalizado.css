@@ -140,6 +140,7 @@
         width: 300px;
         left: 50%;
         top: -100px;
+        border-radius: 4px;
         /* Posición inicial arriba de la pantalla */
         transform: translateX(-50%);
         opacity: 0;

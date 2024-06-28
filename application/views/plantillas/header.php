@@ -223,6 +223,20 @@
                     }, 4000);
                 }
 
+                function MostrarAlertErrorMKT(texto) {
+                    $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span> No es posible establecer conexión con el Mikrotik. Si el problema persiste, contacta con <strong>ProQuo</strong>');
+
+                    document.getElementById('alertError').style.display = 'block';
+                    document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';
+                    setTimeout(() => {
+                        document.getElementById('alertError').style.animation = 'slideOut 0.5s ease forwards';
+                        setTimeout(() => {
+                            document.getElementById('alertError').style.display = 'none';
+                        }, 500);
+                    }, 10000);
+                }
+
+                
                 function cerrarAlert(id) {
                     document.getElementById(id).style.animation = 'slideOut 0.5s ease forwards';
                     setTimeout(() => {

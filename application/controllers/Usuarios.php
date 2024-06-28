@@ -28,8 +28,13 @@ class Usuarios extends CI_Controller
 
 		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7);
 
-		$data['data'] = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		$data['perfiles'] = $this->MKTModel->MostrarRecargarDatosPerfiles();
+		$usuarios = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data['data'] = $usuarios[0];
+		$data['conexionMKT'] = $usuarios[1];
+
+		$perfiles = $this->MKTModel->MostrarRecargarDatosPerfiles();
+		$data['perfiles'] = $perfiles[0];
+		$data['conexionMKT'] = $perfiles[1];
 
 		$this->load->view('plantillas/header');
 		$this->load->view('usuarios/show', $data);
@@ -39,36 +44,61 @@ class Usuarios extends CI_Controller
 
 	public function NuevoUsuario()
 	{
+		$conexionMKT = true;
+
 		$datos = $this->input->post('datos');
-		$this->MKTModel->nuevoUsuarioHotspot($datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+		
+		$data = $this->MKTModel->nuevoUsuarioHotspot($datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+		$conexionMKT = $data[1];
+
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		echo json_encode(array(true, $data));
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
 	public function EliminarUsuarios()
 	{
+		$conexionMKT = true;
+
 		$datos = $this->input->post('datos');
-		$this->MKTModel->eliminarUsuarios($datos['usuarios']);
+
+		$data = $this->MKTModel->eliminarUsuarios($datos['usuarios']);
+		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		echo json_encode(array(true, $data));
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
 	public function HabilitarUsuarios()
 	{
+		$conexionMKT = true;
+
 		$datos = $this->input->post('datos');
-		$this->MKTModel->habilitarUsuarios($datos['usuarios']);
+
+		$data = $this->MKTModel->habilitarUsuarios($datos['usuarios']);
+		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		echo json_encode(array(true, $data));
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
 	public function DeshabilitarUsuarios()
 	{
+		$conexionMKT = true;
+
 		$datos = $this->input->post('datos');
-		$this->MKTModel->deshabilitarUsuarios($datos['usuarios']);
+
+		$data = $this->MKTModel->deshabilitarUsuarios($datos['usuarios']);
+		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		echo json_encode(array(true, $data));
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
 }
