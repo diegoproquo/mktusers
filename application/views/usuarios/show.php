@@ -280,9 +280,21 @@
         $('#modalImportar').modal('show');
     }
 
+    // Verificar si todos los selects tienen opciones seleccionadas
     $('#btnConfirmarImportar').on('click', function() {
-        ImportarUsuarios();
+
+        var columnaUsuario = $('#selectImportUser').val();
+        var columnaPassword = $('#selectImportPassword').val();
+        var columnaComment = $('#selectImportComment').val();
+
+        console.log("entra");
+        if (columnaUsuario && columnaPassword && columnaComment) {
+            ImportarUsuarios(); // Llamar a la función si todos tienen opciones seleccionadas
+        } else {
+            alert('Por favor, selecciona una opción en todos los campos.');
+        }
     });
+
 
     // Relena los datos de los select de las modales y los selecciona en caso de que el nombre de la columna (header) coincida
     function fillSelectOptions() {
@@ -352,42 +364,42 @@
         var columnaComment = $('#selectImportComment').val();
         var perfil = $('#selectImportPerfiles').val();
 
-        $.ajax({
-            type: "POST",
-            url: '<?= base_url() ?>/Usuarios/procesarCSV',
-            data: JSON.stringify({
-                csvData: lines,
-                columnaUsuario: columnaUsuario,
-                columnaPassword: columnaPassword,
-                columnaComment: columnaComment,
-                perfil: perfil
+            $.ajax({
+                type: "POST",
+                url: '<?= base_url() ?>/Usuarios/procesarCSV',
+                data: JSON.stringify({
+                    csvData: lines,
+                    columnaUsuario: columnaUsuario,
+                    columnaPassword: columnaPassword,
+                    columnaComment: columnaComment,
+                    perfil: perfil
 
-            }),
-            contentType: "application/json",
-            success: function(response) {
+                }),
+                contentType: "application/json",
+                success: function(response) {
 
-                // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
-                // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
-                let responseJSONvalid = response.substring(20);
-                var jsonResponse = JSON.parse(responseJSONvalid);
+                    // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
+                    // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
+                    let responseJSONvalid = response.substring(20);
+                    var jsonResponse = JSON.parse(responseJSONvalid);
 
-                if (jsonResponse[0] == "T") {
-                    RecargarTabla('datatableUsuarios', jsonResponse[1]);
-                    MostrarAlertCorrecto("Uusarios importados correctamente");
-                    $('#modalImportar').modal('hide');
-                    LimpiarDatosModalImportar();
-                } else {
-                    $('#modalImportar').modal('hide');
-                    LimpiarDatosModalImportar();
-                    MostrarAlertErrorMKT();
+                    if (jsonResponse[0] == "T") {
+                        RecargarTabla('datatableUsuarios', jsonResponse[1]);
+                        MostrarAlertCorrecto("Uusarios importados correctamente");
+                        $('#modalImportar').modal('hide');
+                        LimpiarDatosModalImportar();
+                    } else {
+                        $('#modalImportar').modal('hide');
+                        LimpiarDatosModalImportar();
+                        MostrarAlertErrorMKT();
+                    }
+                },
+                error: function(error) {
+                    console.log("error");
+                    console.log(error);
+                    MostrarAlertError("Algo no ha ido según lo esperado");
                 }
-            },
-            error: function(error) {
-                console.log("error");
-                console.log(error);
-                MostrarAlertError("Algo no ha ido según lo esperado");
-            }
-        });
+            });
     }
 
     // *SECTION FIN SECCION IMPORTAR USUARIOS
