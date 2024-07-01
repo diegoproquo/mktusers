@@ -8,7 +8,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1", false, false, false);
                 ?>
             </div>
         </div>
@@ -158,9 +158,9 @@
 
         // Añadir botones a la toolbar
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
-            '<button id="btnNuevoUsuario" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
+            '<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
-            '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-primary ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
+            '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-success ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
             '</div>');
 
@@ -451,16 +451,13 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {};
-        datos['usuarios'] = rows;
+        var datos = {usuarios: rows};
 
         $.ajax({
             type: 'POST',
             url: '<?= base_url() ?>/Usuarios/EliminarUsuarios',
             dataType: 'json',
-            data: {
-                datos: datos
-            },
+            data: JSON.stringify(datos),
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
@@ -485,16 +482,13 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {};
-        datos['usuarios'] = rows;
+        var datos = {usuarios: rows};
 
         $.ajax({
             type: 'POST',
             url: '<?= base_url() ?>/Usuarios/HabilitarUsuarios',
             dataType: 'json',
-            data: {
-                datos: datos
-            },
+            data: JSON.stringify(datos),
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
@@ -520,16 +514,13 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {};
-        datos['usuarios'] = rows;
+        var datos = {usuarios: rows};
 
         $.ajax({
             type: 'POST',
             url: '<?= base_url() ?>/Usuarios/DeshabilitarUsuarios',
             dataType: 'json',
-            data: {
-                datos: datos
-            },
+            data: JSON.stringify(datos),
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
