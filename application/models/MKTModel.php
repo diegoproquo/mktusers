@@ -52,7 +52,6 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
-				//TODO comprobar si el perfil se aplica correctamente
 				$query = new Query('/ip/hotspot/user/add');
 				$query->add('=name=' . $username);
 				$query->add('=password=' . $password);
@@ -63,7 +62,6 @@ class MKTModel extends CI_Model
 				$response = $client->query($query)->read();
 
 				return array($response, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -88,7 +86,6 @@ class MKTModel extends CI_Model
 				$usuarios = $client->query($query)->read();
 
 				return array($usuarios, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -118,7 +115,6 @@ class MKTModel extends CI_Model
 				unset($item);
 
 				return array($response, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -143,7 +139,6 @@ class MKTModel extends CI_Model
 				$usuarios = $client->query($query)->read();
 
 				return array($usuarios, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -171,12 +166,10 @@ class MKTModel extends CI_Model
 					$response = $client->query($query)->read();
 
 					return array($response, true);
-
 				}
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
-
 		} else return array(array(), false);
 	}
 
@@ -203,12 +196,10 @@ class MKTModel extends CI_Model
 					$response = $client->query($query)->read();
 
 					return array($response, true);
-
 				}
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
-
 		} else return array(array(), false);
 	}
 
@@ -235,7 +226,6 @@ class MKTModel extends CI_Model
 					$response = $client->query($query)->read();
 
 					return array($response, true);
-
 				}
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
@@ -257,6 +247,33 @@ class MKTModel extends CI_Model
 				$removeQuery = new Query('/ip/hotspot/active/remove');
 				$removeQuery->add('=.id=' . $id);
 				$response = $client->query($removeQuery)->read();
+
+				return array($response, true);
+			} catch (\Exception $e) {
+				echo "Error: " . $e->getMessage() . "\n";
+			}
+		} else return array(array(), false);
+	}
+
+	function importarUsuarios($usuarios)
+	{
+		$client = $this->conexionMKT();
+
+		if ($client != false) {
+			try {
+				// Conectarse al dispositivo MikroTik
+				$client->connect();
+
+				foreach($usuarios as $item){
+					$query = new Query('/ip/hotspot/user/add');
+					$query->add('=name=' . $item['name']);
+					$query->add('=password=' . $item['password']);
+					$query->add('=profile=' . $item['profile']);
+					$query->add('=comment=' . $item['comment']);
+	
+					// Enviar la consulta al dispositivo MikroTik
+					$response = $client->query($query)->read();
+				}
 
 				return array($response, true);
 
@@ -302,7 +319,6 @@ class MKTModel extends CI_Model
 				$response = $client->query($query)->read();
 
 				return array($response, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -340,7 +356,6 @@ class MKTModel extends CI_Model
 				}
 
 				return array($perfiles, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}

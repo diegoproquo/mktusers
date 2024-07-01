@@ -13,9 +13,12 @@
             </div>
         </div>
 
-        <div class="footer_pagina">
+        <form id="importarUsuariosForm">
+            <label for="file">Selecciona el archivo CSV:</label>
+            <input type="file" name="file" id="file" accept=".csv">
+            <input type="submit" value="Subir">
+        </form>
 
-        </div>
     </div>
 </div>
 
@@ -32,7 +35,7 @@
             <div class="modal-body">
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Usuario</label>
+                        <label>Nombre de usuario</label>
                         <input id="inputUsuario" type="text" class="form-control" />
                     </div>
                 </div>
@@ -81,15 +84,78 @@
 </div>
 
 
+
+<div class="modal fade" id="modalImportar" tabindex="-1" role="dialog" aria-labelledby="modalImportarTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalImportarTitulo">Importación de usuarios</h5>
+                <button type="button" id="btnCerrarModal" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">Relacione los campos del archivo CSV con cada uno de los campos de los usuarios del Mikrotik</p>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportUser" class="form-label">Nombre de usuario</label>
+                        <select class="form-control select-header" id="selectImportUser">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportPassword" class="form-label">Contraseña</label>
+                        <select class="form-control select-header" id="selectImportPassword">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportComment" class="form-label">Comentario</label>
+                        <select class="form-control select-header" id="selectImportComment">
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportPerfiles" class="form-label">Perfil</label>
+                        <select class="form-control" id="selectImportPerfiles">
+                            <?php
+                            foreach ($perfiles as $perfil) {
+                            ?>
+                                <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btnConfirmarImportar" type="button" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     var idUsuario = -1;
-    var site_id;
+    var lines = [];
+    var headers;
 
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
-        
+
         // Añadir botones a la toolbar
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
             '<button id="btnNuevoUsuario" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
@@ -152,7 +218,179 @@
             })
         })
 
+
+        // *SECTION IMPORTAR USUARIOS
+        //Combinacion de metodos para importar usuarios. 
+
+        // Listener para el form del csv
+        $('#importarUsuariosForm').on('submit', function(e) {
+            e.preventDefault();
+            var fileInput = $('#file')[0];
+            var file = fileInput.files[0];
+
+            // Verificar si se seleccionó un archivo
+            if (!file) {
+                alert("Por favor, selecciona un archivo CSV.");
+                return;
+            }
+
+            // Verificar la extensión del archivo
+            var fileName = file.name;
+            var extension = fileName.split('.').pop().toLowerCase();
+            if (extension !== 'csv') {
+                alert("Por favor, selecciona un archivo CSV válido.");
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var csvData = e.target.result;
+                procesarCSV(csvData);
+            };
+
+            reader.readAsText(file);
+        });
+
+        $('.select-header').on('change', function() {
+            updateSelectOptions();
+        });
+
+
+
     });
+
+    //Procesa el csv y guarda los datos en las variables globales para usar despues
+    function procesarCSV(data) {
+        var allTextLines = data.split(/\r\n|\n/);
+        headers = allTextLines[0].split(';'); // Use ';' as the delimiter
+        lines = [];
+
+        for (var i = 1; i < allTextLines.length; i++) {
+            var data = allTextLines[i].split(';'); // Use ';' as the delimiter
+            if (data.length == headers.length) {
+                var tarr = {};
+                for (var j = 0; j < headers.length; j++) {
+                    tarr[headers[j]] = data[j];
+                }
+                lines.push(tarr);
+            }
+        }
+        fillSelectOptions();
+        $('#modalImportar').modal('show');
+    }
+
+    $('#btnConfirmarImportar').on('click', function() {
+        ImportarUsuarios();
+    });
+
+    // Relena los datos de los select de las modales y los selecciona en caso de que el nombre de la columna (header) coincida
+    function fillSelectOptions() {
+        $('.select-header').each(function() {
+            var select = $(this);
+            select.empty();
+            select.append('<option value="">Seleccione una opción</option>');
+            headers.forEach(function(header) {
+                select.append('<option value="' + header + '">' + header + '</option>');
+            });
+
+            // Valores específicos para comparación, convertidos a minúsculas
+            var headerUsuario = "usuario";
+            var headerPassword = "contraseña";
+            var headerComentario = "comentario";
+
+            // Función auxiliar para convertir a minúsculas y comparar
+            function isEqualIgnoreCase(a, b) {
+                return a.toLowerCase() === b.toLowerCase();
+            }
+
+            // Buscar y seleccionar automáticamente en cada select
+            headers.forEach(function(header) {
+                if (isEqualIgnoreCase(header, headerUsuario)) {
+                    $('#selectImportUser').val(header);
+                }
+
+                if (isEqualIgnoreCase(header, headerPassword)) {
+                    $('#selectImportPassword').val(header);
+                }
+
+                if (isEqualIgnoreCase(header, headerComentario)) {
+                    $('#selectImportComment').val(header);
+                }
+            });
+        });
+        updateSelectOptions();
+    }
+
+    // Controla que no se pueda selccionar las mismas opciones en 2 select distintos
+    function updateSelectOptions() {
+        var selectedValues = [];
+        $('.select-header').each(function() {
+            var value = $(this).val();
+            if (value) {
+                selectedValues.push(value);
+            }
+        });
+
+        $('.select-header').each(function() {
+            var select = $(this);
+            select.find('option').each(function() {
+                var option = $(this);
+                if (selectedValues.includes(option.val()) && option.val() !== select.val()) {
+                    option.prop('disabled', true);
+                } else {
+                    option.prop('disabled', false);
+                }
+            });
+        });
+    }
+
+    // Llamada ajax para procesar el csv e importar los usuarios
+    function ImportarUsuarios() {
+        var columnaUsuario = $('#selectImportUser').val();
+        var columnaPassword = $('#selectImportPassword').val();
+        var columnaComment = $('#selectImportComment').val();
+        var perfil = $('#selectImportPerfiles').val();
+
+        $.ajax({
+            type: "POST",
+            url: '<?= base_url() ?>/Usuarios/procesarCSV',
+            data: JSON.stringify({
+                csvData: lines,
+                columnaUsuario: columnaUsuario,
+                columnaPassword: columnaPassword,
+                columnaComment: columnaComment,
+                perfil: perfil
+
+            }),
+            contentType: "application/json",
+            success: function(response) {
+
+                // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
+                // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
+                let responseJSONvalid = response.substring(20);
+                var jsonResponse = JSON.parse(responseJSONvalid);
+
+                if (jsonResponse[0] == "T") {
+                    RecargarTabla('datatableUsuarios', jsonResponse[1]);
+                    MostrarAlertCorrecto("Uusarios importados correctamente");
+                    $('#modalImportar').modal('hide');
+                    LimpiarDatosModalImportar();
+                } else {
+                    $('#modalImportar').modal('hide');
+                    LimpiarDatosModalImportar();
+                    MostrarAlertErrorMKT();
+                }
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+            }
+        });
+    }
+
+    // *SECTION FIN SECCION IMPORTAR USUARIOS
 
 
 
@@ -320,6 +558,12 @@
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
+    }
 
+    function LimpiarDatosModalImportar() {
+        $('#selectImportUser').empty();
+        $('#selectImportPassword').empty();
+        $('#selectImportComment').empty();
+        $('#importarUsuariosForm')[0].reset();
     }
 </script>

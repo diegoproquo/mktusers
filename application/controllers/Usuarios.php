@@ -42,6 +42,50 @@ class Usuarios extends CI_Controller
 	}
 
 
+	public function procesarCSV() {
+		$conexionMKT = true;
+		
+        $input = file_get_contents('php://input');
+        $decodedInput = json_decode($input, true);
+
+
+        if (isset($decodedInput['csvData']) && !empty($decodedInput['csvData'])) {
+            $csvData = $decodedInput['csvData'];
+
+			$usuarios = array();
+
+            // Procesar los datos del CSV y asociarlos a un campo de usuario Mikrotik
+            foreach ($csvData as $row) {
+				$user = array();
+				$user['name'] = $row[$decodedInput['columnaUsuario']];
+				$user['password'] = $row[$decodedInput['columnaPassword']];
+				$user['comment'] = $row[$decodedInput['columnaComment']];
+				$user['profile'] = $decodedInput['perfil'];
+				$usuarios[] = $user;
+            }
+
+			$data = $this->MKTModel->importarUsuarios($usuarios);
+			$conexionMKT = $data[1];
+
+            echo json_encode(["status" => "success"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "No se recibieron datos."]);
+        }
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		// Esto lo hago para manejar mas facil la respuesta en ajax
+		if($conexionMKT == true) $conexionMKT = "T";
+		else $conexionMKT = "F";
+
+		echo json_encode(array($conexionMKT, $usuarios));
+    }
+
+
+
+
 	public function NuevoUsuario()
 	{
 		$conexionMKT = true;
