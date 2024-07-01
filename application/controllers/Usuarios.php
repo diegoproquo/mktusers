@@ -19,12 +19,12 @@ class Usuarios extends CI_Controller
 
 		$columna0 = "-";
 		$columna1 = ".id";
-		$columna2 = "name";
-		$columna3 = "uptime";
-		$columna4 = "bytes-in";
-		$columna5 = "bytes-out";
-		$columna6 = "comment";
-		$columna7 = "disabled";
+		$columna2 = "Usuario";
+		$columna3 = "Tiempo de actividad";
+		$columna4 = "Bytes recibidos";
+		$columna5 = "Bytes enviados";
+		$columna6 = "Comentario";
+		$columna7 = "Deshabilitado";
 
 		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7);
 
@@ -40,6 +40,50 @@ class Usuarios extends CI_Controller
 		$this->load->view('usuarios/show', $data);
 		$this->load->view('plantillas/footer');
 	}
+
+
+	public function procesarCSV() {
+		$conexionMKT = true;
+		
+        $input = file_get_contents('php://input');
+        $decodedInput = json_decode($input, true);
+
+
+        if (isset($decodedInput['csvData']) && !empty($decodedInput['csvData'])) {
+            $csvData = $decodedInput['csvData'];
+
+			$usuarios = array();
+
+            // Procesar los datos del CSV y asociarlos a un campo de usuario Mikrotik
+            foreach ($csvData as $row) {
+				$user = array();
+				$user['name'] = $row[$decodedInput['columnaUsuario']];
+				$user['password'] = $row[$decodedInput['columnaPassword']];
+				$user['comment'] = $row[$decodedInput['columnaComment']];
+				$user['profile'] = $decodedInput['perfil'];
+				$usuarios[] = $user;
+            }
+
+			$data = $this->MKTModel->importarUsuarios($usuarios);
+			$conexionMKT = $data[1];
+
+            echo json_encode(["status" => "success"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "No se recibieron datos."]);
+        }
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		// Esto lo hago para manejar mas facil la respuesta en ajax
+		if($conexionMKT == true) $conexionMKT = "T";
+		else $conexionMKT = "F";
+
+		echo json_encode(array($conexionMKT, $usuarios));
+    }
+
+
 
 
 	public function NuevoUsuario()
@@ -61,9 +105,11 @@ class Usuarios extends CI_Controller
 	{
 		$conexionMKT = true;
 
-		$datos = $this->input->post('datos');
+		$input = file_get_contents('php://input');
+    	$decodedInput = json_decode($input, true);
 
-		$data = $this->MKTModel->eliminarUsuarios($datos['usuarios']);
+		$usuarios = $decodedInput['usuarios'];
+		$data = $this->MKTModel->eliminarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
@@ -76,9 +122,11 @@ class Usuarios extends CI_Controller
 	{
 		$conexionMKT = true;
 
-		$datos = $this->input->post('datos');
+		$input = file_get_contents('php://input');
+    	$decodedInput = json_decode($input, true);
 
-		$data = $this->MKTModel->habilitarUsuarios($datos['usuarios']);
+		$usuarios = $decodedInput['usuarios'];
+		$data = $this->MKTModel->habilitarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
@@ -91,9 +139,12 @@ class Usuarios extends CI_Controller
 	{
 		$conexionMKT = true;
 
-		$datos = $this->input->post('datos');
+		$input = file_get_contents('php://input');
+    	$decodedInput = json_decode($input, true);
 
-		$data = $this->MKTModel->deshabilitarUsuarios($datos['usuarios']);
+		$usuarios = $decodedInput['usuarios'];
+
+		$data = $this->MKTModel->deshabilitarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();

@@ -746,7 +746,7 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 	<script>
 		$(document).ready(function() {
 			function rowAttributes(row, index) {
-				if (row["disabled"] === "true") {
+				if (row["Deshabilitado"] === "true") {
 					return {
 						class: 'table-danger'
 					};
