@@ -88,19 +88,21 @@ class MKTModel extends CI_Model
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
-						".id" => $usuario[".id"],
-						"Usuario" => $usuario["name"],
-						"Tiempo de actividad" => $usuario["uptime"],
-						"Bytes recibidos" => $usuario["bytes-in"],
-						"Bytes enviados" => $usuario["bytes-out"],
-						"Paquetes recibidos" => $usuario["packets-in"],
-						"Paquetes enviados" => $usuario["packets-out"],
-						"Dinámico" => $usuario["dynamic"],
-						"Deshabilitado" => $usuario["disabled"],
-						"Comentario" => $usuario["comment"]
+						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "-",
+						"Usuario" => isset($usuario["name"]) ? $usuario["name"] : "-",
+						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "-",
+						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "-",
+						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "-",
+						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "-",
+						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "-",
+						"Dinámico" => isset($usuario["dynamic"]) ? $usuario["dynamic"] : "-",
+						"Deshabilitado" => isset($usuario["disabled"]) ? $usuario["disabled"] : "-",
+						"Comentario" => isset($usuario["comment"]) ? $usuario["comment"] : "-",
+						"Perfil" => isset($usuario["profile"]) ? $usuario["profile"] : "-"
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
 				}
+				
 
 				return array($usuariosFormateados, true);
 				
@@ -124,15 +126,33 @@ class MKTModel extends CI_Model
 				$query = new Query('/ip/hotspot/active/print');
 
 				// Enviar la consulta al dispositivo MikroTik
-				$response = $client->query($query)->read();
+				$usuarios = $client->query($query)->read();
 
-				foreach ($response as &$item) {
+				foreach ($usuarios as &$item) {
 					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" title="Cerrar sesión"><i class="fa fa-xmark" style="color:red; font-size:20px; cursor:pointer;"></i></a>';
+				}
+
+				$usuariosFormateados = array();
+				foreach ($usuarios as $usuario) {
+					$usuarioFormateado = array(
+						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "-",
+						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "-",
+						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "-",
+						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "-",
+						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "-",
+						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "-",
+						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "-",
+						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "-",
+						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "-",
+						"-" => isset($usuario["-"]) ? $usuario["-"] : "-"
+					);
+					$usuariosFormateados[] = $usuarioFormateado;
 				}
 
 				unset($item);
 
-				return array($response, true);
+				return array($usuariosFormateados, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}

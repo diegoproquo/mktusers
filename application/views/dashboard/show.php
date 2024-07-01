@@ -7,15 +7,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns_usuarios_activos, $data_usuarios_activos, "datatableUsuariosActivos", "Usuarios activos", "", false, false, false);
-                ?>
-            </div>
-        </div>
-
-        <div style="text-align: center;">
-            <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
-                <?php
-                bootstrapTablePersonalizada($columns_ultimas_conexiones, $data_ultimas_conexiones, "datatableUltimasConexiones", "Últimas conexiones", "", false, false, false);
+                bootstrapTablePersonalizada($columns_usuarios_activos, $data_usuarios_activos, "datatableUsuariosActivos", "Usuarios activos", "0", false, false, false);
                 ?>
             </div>
         </div>

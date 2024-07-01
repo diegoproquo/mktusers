@@ -21,12 +21,13 @@ class Usuarios extends CI_Controller
 		$columna1 = ".id";
 		$columna2 = "Usuario";
 		$columna3 = "Tiempo de actividad";
-		$columna4 = "Bytes recibidos";
-		$columna5 = "Bytes enviados";
-		$columna6 = "Comentario";
-		$columna7 = "Deshabilitado";
+		$columna4 = "Perfil";
+		$columna5 = "Bytes recibidos";
+		$columna6 = "Bytes enviados";
+		$columna7 = "Comentario";
+		$columna8 = "Deshabilitado";
 
-		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7);
+		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8);
 
 		$usuarios = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$data['data'] = $usuarios[0];
