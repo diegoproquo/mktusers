@@ -89,7 +89,7 @@ class MKTModel extends CI_Model
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
 						".id" => $usuario[".id"],
-						"Nombre" => $usuario["name"],
+						"Usuario" => $usuario["name"],
 						"Tiempo de actividad" => $usuario["uptime"],
 						"Bytes recibidos" => $usuario["bytes-in"],
 						"Bytes enviados" => $usuario["bytes-out"],

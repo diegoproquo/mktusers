@@ -12,13 +12,6 @@
                 ?>
             </div>
         </div>
-
-        <form id="importarUsuariosForm">
-            <label for="file">Selecciona el archivo CSV:</label>
-            <input type="file" name="file" id="file" accept=".csv">
-            <input type="submit" value="Subir">
-        </form>
-
     </div>
 </div>
 
@@ -145,6 +138,11 @@
     </div>
 </div>
 
+<form id="importarUsuariosForm" style="display:none">
+    <label for="file">Selecciona el archivo CSV:</label>
+    <input type="file" name="file" id="file" accept=".csv">
+    <input id="btnImportarUsuariosFormSubmit" type="submit" value="Subir">
+</form>
 
 <script>
     var idUsuario = -1;
@@ -157,13 +155,18 @@
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
         // Añadir botones a la toolbar
-        $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
+        $('.fixed-table-toolbar').append('<div class="btn-group" id="btnGrupo" role="group">' +
             '<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-success ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
             '</div>');
 
+        $('#btnGrupo').after('<button id="uploadButton" class="btn btn-sm btn-primary ms-4"><i class="fas fa-file-import"></i> Importar</button>');
+
+        $('#uploadButton').on('click', function() {
+            $('#file').click();
+        });
 
         // Control de la modal
         $('#btnNuevoUsuario').on('click', function() {
@@ -223,14 +226,14 @@
         //Combinacion de metodos para importar usuarios. 
 
         // Listener para el form del csv
-        $('#importarUsuariosForm').on('submit', function(e) {
+        $('#file').on('change', function(e) {
             e.preventDefault();
             var fileInput = $('#file')[0];
             var file = fileInput.files[0];
 
             // Verificar si se seleccionó un archivo
             if (!file) {
-                alert("Por favor, selecciona un archivo CSV.");
+                MostrarAlertError("Por favor, selecciona un archivo CSV.");
                 return;
             }
 
@@ -238,7 +241,7 @@
             var fileName = file.name;
             var extension = fileName.split('.').pop().toLowerCase();
             if (extension !== 'csv') {
-                alert("Por favor, selecciona un archivo CSV válido.");
+                MostrarAlertError("Por favor, selecciona un archivo CSV.");
                 return;
             }
 
@@ -302,36 +305,28 @@
             var select = $(this);
             select.empty();
             select.append('<option value="">Seleccione una opción</option>');
+
             headers.forEach(function(header) {
                 select.append('<option value="' + header + '">' + header + '</option>');
             });
 
-            // Valores específicos para comparación, convertidos a minúsculas
-            var headerUsuario = "usuario";
-            var headerPassword = "contraseña";
-            var headerComentario = "comentario";
-
-            // Función auxiliar para convertir a minúsculas y comparar
-            function isEqualIgnoreCase(a, b) {
-                return a.toLowerCase() === b.toLowerCase();
-            }
-
-            // Buscar y seleccionar automáticamente en cada select
             headers.forEach(function(header) {
-                if (isEqualIgnoreCase(header, headerUsuario)) {
+                if (isEqualIgnoreCase(header, 'Usuario') || isEqualIgnoreCase(header, 'User')) {
                     $('#selectImportUser').val(header);
-                }
-
-                if (isEqualIgnoreCase(header, headerPassword)) {
+                } else if (isEqualIgnoreCase(header, 'Contraseña') || isEqualIgnoreCase(header, 'Password') || isEqualIgnoreCase(header, 'contrasena')) {
                     $('#selectImportPassword').val(header);
-                }
-
-                if (isEqualIgnoreCase(header, headerComentario)) {
+                } else if (isEqualIgnoreCase(header, 'Comentario') || isEqualIgnoreCase(header, 'Comment')) {
                     $('#selectImportComment').val(header);
                 }
+                // Agrega más comparaciones aquí si es necesario
             });
+
         });
         updateSelectOptions();
+    }
+
+    function isEqualIgnoreCase(str1, str2) {
+        return str1.toLowerCase() === str2.toLowerCase();
     }
 
     // Controla que no se pueda selccionar las mismas opciones en 2 select distintos
@@ -364,42 +359,42 @@
         var columnaComment = $('#selectImportComment').val();
         var perfil = $('#selectImportPerfiles').val();
 
-            $.ajax({
-                type: "POST",
-                url: '<?= base_url() ?>/Usuarios/procesarCSV',
-                data: JSON.stringify({
-                    csvData: lines,
-                    columnaUsuario: columnaUsuario,
-                    columnaPassword: columnaPassword,
-                    columnaComment: columnaComment,
-                    perfil: perfil
+        $.ajax({
+            type: "POST",
+            url: '<?= base_url() ?>/Usuarios/procesarCSV',
+            data: JSON.stringify({
+                csvData: lines,
+                columnaUsuario: columnaUsuario,
+                columnaPassword: columnaPassword,
+                columnaComment: columnaComment,
+                perfil: perfil
 
-                }),
-                contentType: "application/json",
-                success: function(response) {
+            }),
+            contentType: "application/json",
+            success: function(response) {
 
-                    // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
-                    // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
-                    let responseJSONvalid = response.substring(20);
-                    var jsonResponse = JSON.parse(responseJSONvalid);
+                // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
+                // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
+                let responseJSONvalid = response.substring(20);
+                var jsonResponse = JSON.parse(responseJSONvalid);
 
-                    if (jsonResponse[0] == "T") {
-                        RecargarTabla('datatableUsuarios', jsonResponse[1]);
-                        MostrarAlertCorrecto("Uusarios importados correctamente");
-                        $('#modalImportar').modal('hide');
-                        LimpiarDatosModalImportar();
-                    } else {
-                        $('#modalImportar').modal('hide');
-                        LimpiarDatosModalImportar();
-                        MostrarAlertErrorMKT();
-                    }
-                },
-                error: function(error) {
-                    console.log("error");
-                    console.log(error);
-                    MostrarAlertError("Algo no ha ido según lo esperado");
+                if (jsonResponse[0] == "T") {
+                    RecargarTabla('datatableUsuarios', jsonResponse[1]);
+                    MostrarAlertCorrecto("Uusarios importados correctamente");
+                    $('#modalImportar').modal('hide');
+                    LimpiarDatosModalImportar();
+                } else {
+                    $('#modalImportar').modal('hide');
+                    LimpiarDatosModalImportar();
+                    MostrarAlertErrorMKT();
                 }
-            });
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+            }
+        });
     }
 
     // *SECTION FIN SECCION IMPORTAR USUARIOS
@@ -451,7 +446,9 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {usuarios: rows};
+        var datos = {
+            usuarios: rows
+        };
 
         $.ajax({
             type: 'POST',
@@ -482,7 +479,9 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {usuarios: rows};
+        var datos = {
+            usuarios: rows
+        };
 
         $.ajax({
             type: 'POST',
@@ -514,7 +513,9 @@
 
         rows = ObtenerFilasCheckeadas();
 
-        var datos = {usuarios: rows};
+        var datos = {
+            usuarios: rows
+        };
 
         $.ajax({
             type: 'POST',

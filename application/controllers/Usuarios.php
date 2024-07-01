@@ -19,7 +19,7 @@ class Usuarios extends CI_Controller
 
 		$columna0 = "-";
 		$columna1 = ".id";
-		$columna2 = "Nombre";
+		$columna2 = "Usuario";
 		$columna3 = "Tiempo de actividad";
 		$columna4 = "Bytes recibidos";
 		$columna5 = "Bytes enviados";
