@@ -1,9 +1,8 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Perfiles</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Proquo MKT</li>
-        <li class="breadcrumb-item active">Perfiles </li>
-    </ol>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Perfiles</h1>
+    </div>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
