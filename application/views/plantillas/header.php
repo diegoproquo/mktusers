@@ -16,9 +16,6 @@
     <link href="<?= base_url() ?>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="<?= base_url() ?>css/sb-admin-2.min.css" rel="stylesheet">
-
 
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -97,13 +94,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
 
 
+    
+    <!-- Custom styles for this template-->
+    <link href="<?= base_url() ?>css/sb-admin-2.min.css" rel="stylesheet">
+
+    
 </head>
 
 <style>
-        .nav-link {
-            cursor: pointer;
-        }
-    </style>
+    .nav-link {
+        cursor: pointer;
+    }
+</style>
 
 <body id="page-top">
 
@@ -125,21 +127,21 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Dashboard', false)">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Usuarios/show', false)">
                     <i class="fas fa-users"></i>
                     <span>Usuarios</span></a>
             </li>
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Perfiles/show', false)">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Perfiles</span></a>
@@ -167,86 +169,86 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-						
+
                     </ul>
 
                 </nav>
 
 
-    <div class="alertSuccessCustom alert-success" id="alertSuccess">
-        <span class="closebtn" onclick="cerrarAlert('alertSuccess')">&times;</span>
-    </div>
+                <div class="alertSuccessCustom alert-success" id="alertSuccess">
+                    <span class="closebtn" onclick="cerrarAlert('alertSuccess')">&times;</span>
+                </div>
 
-    <div class="alertErrorCustom alert-danger" id="alertError">
-        <span class="closebtn" onclick="cerrarAlert('alertError')">&times;</span>
+                <div class="alertErrorCustom alert-danger" id="alertError">
+                    <span class="closebtn" onclick="cerrarAlert('alertError')">&times;</span>
 
-    </div>
+                </div>
 
-    <div id="layoutSidenav_content" style="background-color: #F7F7F7">
-        <main style="flex:1">
-
-
-
-            <script>
-                function IrA(pagina, abrirOtraPestaña) {
-                    if (abrirOtraPestaña == true) window.open("<?= base_url() ?>" + pagina);
-                    else window.location.replace("<?= base_url() ?>" + pagina);
-                }
+                <div id="layoutSidenav_content" style="background-color: #F7F7F7">
+                    <main style="flex:1">
 
 
 
+                        <script>
+                            function IrA(pagina, abrirOtraPestaña) {
+                                if (abrirOtraPestaña == true) window.open("<?= base_url() ?>" + pagina);
+                                else window.location.replace("<?= base_url() ?>" + pagina);
+                            }
 
-                //FUNCIONES COMUNES
-                function MostrarAlertCorrecto(texto) {
-                    $('#alertSuccess').html('<span class="closebtn" onclick="cerrarAlert(\'alertSuccess\')">&times;</span><strong>¡Éxito! </strong>' + texto);
 
-                    document.getElementById('alertSuccess').style.display = 'block';
-                    document.getElementById('alertSuccess').style.animation = 'slideIn 0.5s ease forwards';
-                    setTimeout(() => {
-                        document.getElementById('alertSuccess').style.animation = 'slideOut 0.5s ease forwards';
-                        setTimeout(() => {
-                            document.getElementById('alertSuccess').style.display = 'none';
-                        }, 500);
-                    }, 4000);
-                }
 
-                function MostrarAlertError(texto) {
-                    $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span><strong>¡UPS! </strong>' + texto);
 
-                    document.getElementById('alertError').style.display = 'block';
-                    document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';
-                    setTimeout(() => {
-                        document.getElementById('alertError').style.animation = 'slideOut 0.5s ease forwards';
-                        setTimeout(() => {
-                            document.getElementById('alertError').style.display = 'none';
-                        }, 500);
-                    }, 4000);
-                }
+                            //FUNCIONES COMUNES
+                            function MostrarAlertCorrecto(texto) {
+                                $('#alertSuccess').html('<span class="closebtn" onclick="cerrarAlert(\'alertSuccess\')">&times;</span><strong>¡Éxito! </strong>' + texto);
 
-                function MostrarAlertErrorMKT(texto) {
-                    $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span> No es posible establecer conexión con el Mikrotik. Si el problema persiste, contacta con <strong>ProQuo</strong>');
+                                document.getElementById('alertSuccess').style.display = 'block';
+                                document.getElementById('alertSuccess').style.animation = 'slideIn 0.5s ease forwards';
+                                setTimeout(() => {
+                                    document.getElementById('alertSuccess').style.animation = 'slideOut 0.5s ease forwards';
+                                    setTimeout(() => {
+                                        document.getElementById('alertSuccess').style.display = 'none';
+                                    }, 500);
+                                }, 4000);
+                            }
 
-                    document.getElementById('alertError').style.display = 'block';
-                    document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';
-                    setTimeout(() => {
-                        document.getElementById('alertError').style.animation = 'slideOut 0.5s ease forwards';
-                        setTimeout(() => {
-                            document.getElementById('alertError').style.display = 'none';
-                        }, 500);
-                    }, 10000);
-                }
+                            function MostrarAlertError(texto) {
+                                $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span><strong>¡UPS! </strong>' + texto);
 
-                
-                function cerrarAlert(id) {
-                    document.getElementById(id).style.animation = 'slideOut 0.5s ease forwards';
-                    setTimeout(() => {
-                        document.getElementById(id).style.display = 'none';
-                    }, 500);
-                }
+                                document.getElementById('alertError').style.display = 'block';
+                                document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';
+                                setTimeout(() => {
+                                    document.getElementById('alertError').style.animation = 'slideOut 0.5s ease forwards';
+                                    setTimeout(() => {
+                                        document.getElementById('alertError').style.display = 'none';
+                                    }, 500);
+                                }, 4000);
+                            }
 
-                function RecargarTabla(id, data) {
-                    var tabla = $('#' + id);
-                    tabla.bootstrapTable('removeAll');
-                    tabla.bootstrapTable('append', data);
-                }
-            </script>
+                            function MostrarAlertErrorMKT(texto) {
+                                $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span> No es posible establecer conexión con el Mikrotik. Si el problema persiste, contacta con <strong>ProQuo</strong>');
+
+                                document.getElementById('alertError').style.display = 'block';
+                                document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';
+                                setTimeout(() => {
+                                    document.getElementById('alertError').style.animation = 'slideOut 0.5s ease forwards';
+                                    setTimeout(() => {
+                                        document.getElementById('alertError').style.display = 'none';
+                                    }, 500);
+                                }, 10000);
+                            }
+
+
+                            function cerrarAlert(id) {
+                                document.getElementById(id).style.animation = 'slideOut 0.5s ease forwards';
+                                setTimeout(() => {
+                                    document.getElementById(id).style.display = 'none';
+                                }, 500);
+                            }
+
+                            function RecargarTabla(id, data) {
+                                var tabla = $('#' + id);
+                                tabla.bootstrapTable('removeAll');
+                                tabla.bootstrapTable('append', data);
+                            }
+                        </script>
