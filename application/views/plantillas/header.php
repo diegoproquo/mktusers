@@ -105,6 +105,9 @@
     .nav-link {
         cursor: pointer;
     }
+    .sidebar-divider{
+        border-top:1px solid rgba(255,255,255,.75) !important;
+    }
 </style>
 
 <body id="page-top">
@@ -118,13 +121,14 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center">
                 <div class="sidebar-brand-icon">
-                    <img src="<?= base_url() ?>assets/img/ProQuo_whitetrans_big.png" width="102" />
+                    <img src="<?= base_url() ?>assets/img/ProQuo_whitetrans_big.png" width="98" />
                 </div>
                 <!-- <div class="sidebar-brand-text mx-3">ProQuo MKT </div> -->
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
+
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
@@ -133,6 +137,11 @@
                     <span>Dashboard</span></a>
             </li>
 
+            <hr class="sidebar-divider my-0">
+
+            <div class="sidebar-heading mt-3">
+                Ajustes
+            </div>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Usuarios/show', false)">
@@ -146,6 +155,12 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Perfiles</span></a>
             </li>
+
+            <hr class="sidebar-divider my-0">
+
+            <div class="text-center d-none d-md-inline mt-4">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
 
 
         </ul>
