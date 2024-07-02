@@ -68,6 +68,37 @@ class MKTModel extends CI_Model
 		} else return array(array(), false);
 	}
 
+	public function editarUsuarioHotpot($id, $username, $password, $profile, $comentario)
+	{
+		$client = $this->conexionMKT();
+	
+		if ($client != false) {
+			try {
+				// Conectarse al dispositivo MikroTik
+				$client->connect();
+	
+				// Crear una nueva consulta para editar el usuario existente
+				$query = new Query('/ip/hotspot/user/set');
+				$query->add('=.id=' . $id);
+				$query->add('=name=' . $username);
+				$query->add('=password=' . $password);
+				$query->add('=profile=' . $profile);
+				$query->add('=comment=' . $comentario);
+	
+				// Enviar la consulta al dispositivo MikroTik
+				$response = $client->query($query)->read();
+	
+				return array($response, true);
+
+			} catch (\Exception $e) {
+				echo "Error: " . $e->getMessage() . "\n";
+			}
+		} else {
+			return array(array(), false);
+		}
+	}
+	
+
 	public function MostrarRecargarDatosUsuarios()
 	{
 
@@ -102,8 +133,7 @@ class MKTModel extends CI_Model
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
 				}
-				
-
+			
 				return array($usuariosFormateados, true);
 				
 			} catch (\Exception $e) {
@@ -131,6 +161,7 @@ class MKTModel extends CI_Model
 				foreach ($usuarios as &$item) {
 					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" title="Cerrar sesión"><i class="fa fa-xmark" style="color:red; font-size:20px; cursor:pointer;"></i></a>';
 				}
+				unset($item);
 
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
@@ -148,8 +179,6 @@ class MKTModel extends CI_Model
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
 				}
-
-				unset($item);
 
 				return array($usuariosFormateados, true);
 
@@ -303,7 +332,7 @@ class MKTModel extends CI_Model
 
 
 	// * SECTION PERFILES: Código relacionado con PERFILES Hotspot
-	public function addUserProfile($nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $sessionTimeout)
+	public function addUserProfile($nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $keepaliveTimeout)
 	{
 		$client = $this->conexionMKT();
 
@@ -329,9 +358,10 @@ class MKTModel extends CI_Model
 					$query->add('=mac-cookie-timeout=' . $macCookieTimeout);
 				}
 
-				$query->add('=session-timeout=' . $sessionTimeout);
-
-				$query->add('=keepalive-timeout=' . '3h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
+				if (!is_null($keepaliveTimeout) && $keepaliveTimeout !== '') {
+					$query->add('=keepalive-timeout=' . $keepaliveTimeout);
+				}else $query->add('=keepalive-timeout=' . '2h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
+				
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
@@ -390,18 +420,8 @@ class MKTModel extends CI_Model
 				// Enviar la consulta al MikroTik
 				$perfiles = $client->query($query)->read();
 
-				foreach ($perfiles as $item) {
-					$item['-'] = '
-					<div class="dropdown" style="position: static;">
-					<button class="dropbtn"><i class="fas fa-ellipsis-vertical"></i></button>
-					<div class="dropdown-content" style="cursor:pointer">
-					  <a data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarPerfil(' . $item['.id'] . ')">Editar</a>
-					  <a onclick="ClicEliminarUsuario(' . $item['.id'] . ')" >Eliminar</a>
-					</div>
-				  </div> ';
-				}
-
 				return array($perfiles, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}

@@ -10,7 +10,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "2,9", false, false, false);
                 ?>
             </div>
         </div>
@@ -53,9 +53,15 @@
                             <?php
 
                             foreach ($perfiles as $perfil) {
+                                if ($perfil['name'] == "default") {
                             ?>
-                                <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                                    <option default value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                                <?php
+                                } else {
+                                ?>
+                                    <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
                             <?php
+                                }
                             }
                             ?>
 
@@ -72,7 +78,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="NuevoUsuario()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -157,12 +163,19 @@
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
         // Añadir botones a la toolbar
-        $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
+        $('.fixed-table-toolbar').append('<div class="btn-group" id="btnGrupo" role="group">' +
             '<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-success ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
             '</div>');
+
+        $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pencil"></i> Editar</button>');
+
+        // Listener para limpiar modal siempre que se cierra
+        $('#modalUsuarios').on('hidden.bs.modal', function(e) {
+            LimpiarDatosModal();
+        });
 
         $('#uploadButton').on('click', function() {
             $('#file').click();
@@ -176,50 +189,21 @@
         });
 
         // Deshabilitar botones si no hay ninguna fila seleccionada
-        var $table = $('#datatableUsuarios')
-        var $btnEliminarUsuarios = $('#btnEliminarUsuarios')
-        var $btnHabilitarUsuario = $('#btnHabilitarUsuario')
-        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario')
+        var $table = $('#datatableUsuarios');
+        var $btnEliminarUsuarios = $('#btnEliminarUsuarios');
+        var $btnHabilitarUsuario = $('#btnHabilitarUsuario');
+        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario');
+        var $btnEditarUsuario = $('#btnEditarUsuario');
         $(function() {
             $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
-                $btnEliminarUsuarios.prop('disabled', !$table.bootstrapTable('getSelections').length)
-                $btnHabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
-                $btnDeshabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
-            })
-            $btnEliminarUsuarios.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
-
-                $table.bootstrapTable('btnEliminarUsuarios', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnEliminarUsuarios.prop('disabled', true)
+                var selections = $table.bootstrapTable('getSelections');
+                var numSelections = selections.length;
+                $btnEliminarUsuarios.prop('disabled', numSelections === 0);
+                $btnHabilitarUsuario.prop('disabled', numSelections === 0);
+                $btnDeshabilitarUsuario.prop('disabled', numSelections === 0);
+                $btnEditarUsuario.prop('disabled', numSelections !== 1); // Habilitar solo si hay exactamente una fila seleccionada
             });
-            $btnHabilitarUsuario.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
-
-                $table.bootstrapTable('btnHabilitarUsuario', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnHabilitarUsuario.prop('disabled', true)
-            });
-            $btnDeshabilitarUsuario.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
-
-                $table.bootstrapTable('btnDeshabilitarUsuario', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnDeshabilitarUsuario.prop('disabled', true)
-            })
-        })
+        });
 
 
         // *SECTION IMPORTAR USUARIOS
@@ -401,7 +385,7 @@
 
 
 
-    function NuevoUsuario() {
+    function GuardarEditarUsuario() {
         var datos = {};
 
         if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
@@ -417,7 +401,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/NuevoUsuario',
+            url: '<?= base_url() ?>/Usuarios/GuardarEditarUsuario',
             dataType: 'json',
             data: {
                 datos: datos
@@ -425,12 +409,16 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
-                    MostrarAlertCorrecto("Usuario añadido correctamente");
+                    if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
+                    else {
+                        MostrarAlertCorrecto("Usuario modificado correctamente");
+                        $('#btnEditarUsuario').prop('disabled', true);
+                    }
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
+
+                    idUsuario = -1;
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -462,7 +450,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -495,7 +482,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -529,7 +515,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -542,6 +527,27 @@
             }
         });
     }
+
+
+    function ClicEditarUusario() {
+        usuario = ObtenerFilasCheckeadas('datatableUsuarios');
+        idUsuario = usuario[0]['.id'];
+        $('#modalUsuariosTitulo').text('Editar usuario');
+        $('#inputUsuario').val(usuario[0]['Usuario']);
+
+        var perfil = usuario[0]['Perfil'];
+        var $selectPerfiles = $('#selectPerfiles');
+
+        // Comprobar si la opción de perfil existe en el select y si no selecciona la default
+        if ($selectPerfiles.find('option[value="' + perfil + '"]').length) {
+            $selectPerfiles.val(perfil);
+        } else {
+            $selectPerfiles.val('default');
+        }
+
+        $('#inpuComentario').val(usuario[0]['Comentario']);
+    }
+
 
 
     function DeshabilitarBotones() {
