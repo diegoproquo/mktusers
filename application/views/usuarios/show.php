@@ -10,7 +10,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "2,9", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, false, false);
                 ?>
             </div>
         </div>

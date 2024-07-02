@@ -41,7 +41,7 @@
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Usuarios simultáneos 
-                            <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Usuarios simultáneos" data-bs-content="Limita cuántos dispositivos puede haber conectados con un mismo usuario."></a>
+                            <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Usuarios simultáneos" data-bs-content="Limita cuántos dispositivos puede haber conectados con un mismo usuario. Valor por defecto: sin límite."></a>
                         </label>
                         <input id="inputSharedUsers" type="number" class="form-control" />
                     </div>
@@ -49,11 +49,11 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label>Rate Upload <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Upload (en Mbps)" data-bs-content="Establece un límite de velocidad para la carga de datos."></a> </label>
+                        <label>Rate Upload <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Upload (en Mbps)" data-bs-content="Establece un límite de velocidad para la carga de datos. Valor por defecto: sin límite."></a> </label>
                         <input id="inputRateUpload" type="number" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Rate Download <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Download (en Mbps)" data-bs-content="Establece un límite de velocidad para la descarga de datos."></a> </label>
+                        <label>Rate Download <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Download (en Mbps)" data-bs-content="Establece un límite de velocidad para la descarga de datos. Valor por defecto: sin límite."></a> </label>
                         <input id="inputRateDownload" type="number" class="form-control" />
                     </div>
                 </div>
@@ -61,13 +61,13 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label>Cookie Timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Cookie Timeout (en días)" data-bs-content="La cookie de sesión permite que un usuario se conecte sin tener que iniciar sesión. Es posible establecer un límite de tiempo hasta que la cookie expire."></a></label>
+                        <label>Cookie Timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Cookie Timeout (en días)" data-bs-content="La cookie de sesión permite que un usuario se conecte sin tener que iniciar sesión. Es posible establecer un límite de tiempo hasta que la cookie expire. Valor por defecto: 3 días."></a></label>
                         <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
                         <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" disabled />
                         
                     </div>
                     <div class="col-md-6">
-                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi."></a></label>
+                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi. Valor por defecto: 2 horas."></a></label>
                         <input id="inputKeepaliveTimeout" type="number" class="form-control" min="1" max="24" />
                     </div>
                 </div>
