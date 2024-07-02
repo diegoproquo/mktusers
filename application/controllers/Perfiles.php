@@ -17,6 +17,7 @@ class Perfiles extends CI_Controller
 
 	public function show()
 	{
+		$columna0 = "-";
 		$columna1 = ".id";
 		$columna2 = "name";
 		$columna3 = "idle-timeout";
@@ -29,7 +30,7 @@ class Perfiles extends CI_Controller
 		$columna10 = "transparent-proxy";
 		$columna11 = "default";
 
-		$data['columns'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9, $columna10, $columna11);
+		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9, $columna10, $columna11);
 
 		$perfiles = $this->MKTModel->MostrarRecargarDatosPerfiles();
 		$data['data'] = $perfiles[0];
@@ -53,6 +54,23 @@ class Perfiles extends CI_Controller
 		$conexionMKT = $data[1];
 
 		echo json_encode(array($conexionMKT, $data));
+	}
+
+	public function EliminarPerfil()
+	{
+		$conexionMKT = true;
+
+		$input = file_get_contents('php://input');
+    	$decodedInput = json_decode($input, true);
+		$perfiles = $decodedInput['perfiles'];
+
+		$data = $this->MKTModel->eliminarPefiles($perfiles);
+		$conexionMKT = $data[1];
+
+		$data = $this->MKTModel->MostrarRecargarDatosPerfiles();
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
 

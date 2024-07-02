@@ -7,7 +7,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatablePerfiles", "Perfiles", "0", false, false, false, true);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatablePerfiles", "Perfiles", "", false, false, false);
                 ?>
             </div>
         </div>
@@ -24,7 +24,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPerfilesTitulo">Nuevo perfil</h5>
-                <button type="button" id="btnCerrarModal" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -80,7 +80,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="GuardarEditarPerfil()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="NuevoPerfil()">Guardar</button>
             </div>
         </div>
     </div>
@@ -89,14 +89,15 @@
 
 <script>
     var idPerfil = -1;
-    var site_id;
+
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
-        
+
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
             '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo perfil</button>' +
+            '<button id="btnEliminarPerfil" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarPerfil()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '</div>');
 
         $('#btnNuevoPerfil').on('click', function() {
@@ -115,6 +116,14 @@
             }
         });
 
+        var $table = $('#datatablePerfiles')
+        var $btnEliminarPerfil = $('#btnEliminarPerfil')
+        $(function() {
+            $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
+                $btnEliminarPerfil.prop('disabled', !$table.bootstrapTable('getSelections').length)
+            })
+        })
+
         // lIstener para controlar el input de los usuarios simultaneos
         var inputSharedUsers = document.getElementById('inputSharedUsers');
         inputSharedUsers.addEventListener('input', function() {
@@ -131,7 +140,6 @@
             }
         });
 
-
         // Listener para mostrar o esconder inputs de cookie timeout en funcion del checkbox
         $('#checkboxMacCookie').change(function() {
             if ($(this).is(':checked')) {
@@ -140,7 +148,6 @@
                 $('#rowCookieTimeout').hide();
             }
         });
-
 
         // lIstener para controlar el input de la cookie de sesion
         var inputCookieTimeout = document.getElementById('inputCookieTimeout');
@@ -157,13 +164,11 @@
                 inputCookieTimeout.value = 30;
             }
         });
-
-
     });
 
 
 
-    function GuardarEditarPerfil() {
+    function NuevoPerfil() {
         var datos = {};
 
         if ($('#checkboxRateLimit').is(':checked')) {
@@ -173,7 +178,6 @@
             var rate = null;
         }
 
-        datos['id'] = idPerfil;
         datos['nombre'] = $('#inputNombre').val();
         datos['sharedUsers'] = $('#inputSharedUsers').val();
         datos['rate'] = rate;
@@ -198,11 +202,11 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatablePerfiles', response[1]);
-                    $('#btnCerrarModal').click();
+                    $('#modalPerfiles').modal('hide');
                     MostrarAlertCorrecto("Datos guardados correctamente");
                     LimpiarDatosModal();
                 } else {
-                    $('#btnCerrarModal').click();
+                    $('#modalPerfiles').modal('hide');
                     LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
@@ -218,34 +222,35 @@
 
     }
 
-    function ClicEliminarPerfil(id) {
+    function EliminarPerfil(id) {
         var borrar = prompt("Introduzca 1234 para borrar el perfil")
         if (borrar != "1234") {
             return;
         } else {
 
-            idPerfil = id;
-            var datos = {};
+            rows = ObtenerFilasCheckeadas('datatablePerfiles');
 
-            datos['id'] = idPerfil;
-            datos['site_id'] = site_id;
+            var datos = {
+                perfiles: rows
+            };
 
             $.ajax({
                 type: 'POST',
                 url: '<?= base_url() ?>/Perfiles/EliminarPerfil',
                 dataType: 'json',
-                data: {
-                    datos: datos
-                },
+                data: JSON.stringify(datos),
                 success: function(response) {
-                    RecargarTabla('datatablePerfiles', response[1]);
-                    MostrarAlertCorrecto("Perfil eliminado correctamente");
+                    if (response[0] == true) {
+                        RecargarTabla('datatablePerfiles', response[1]);
+                        MostrarAlertCorrecto("Perfil eliminado correctamente");
+                    } else {
+                        MostrarAlertErrorMKT();
+                    }
                 },
                 error: function(error) {
                     console.log("error");
                     console.log(error);
                     MostrarAlertError("Algo no ha ido según lo esperado");
-
                 }
             });
         }
@@ -274,6 +279,10 @@
             }
         });
 
+    }
+
+    function DeshabilitarBotones() {
+        $("#btnEliminarPerfil").prop("disabled", true);
     }
 
     function LimpiarDatosModal() {

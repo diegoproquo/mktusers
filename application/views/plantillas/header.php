@@ -94,11 +94,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
 
 
-    
+
     <!-- Custom styles for this template-->
     <link href="<?= base_url() ?>css/sb-admin-2.min.css" rel="stylesheet">
 
-    
+
 </head>
 
 <style>
@@ -250,5 +250,13 @@
                                 var tabla = $('#' + id);
                                 tabla.bootstrapTable('removeAll');
                                 tabla.bootstrapTable('append', data);
+                            }
+
+                            function ObtenerFilasCheckeadas(tableId) {
+                                var checkedRows = $('#' + tableId).bootstrapTable('getSelections');
+                                var rowDetailsArray = checkedRows.map(function(row) {
+                                    return row;
+                                });
+                                return rowDetailsArray;
                             }
                         </script>

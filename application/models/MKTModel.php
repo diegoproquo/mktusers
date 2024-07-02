@@ -367,6 +367,34 @@ class MKTModel extends CI_Model
 		} else return array(array(), false);
 	}
 
+	public function eliminarPefiles($perfiles)
+	{
+		$client = $this->conexionMKT();
+
+		if ($client != false) {
+
+			try {
+
+				$client->connect();
+
+				foreach ($perfiles as $perfil) {
+					$id = $perfil['0'];
+
+					// Crear la consulta para eliminar al usuario
+					$query = new Query('/ip/hotspot/user/profile/remove');
+					$query->add('=.id=' . $id);
+
+					// Enviar la consulta al MikroTik
+					$response = $client->query($query)->read();
+				}
+
+				return array($response, true);
+
+			} catch (\Exception $e) {
+				echo "Error: " . $e->getMessage() . "\n";
+			}
+		} else return array(array(), false);
+	}
 
 
 	public function MostrarRecargarDatosPerfiles()

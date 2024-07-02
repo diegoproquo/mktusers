@@ -38,7 +38,7 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuariosActivos', response[1]);
-                    setTimeout(Referscar, 3500);
+                    setTimeout(Referscar, 2100);
                 } else MostrarAlertErrorMKT();
             }
         });

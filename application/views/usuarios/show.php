@@ -444,7 +444,7 @@
 
     function EliminarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -477,7 +477,7 @@
 
     function HabilitarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -511,7 +511,7 @@
 
     function DeshabilitarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -543,13 +543,6 @@
         });
     }
 
-    function ObtenerFilasCheckeadas() {
-        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
-        var rowDetailsArray = checkedRows.map(function(row) {
-            return row;
-        });
-        return rowDetailsArray;
-    }
 
     function DeshabilitarBotones() {
         $("#btnEliminarUsuarios").prop("disabled", true);
