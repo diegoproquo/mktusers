@@ -2,7 +2,8 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Perfiles</h1>
-    </div>
+        <div class="container mt-5">
+</div></div>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
@@ -39,18 +40,20 @@
 
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Usuarios simultáneos</label>
-                        <input id="inputSharedUsers" type="number" class="form-control" min="1" max="5" />
+                        <label>Usuarios simultáneos 
+                            <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Usuarios simultáneos" data-bs-content="Limita cuántos dispositivos puede haber conectados con un mismo usuario."></a>
+                        </label>
+                        <input id="inputSharedUsers" type="number" class="form-control" />
                     </div>
                 </div>
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label>Upload (en Mbps)</label>
+                        <label>Rate Upload <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Upload (en Mbps)" data-bs-content="Establece un límite de velocidad para la carga de datos."></a> </label>
                         <input id="inputRateUpload" type="number" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Download (en Mbps)</label>
+                        <label>Rate Download <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Download (en Mbps)" data-bs-content="Establece un límite de velocidad para la descarga de datos."></a> </label>
                         <input id="inputRateDownload" type="number" class="form-control" />
                     </div>
                 </div>
@@ -58,12 +61,13 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label>Cookie timeout (en días)</label>
+                        <label>Cookie Timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Cookie Timeout (en días)" data-bs-content="La cookie de sesión permite que un usuario se conecte sin tener que iniciar sesión. Es posible establecer un límite de tiempo hasta que la cookie expire."></a></label>
                         <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
                         <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" disabled />
+                        
                     </div>
                     <div class="col-md-6">
-                        <label>Keepalive timeout (min)</label>
+                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi."></a></label>
                         <input id="inputKeepaliveTimeout" type="number" class="form-control" min="1" max="24" />
                     </div>
                 </div>
@@ -84,9 +88,13 @@
 
     $(document).ready(function() {
 
+        // Inicializar los popover
+        $('[data-toggle="popover"]').popover({ trigger: 'hover'});
+
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
+        // ñadir los botones a la datatable
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
             '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarPerfil" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarPerfil()"><i class="fas fa-minus"></i> Eliminar</button>' +
@@ -98,6 +106,7 @@
             idPerfil = -1;
         });
 
+        // Controla cuando se deshabilita el boton de eliminar
         var $table = $('#datatablePerfiles')
         var $btnEliminarPerfil = $('#btnEliminarPerfil')
         $(function() {
@@ -164,7 +173,7 @@
                 inputCookieTimeout.value = 30;
             }
         });
-        
+
         // lIstener para controlar el input de keepalive timeout
         var inputKeepaliveTimeout = document.getElementById('inputKeepaliveTimeout');
         inputKeepaliveTimeout.addEventListener('input', function() {
@@ -175,8 +184,6 @@
                 inputKeepaliveTimeout.value = 1440;
             }
         });
-
-
 
     });
 
@@ -254,6 +261,7 @@
                     if (response[0] == true) {
                         RecargarTabla('datatablePerfiles', response[1]);
                         MostrarAlertCorrecto("Perfil eliminado correctamente");
+                        DeshabilitarBotones();
                     } else {
                         MostrarAlertErrorMKT();
                     }
@@ -281,5 +289,16 @@
         $('#checkboxMacCookie').prop('checked', false);
         $('#inputCookieTimeout').prop('disabled', true);
     }
-    
+
+    function MostrarInformacion(id) {
+        var infoElement = $('#' + id + 'Text');
+
+        if (infoElement.hasClass('informacion-oculta')) {
+            infoElement.removeClass('informacion-oculta');
+            infoElement.addClass('informacion-visible');
+        } else {
+            infoElement.removeClass('informacion-visible');
+            infoElement.addClass('informacion-oculta');
+        }
+    }
 </script>
