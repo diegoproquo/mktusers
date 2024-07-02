@@ -8,7 +8,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatablePerfiles", "Perfiles", "", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatablePerfiles", "Perfiles", "1,3,5,9,10,11", false, false, false);
                 ?>
             </div>
         </div>
@@ -112,9 +112,9 @@
         $(function() {
             $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
                 var selections = $table.bootstrapTable('getSelections');
-                console.log(selections);
                 var numSelections = selections.length;
                 $btnEliminarPerfil.prop('disabled', numSelections !== 1); // Habilitar solo si hay exactamente una fila seleccionada
+                $btnEliminarPerfil.prop('disabled', selections[0]['name'] == "default"); // Deshabilita si es el perfil por defecto
             })
 
         });

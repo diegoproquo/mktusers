@@ -19,13 +19,13 @@ class Perfiles extends CI_Controller
 	{
 		$columna0 = "-";
 		$columna1 = ".id";
-		$columna2 = "name";
+		$columna2 = "Nombre";
 		$columna3 = "idle-timeout";
 		$columna4 = "keepalive-timeout";
 		$columna5 = "status-autorefresh";
-		$columna6 = "shared-users";
-		$columna7 = "add-mac-cookie";
-		$columna8 = "mac-cookie-timeout";
+		$columna6 = "Usuarios simultáneos";
+		$columna7 = "MAC Cookie";
+		$columna8 = "MAC cookie timeout";
 		$columna9 = "adress-list";
 		$columna10 = "transparent-proxy";
 		$columna11 = "default";
