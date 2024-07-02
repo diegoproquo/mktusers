@@ -159,30 +159,6 @@ class MKTModel extends CI_Model
 		} else return array(array(), false);
 	}
 
-	public function MostrarRecargarUltimasConexiones()
-	{
-
-		$client = $this->conexionMKT();
-
-		if ($client != false) {
-
-			try {
-				// Intentar conectarse
-				$client->connect();
-
-				// Consulta para obtener la lista de usuarios del hotspot
-				$query = new Query('/ip/hotspot/user/print');
-
-				// Enviar la consulta al MikroTik
-				$usuarios = $client->query($query)->read();
-
-				return array($usuarios, true);
-			} catch (\Exception $e) {
-				echo "Error: " . $e->getMessage() . "\n";
-			}
-		} else return array(array(), false);
-	}
-
 	public function eliminarUsuarios($usuarios)
 	{
 		$client = $this->conexionMKT();

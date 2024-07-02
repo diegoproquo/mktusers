@@ -33,19 +33,6 @@ class Dashboard extends CI_Controller
 		$data['data_usuarios_activos'] = $data_usuarios_activos[0];
 		$data['conexionMKT'] = $data_usuarios_activos[1];		
 
-		$columna1 = ".id";
-		$columna2 = "name";
-		$columna3 = "uptime";
-		$columna4 = "bytes-in";
-		$columna5 = "bytes-out";
-
-		$data['columns_ultimas_conexiones'] = array($columna1, $columna2, $columna3, $columna4, $columna5);
-		$data_ultimas_conexiones = $this->MKTModel->MostrarRecargarUltimasConexiones();
-
-
-		$data['data_ultimas_conexiones'] = $data_ultimas_conexiones[0];
-		$data['conexionMKT'] = $data_ultimas_conexiones[1];
-
 		$this->load->view('plantillas/header');
 		$this->load->view('dashboard/show', $data);
 		$this->load->view('plantillas/footer');
