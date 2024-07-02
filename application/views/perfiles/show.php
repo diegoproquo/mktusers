@@ -24,7 +24,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPerfilesTitulo">Nuevo perfil</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button id="btnCerrarModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -45,13 +45,6 @@
                 </div>
 
                 <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label for="checkboxRateLimit" class="form-label">Rate limit</label>
-                        <input class="form-check-input  ml-2" type="checkbox" id="checkboxRateLimit" />
-                    </div>
-                </div>
-
-                <div class="row mt-2" id="rowRateLimit" style="display:none">
                     <div class="col-md-6">
                         <label>Upload (en Mbps)</label>
                         <input id="inputRateUpload" type="number" class="form-control" />
@@ -64,18 +57,17 @@
 
 
                 <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label for="checkboxMacCookie" class="form-label">Mac cookie</label>
+                    <div class="col-md-6">
+                        <label>Cookie timeout (en días)</label>
                         <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
+                        <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" disabled />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Keepalive timeout (min)</label>
+                        <input id="inputKeepaliveTimeout" type="number" class="form-control" min="1" max="24" />
                     </div>
                 </div>
 
-                <div class="row mt-2" id="rowCookieTimeout" style="display:none">
-                    <div class="col-md-6">
-                        <label>Cookie timeout (en días)</label>
-                        <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" />
-                    </div>
-                </div>
 
             </div>
             <div class="modal-footer">
@@ -96,7 +88,7 @@
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
-            '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo perfil</button>' +
+            '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarPerfil" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarPerfil()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '</div>');
 
@@ -106,81 +98,98 @@
             idPerfil = -1;
         });
 
-
-        // Listener para mostrar o esconder inputs de rate limit en funcion del checkbox
-        $('#checkboxRateLimit').change(function() {
-            if ($(this).is(':checked')) {
-                $('#rowRateLimit').show();
-            } else {
-                $('#rowRateLimit').hide();
-            }
-        });
-
         var $table = $('#datatablePerfiles')
         var $btnEliminarPerfil = $('#btnEliminarPerfil')
         $(function() {
             $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
-                $btnEliminarPerfil.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                var selections = $table.bootstrapTable('getSelections');
+                console.log(selections);
+                var numSelections = selections.length;
+                $btnEliminarPerfil.prop('disabled', numSelections !== 1); // Habilitar solo si hay exactamente una fila seleccionada
             })
-        })
+
+        });
+
+
+        // Listener para mostrar o esconder inputs de cookie timeout en función del checkbox
+        $('#checkboxMacCookie').change(function() {
+            if ($(this).is(':checked')) {
+                $('#inputCookieTimeout').prop('disabled', false);
+            } else {
+                $('#inputCookieTimeout').prop('disabled', true);
+            }
+        });
+
 
         // lIstener para controlar el input de los usuarios simultaneos
         var inputSharedUsers = document.getElementById('inputSharedUsers');
         inputSharedUsers.addEventListener('input', function() {
-            // Obtiene el valor actual del input como un número
             var value = parseInt(inputSharedUsers.value);
-
-            // Verifica si el valor está fuera del rango permitido
             if (value < 1) {
-                // Si es menor que 1, establece el valor en 1
                 inputSharedUsers.value = 1;
             } else if (value > 5) {
-                // Si es mayor que 5, establece el valor en 5
                 inputSharedUsers.value = 5;
             }
         });
 
-        // Listener para mostrar o esconder inputs de cookie timeout en funcion del checkbox
-        $('#checkboxMacCookie').change(function() {
-            if ($(this).is(':checked')) {
-                $('#rowCookieTimeout').show();
-            } else {
-                $('#rowCookieTimeout').hide();
+        // lIstener para controlar el input de rate upload
+        var inputRateUpload = document.getElementById('inputRateUpload');
+        inputRateUpload.addEventListener('input', function() {
+            var value = parseInt(inputRateUpload.value);
+            if (value < 1) {
+                inputRateUpload.value = 1;
+            } else if (value > 300) {
+                inputRateUpload.value = 300;
+            }
+        });
+
+        // lIstener para controlar el input de la rate download
+        var inputRateDownload = document.getElementById('inputRateDownload');
+        inputRateDownload.addEventListener('input', function() {
+            var value = parseInt(inputRateDownload.value);
+            if (value < 1) {
+                inputRateDownload.value = 1;
+            } else if (value > 300) {
+                inputRateDownload.value = 300;
             }
         });
 
         // lIstener para controlar el input de la cookie de sesion
         var inputCookieTimeout = document.getElementById('inputCookieTimeout');
         inputCookieTimeout.addEventListener('input', function() {
-            // Obtiene el valor actual del input como un número
             var value = parseInt(inputCookieTimeout.value);
-
-            // Verifica si el valor está fuera del rango permitido
             if (value < 1) {
-                // Si es menor que 1, establece el valor en 1
                 inputCookieTimeout.value = 1;
             } else if (value > 5) {
-                // Si es mayor que 5, establece el valor en 5
                 inputCookieTimeout.value = 30;
             }
         });
+        
+        // lIstener para controlar el input de keepalive timeout
+        var inputKeepaliveTimeout = document.getElementById('inputKeepaliveTimeout');
+        inputKeepaliveTimeout.addEventListener('input', function() {
+            var value = parseInt(inputKeepaliveTimeout.value);
+            if (value < 1) {
+                inputKeepaliveTimeout.value = 1;
+            } else if (value > 1440) {
+                inputKeepaliveTimeout.value = 1440;
+            }
+        });
+
+
+
     });
-
-
 
     function NuevoPerfil() {
         var datos = {};
 
-        if ($('#checkboxRateLimit').is(':checked')) {
-            if ($('#inputRateUpload').val() == "" || $('#inputRateDownload').val() == "") var rate = null;
-            else var rate = $('#inputRateUpload').val() + 'M/' + $('#inputRateDownload').val() + 'M';
-        } else {
-            var rate = null;
-        }
-
         datos['nombre'] = $('#inputNombre').val();
-        datos['sharedUsers'] = $('#inputSharedUsers').val();
+
+        if ($('#inputRateUpload').val() == "" || $('#inputRateDownload').val() == "") var rate = null;
+        else var rate = $('#inputRateUpload').val() + 'M/' + $('#inputRateDownload').val() + 'M';
         datos['rate'] = rate;
+
+        datos['sharedUsers'] = $('#inputSharedUsers').val();
 
         var cookie = $('#checkboxMacCookie').prop('checked') ? 'true' : 'false';
         datos['macCookie'] = cookie;
@@ -191,6 +200,8 @@
             else datos['macCookieTimeout'] = $('#inputCookieTimeout').val() + 'd';
         }
 
+        if ($('#inputKeepaliveTimeout').val() != "") datos['keepaliveTimeout'] = $('#inputKeepaliveTimeout').val() + 'm';
+        else datos['keepaliveTimeout'] = "";
 
         $.ajax({
             type: 'POST',
@@ -202,7 +213,7 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatablePerfiles', response[1]);
-                    $('#modalPerfiles').modal('hide');
+                    $('#btnCerrarModal').click();
                     MostrarAlertCorrecto("Datos guardados correctamente");
                     LimpiarDatosModal();
                 } else {
@@ -223,7 +234,7 @@
     }
 
     function EliminarPerfil(id) {
-        var borrar = prompt("Introduzca 1234 para borrar el perfil")
+        var borrar = prompt('Introduzca "1234" para borrar el perfil');
         if (borrar != "1234") {
             return;
         } else {
@@ -256,40 +267,19 @@
         }
     }
 
-    function ClicEditarPerfil(id) {
-        var datos = {};
-        $('#modalPerfilesTitulo').text("Editar perfil");
-
-        idPerfil = id;
-        datos['id'] = idPerfil;
-
-        $.ajax({
-            type: 'POST',
-            url: '<?= base_url() ?>/Perfiles/getPerfil',
-            dataType: 'json',
-            data: {
-                datos: datos
-            },
-            success: function(response) {
-                $('#inputNombre').val(response['NOMBRE']);
-                $('#inputPerfil').val(response['USUARIO']);
-                $('#inputPassword').val(response['PASSWORD']);
-                $('#inputPasswordConfirmar').val(response['PASSWORD']);
-                $('#selectRol').val(response['ROL']).trigger('change');
-            }
-        });
-
-    }
-
     function DeshabilitarBotones() {
         $("#btnEliminarPerfil").prop("disabled", true);
     }
 
     function LimpiarDatosModal() {
         $('#inputNombre').val("");
-        $('#inputPerfil').val("");
-        $('#inputPassword').val("");
-        $('#inputPasswordConfirmar').val("");
-        $('#selectRol').val(0);
+        $('#inputSharedUsers').val("");
+        $('#inputRateUpload').val("");
+        $('#inputRateDownload').val("");
+        $('#inputCookieTimeout').val("");
+        $('#inputKeepaliveTimeout').val("");
+        $('#checkboxMacCookie').prop('checked', false);
+        $('#inputCookieTimeout').prop('disabled', true);
     }
+    
 </script>
