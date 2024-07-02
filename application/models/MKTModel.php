@@ -115,6 +115,8 @@ class MKTModel extends CI_Model
 				// Enviar la consulta al MikroTik
 				$usuarios = $client->query($query)->read();
 
+				array_shift($usuarios); //Borramos el primer registro (usuario por defecto)
+
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
@@ -196,7 +198,7 @@ class MKTModel extends CI_Model
 				$client->connect();
 
 				foreach ($usuarios as $user) {
-					$id = $user['0'];
+					$id = $user['.id'];
 
 					// Crear la consulta para eliminar al usuario
 					$query = new Query('/ip/hotspot/user/remove');
@@ -207,6 +209,7 @@ class MKTModel extends CI_Model
 				}
 
 				return array($response, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -376,7 +379,7 @@ class MKTModel extends CI_Model
 				$client->connect();
 
 				foreach ($perfiles as $perfil) {
-					$id = $perfil['0'];
+					$id = $perfil['.id'];
 
 					// Crear la consulta para eliminar al usuario
 					$query = new Query('/ip/hotspot/user/profile/remove');

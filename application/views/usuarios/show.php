@@ -201,7 +201,8 @@
                 $btnEliminarUsuarios.prop('disabled', numSelections === 0);
                 $btnHabilitarUsuario.prop('disabled', numSelections === 0);
                 $btnDeshabilitarUsuario.prop('disabled', numSelections === 0);
-                $btnEditarUsuario.prop('disabled', numSelections !== 1); // Habilitar solo si hay exactamente una fila seleccionada
+                $btnEditarUsuario.prop('disabled', numSelections !== 1);
+
             });
         });
 
