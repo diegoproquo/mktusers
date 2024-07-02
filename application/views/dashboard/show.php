@@ -21,18 +21,32 @@
 
 
 <script>
+
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
+        Referscar();
     });
+
+    function Referscar() {
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Dashboard/Refrescar',
+            dataType: 'json',
+            success: function(response) {
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuariosActivos', response[1]);
+                    setTimeout(Referscar, 3500);
+                } else MostrarAlertErrorMKT();
+            }
+        });
+    }
 
     function ExpulsarUsuario(id) {
         var datos = {};
         datos['id'] = id;
-
-        console.log(id);
 
         $.ajax({
             type: 'POST',
@@ -54,4 +68,5 @@
             }
         });
     }
+
 </script>

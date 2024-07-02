@@ -10,7 +10,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, false, false);
                 ?>
             </div>
         </div>
@@ -380,7 +380,7 @@
 
                 if (jsonResponse[0] == "T") {
                     RecargarTabla('datatableUsuarios', jsonResponse[1]);
-                    MostrarAlertCorrecto("Uusarios importados correctamente");
+                    MostrarAlertCorrecto("Usuarios importados correctamente");
                     $('#modalImportar').modal('hide');
                     LimpiarDatosModalImportar();
                 } else {
@@ -425,7 +425,7 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
-                    MostrarAlertCorrecto("Uusario añadido correctamente");
+                    MostrarAlertCorrecto("Usuario añadido correctamente");
                     $('#btnCerrarModal').click();
                     LimpiarDatosModal();
                 } else {

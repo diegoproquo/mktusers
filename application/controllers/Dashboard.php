@@ -65,4 +65,16 @@ class Dashboard extends CI_Controller
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
+
+	public function Refrescar()
+	{
+
+		$conexionMKT = true;
+
+		$data = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
+		$conexionMKT = $data[1];
+
+		echo json_encode(array($conexionMKT, $data[0]));
+	}
+
 }
