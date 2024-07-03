@@ -49,11 +49,6 @@ class Perfiles extends CI_Controller
 
 		$datos = $this->input->post('datos');
 		
-		$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
-		$mensajeError = $data[0];
-		$conexionMKT = $data[1];
-
-
 		if ($datos['id'] == "-1") {
 			$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
 			$mensajeError = $data[0];
