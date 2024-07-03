@@ -10,7 +10,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, true, true);
                 ?>
             </div>
         </div>
@@ -207,7 +207,7 @@
         });
 
 
-        // *SECTION IMPORTAR USUARIOS
+        //////////////////////////////////////////////// *SECTION IMPORTAR USUARIOS
         //Combinacion de metodos para importar usuarios. 
 
         // Listener para el form del csv
@@ -275,7 +275,6 @@
         var columnaPassword = $('#selectImportPassword').val();
         var columnaComment = $('#selectImportComment').val();
 
-        console.log("entra");
         if (columnaUsuario && columnaPassword && columnaComment) {
             ImportarUsuarios(); // Llamar a la función si todos tienen opciones seleccionadas
         } else {
@@ -358,16 +357,20 @@
             contentType: "application/json",
             success: function(response) {
 
-                // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
-                // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
-                let responseJSONvalid = response.substring(20);
-                var jsonResponse = JSON.parse(responseJSONvalid);
+                // Parseamos a json, no se envia correctaemnte el csv con datatype:"json"
 
-                if (jsonResponse[0] == "T") {
+                console.log(response);
+                var jsonResponse = JSON.parse(response);
+                console.log(jsonResponse);
+                if (jsonResponse[0] == true) {
                     RecargarTabla('datatableUsuarios', jsonResponse[1]);
-                    MostrarAlertCorrecto("Usuarios importados correctamente");
+
                     $('#modalImportar').modal('hide');
                     LimpiarDatosModalImportar();
+
+                    if (jsonResponse[2] == "") MostrarAlertCorrecto("Usuarios importados correctamente");
+                    else MostrarAlertError(jsonResponse[2]);
+
                 } else {
                     $('#modalImportar').modal('hide');
                     LimpiarDatosModalImportar();
@@ -382,7 +385,7 @@
         });
     }
 
-    // *SECTION FIN SECCION IMPORTAR USUARIOS
+    ////////////////////////// *SECTION FIN SECCION IMPORTAR USUARIOS
 
 
 
@@ -410,18 +413,20 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
-                    if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
-                    else {
-                        MostrarAlertCorrecto("Usuario modificado correctamente");
-                        $('#btnEditarUsuario').prop('disabled', true);
+                    if (response[2] == "") {
+                        if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
+                        else {
+                            MostrarAlertCorrecto("Usuario modificado correctamente");
+                            $('#btnEditarUsuario').prop('disabled', true);
+                        }
+                    } else {
+                        MostrarAlertError(response[2]);
                     }
-                    $('#btnCerrarModal').click();
-
                     idUsuario = -1;
                 } else {
-                    $('#btnCerrarModal').click();
                     MostrarAlertErrorMKT();
                 }
+                $('#btnCerrarModal').click();
             },
             error: function(error) {
                 console.log("error");

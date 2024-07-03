@@ -228,7 +228,7 @@
                             }
 
                             function MostrarAlertError(texto) {
-                                $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span><strong>¡UPS! </strong>' + texto);
+                                $('#alertError').html('<span class="closebtn" onclick="cerrarAlert(\'alertError\')">&times;</span><strong>Error: </strong>' + texto);
 
                                 document.getElementById('alertError').style.display = 'block';
                                 document.getElementById('alertError').style.animation = 'slideIn 0.5s ease forwards';

@@ -60,8 +60,12 @@ class MKTModel extends CI_Model
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
-
+				
+				if(isset($response["after"]['message'])) $response = $response["after"]['message'];
+				else $response = "";
+				
 				return array($response, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -88,7 +92,11 @@ class MKTModel extends CI_Model
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
 
+				if(isset($response["after"]['message'])) $response = $response["after"]['message'];
+				else $response = "";
+
 				return array($response, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -120,17 +128,17 @@ class MKTModel extends CI_Model
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
-						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "-",
-						"Usuario" => isset($usuario["name"]) ? $usuario["name"] : "-",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "-",
-						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "-",
-						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "-",
-						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "-",
-						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "-",
-						"Dinámico" => isset($usuario["dynamic"]) ? $usuario["dynamic"] : "-",
-						"Deshabilitado" => isset($usuario["disabled"]) ? $usuario["disabled"] : "-",
-						"Comentario" => isset($usuario["comment"]) ? $usuario["comment"] : "-",
-						"Perfil" => isset($usuario["profile"]) ? $usuario["profile"] : "-"
+						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
+						"Usuario" => isset($usuario["name"]) ? $usuario["name"] : "",
+						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
+						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
+						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
+						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
+						"Dinámico" => isset($usuario["dynamic"]) ? $usuario["dynamic"] : "",
+						"Deshabilitado" => isset($usuario["disabled"]) ? $usuario["disabled"] : "",
+						"Comentario" => isset($usuario["comment"]) ? $usuario["comment"] : "",
+						"Perfil" => isset($usuario["profile"]) ? $usuario["profile"] : ""
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
 				}
@@ -166,15 +174,15 @@ class MKTModel extends CI_Model
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
-						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "-",
-						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "-",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "-",
-						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "-",
-						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "-",
-						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "-",
-						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "-",
-						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "-",
-						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "-",
+						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
+						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "",
+						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "",
+						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "",
+						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
+						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
+						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
+						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
 						"-" => isset($usuario["-"]) ? $usuario["-"] : "-"
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
@@ -301,11 +309,25 @@ class MKTModel extends CI_Model
 	function importarUsuarios($usuarios)
 	{
 		$client = $this->conexionMKT();
-
+	
 		if ($client != false) {
 			try {
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
+	
+				$error = "";
+	
+				$usuariosExistentes = $this->MostrarRecargarDatosUsuarios();
+				$usuariosExistentes = $usuariosExistentes[0];
+	
+				// Comprueba que los usuarios que se están importado sno existen ya. Si hay algun duplicado, no importará ningunn usuario. ()
+				$nombresUsuariosExistentes = array_column($usuariosExistentes, 'Usuario');
+				foreach ($usuarios as $usuario) {
+					if (in_array($usuario['name'], $nombresUsuariosExistentes)) {
+						$error = "Hay usuarios que ya existen. Repase el documento CSV.";
+						return array($error, true);
+					}
+				}
 
 				foreach ($usuarios as $item) {
 					$query = new Query('/ip/hotspot/user/add');
@@ -316,9 +338,15 @@ class MKTModel extends CI_Model
 
 					// Enviar la consulta al dispositivo MikroTik
 					$response = $client->query($query)->read();
+					
+					if(isset($response["after"]['message'])){
+						$error = $response["after"]['message'];
+					}
+
 				}
 
-				return array($response, true);
+				return array($error, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}

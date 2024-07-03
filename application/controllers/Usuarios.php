@@ -46,6 +46,7 @@ class Usuarios extends CI_Controller
 	public function procesarCSV()
 	{
 		$conexionMKT = true;
+		$mensajeError = "";
 
 		$input = file_get_contents('php://input');
 		$decodedInput = json_decode($input, true);
@@ -67,22 +68,16 @@ class Usuarios extends CI_Controller
 			}
 
 			$data = $this->MKTModel->importarUsuarios($usuarios);
+			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 
-			echo json_encode(["status" => "success"]);
-		} else {
-			echo json_encode(["status" => "error", "message" => "No se recibieron datos."]);
 		}
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
-		// Esto lo hago para manejar mas facil la respuesta en ajax
-		if ($conexionMKT == true) $conexionMKT = "T";
-		else $conexionMKT = "F";
-
-		echo json_encode(array($conexionMKT, $usuarios));
+		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
 
 
@@ -91,21 +86,24 @@ class Usuarios extends CI_Controller
 	public function GuardarEditarUsuario()
 	{
 		$conexionMKT = true;
+		$mensajeError = "";
 
 		$datos = $this->input->post('datos');
 
 		if ($datos['id'] == "-1") {
 			$data = $this->MKTModel->nuevoUsuarioHotspot($datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}else{
 			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
 
-		echo json_encode(array($conexionMKT, $data[0]));
+		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
 	}
 
 	public function EliminarUsuarios()
