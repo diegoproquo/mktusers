@@ -391,7 +391,53 @@ class MKTModel extends CI_Model
 				}
 
 				return array($error, true);
-				
+
+			} catch (\Exception $e) {
+				echo "Error: " . $e->getMessage() . "\n";
+			}
+		} else return array(array(), false);
+	}
+
+	public function editUserProfile($id, $nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $keepaliveTimeout)
+	{
+		$client = $this->conexionMKT();
+
+		if ($client != false) {
+
+			try {
+
+				$client->connect();
+
+				$error = "";
+
+				// Consulta para añadir un perfil de usuario al hotspot
+				$query = new Query('/ip/hotspot/user/profile/set');
+				$query->add('=.id=' . $id);
+
+				if (!is_null($rateLimit) && $rateLimit !== '') {
+					$query->add('=rate-limit=' . $rateLimit);
+				}
+
+				$query->add('=shared-users=' . $sharedUsers);
+				$query->add('=add-mac-cookie=' . $macCookie);
+
+				if (!is_null($macCookieTimeout) && $macCookieTimeout !== '') {
+					$query->add('=mac-cookie-timeout=' . $macCookieTimeout);
+				}
+
+				if (!is_null($keepaliveTimeout) && $keepaliveTimeout !== '') {
+					$query->add('=keepalive-timeout=' . $keepaliveTimeout);
+				} else $query->add('=keepalive-timeout=' . '2h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
+
+				// Enviar la consulta al dispositivo MikroTik
+				$response = $client->query($query)->read();
+
+				if (isset($response["after"]['message'])) {
+					$error = $response["after"]['message'];
+				}
+
+				return array($error, true);
+
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -448,11 +494,10 @@ class MKTModel extends CI_Model
 				foreach ($perfiles as $perfil) {
 
 					$perfilFormateado = $perfil;
-
-					$perfilFormateado["Nombre"] = isset($perfil["name"]) ? $perfil["name"] : "-";
-					$perfilFormateado["Usuarios simultáneos"] = isset($perfil["shared-users"]) ? $perfil["shared-users"] : "-";
-					$perfilFormateado["MAC Cookie"] = isset($perfil["add-mac-cookie"]) ? $perfil["add-mac-cookie"] : "-";
-					$perfilFormateado["MAC cookie timeout"] = isset($perfil["mac-cookie-timeout"]) ? $perfil["mac-cookie-timeout"] : "-";
+					$perfilFormateado["Nombre"] = isset($perfil["name"]) ? $perfil["name"] : "";
+					$perfilFormateado["Usuarios simultáneos"] = isset($perfil["shared-users"]) ? $perfil["shared-users"] : "";
+					$perfilFormateado["MAC cookie"] = isset($perfil["add-mac-cookie"]) ? $perfil["add-mac-cookie"] : "";
+					$perfilFormateado["MAC cookie timeout"] = isset($perfil["mac-cookie-timeout"]) ? $perfil["mac-cookie-timeout"] : "";
 
 					$perfilesFormateados[] = $perfilFormateado;
 				}

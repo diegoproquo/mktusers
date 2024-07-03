@@ -96,7 +96,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="text-muted">Relacione los campos del archivo CSV con cada uno de los campos de los usuarios del Mikrotik</p>
+                <p class="text-muted">Relacione los campos del archivo CSV con cada uno de los campos de los usuarios del Mikrotik. Asegurese de que el archivo CSV ha sido guardado en el formato correcto: <strong>CSV UTF-8 (delimitado por comas)</strong></p>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label for="selectImportUser" class="form-label">Nombre de usuario</label>
@@ -237,7 +237,7 @@
                 procesarCSV(csvData);
             };
 
-            reader.readAsText(file);
+            reader.readAsText(file, 'UTF-8');
         });
 
         $('.select-header').on('change', function() {
@@ -359,9 +359,8 @@
 
                 // Parseamos a json, no se envia correctaemnte el csv con datatype:"json"
 
-                console.log(response);
                 var jsonResponse = JSON.parse(response);
-                console.log(jsonResponse);
+
                 if (jsonResponse[0] == true) {
                     RecargarTabla('datatableUsuarios', jsonResponse[1]);
 
