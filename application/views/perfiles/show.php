@@ -219,10 +219,14 @@
             },
             success: function(response) {
                 if (response[0] == true) {
+                    
                     RecargarTabla('datatablePerfiles', response[1]);
                     $('#btnCerrarModal').click();
-                    MostrarAlertCorrecto("Datos guardados correctamente");
                     LimpiarDatosModal();
+
+                    if(response[2] == "") MostrarAlertCorrecto("Datos guardados correctamente");
+                    else MostrarAlertError(response[2]);
+                    
                 } else {
                     $('#modalPerfiles').modal('hide');
                     LimpiarDatosModal();

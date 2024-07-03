@@ -44,16 +44,18 @@ class Perfiles extends CI_Controller
 	public function GuardarEditar()
 	{
 		$conexionMKT = true;
+		$mensajeError = "";
 
 		$datos = $this->input->post('datos');
 		
 		$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
+		$mensajeError = $data[0];
 		$conexionMKT = $data[1];
 
 		$data = $this->MKTModel->MostrarRecargarDatosPerfiles();
 		$conexionMKT = $data[1];
 
-		echo json_encode(array($conexionMKT, $data[0]));
+		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
 	}
 
 	public function EliminarPerfil()

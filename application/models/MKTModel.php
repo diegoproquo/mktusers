@@ -60,12 +60,11 @@ class MKTModel extends CI_Model
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
-				
-				if(isset($response["after"]['message'])) $response = $response["after"]['message'];
-				else $response = "";
-				
-				return array($response, true);
 
+				if (isset($response["after"]['message'])) $response = $response["after"]['message'];
+				else $response = "";
+
+				return array($response, true);
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -92,11 +91,10 @@ class MKTModel extends CI_Model
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
 
-				if(isset($response["after"]['message'])) $response = $response["after"]['message'];
+				if (isset($response["after"]['message'])) $response = $response["after"]['message'];
 				else $response = "";
 
 				return array($response, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -217,7 +215,6 @@ class MKTModel extends CI_Model
 				}
 
 				return array($response, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -309,17 +306,17 @@ class MKTModel extends CI_Model
 	function importarUsuarios($usuarios)
 	{
 		$client = $this->conexionMKT();
-	
+
 		if ($client != false) {
 			try {
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
-	
+
 				$error = "";
-	
+
 				$usuariosExistentes = $this->MostrarRecargarDatosUsuarios();
 				$usuariosExistentes = $usuariosExistentes[0];
-	
+
 				// Comprueba que los usuarios que se están importado sno existen ya. Si hay algun duplicado, no importará ningunn usuario. ()
 				$nombresUsuariosExistentes = array_column($usuariosExistentes, 'Usuario');
 				foreach ($usuarios as $usuario) {
@@ -338,15 +335,13 @@ class MKTModel extends CI_Model
 
 					// Enviar la consulta al dispositivo MikroTik
 					$response = $client->query($query)->read();
-					
-					if(isset($response["after"]['message'])){
+
+					if (isset($response["after"]['message'])) {
 						$error = $response["after"]['message'];
 					}
-
 				}
 
 				return array($error, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -364,6 +359,9 @@ class MKTModel extends CI_Model
 			try {
 
 				$client->connect();
+
+				$error = "";
+
 
 				// Consulta para añadir un perfil de usuario al hotspot
 				$query = new Query('/ip/hotspot/user/profile/add');
@@ -385,11 +383,15 @@ class MKTModel extends CI_Model
 					$query->add('=keepalive-timeout=' . $keepaliveTimeout);
 				} else $query->add('=keepalive-timeout=' . '2h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
 
-
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
 
-				return array($response, true);
+				if (isset($response["after"]['message'])) {
+					$error = $response["after"]['message'];
+				}
+
+				return array($error, true);
+				
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -446,17 +448,16 @@ class MKTModel extends CI_Model
 				foreach ($perfiles as $perfil) {
 
 					$perfilFormateado = $perfil;
-				
+
 					$perfilFormateado["Nombre"] = isset($perfil["name"]) ? $perfil["name"] : "-";
 					$perfilFormateado["Usuarios simultáneos"] = isset($perfil["shared-users"]) ? $perfil["shared-users"] : "-";
 					$perfilFormateado["MAC Cookie"] = isset($perfil["add-mac-cookie"]) ? $perfil["add-mac-cookie"] : "-";
 					$perfilFormateado["MAC cookie timeout"] = isset($perfil["mac-cookie-timeout"]) ? $perfil["mac-cookie-timeout"] : "-";
-				
+
 					$perfilesFormateados[] = $perfilFormateado;
 				}
-				
+
 				return array($perfilesFormateados, true);
-				
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
