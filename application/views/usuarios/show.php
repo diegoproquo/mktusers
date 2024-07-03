@@ -1,14 +1,16 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Usuarios</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Proquo MKT</li>
-        <li class="breadcrumb-item active">Usuarios </li>
-    </ol>
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Usuarios</h1>
+        <button id="uploadButton" class="btn btn-sm btn-primary ms-4"><i class="fas fa-file-import"></i> Importar CSV</button>
+    </div>
+
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1", false, false, false);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, true, true);
                 ?>
             </div>
         </div>
@@ -51,9 +53,15 @@
                             <?php
 
                             foreach ($perfiles as $perfil) {
+                                if ($perfil['name'] == "default") {
                             ?>
-                                <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                                    <option default value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
+                                <?php
+                                } else {
+                                ?>
+                                    <option value="<?= $perfil['name'] ?>"> <?= $perfil['name']  ?> </option>
                             <?php
+                                }
                             }
                             ?>
 
@@ -70,7 +78,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="NuevoUsuario()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -162,7 +170,12 @@
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
             '</div>');
 
-        $('#btnGrupo').after('<button id="uploadButton" class="btn btn-sm btn-primary ms-4"><i class="fas fa-file-import"></i> Importar</button>');
+        $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pencil"></i> Editar</button>');
+
+        // Listener para limpiar modal siempre que se cierra
+        $('#modalUsuarios').on('hidden.bs.modal', function(e) {
+            LimpiarDatosModal();
+        });
 
         $('#uploadButton').on('click', function() {
             $('#file').click();
@@ -176,53 +189,25 @@
         });
 
         // Deshabilitar botones si no hay ninguna fila seleccionada
-        var $table = $('#datatableUsuarios')
-        var $btnEliminarUsuarios = $('#btnEliminarUsuarios')
-        var $btnHabilitarUsuario = $('#btnHabilitarUsuario')
-        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario')
+        var $table = $('#datatableUsuarios');
+        var $btnEliminarUsuarios = $('#btnEliminarUsuarios');
+        var $btnHabilitarUsuario = $('#btnHabilitarUsuario');
+        var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario');
+        var $btnEditarUsuario = $('#btnEditarUsuario');
         $(function() {
             $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
-                $btnEliminarUsuarios.prop('disabled', !$table.bootstrapTable('getSelections').length)
-                $btnHabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
-                $btnDeshabilitarUsuario.prop('disabled', !$table.bootstrapTable('getSelections').length)
-            })
-            $btnEliminarUsuarios.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
+                var selections = $table.bootstrapTable('getSelections');
+                var numSelections = selections.length;
+                $btnEliminarUsuarios.prop('disabled', numSelections === 0);
+                $btnHabilitarUsuario.prop('disabled', numSelections === 0);
+                $btnDeshabilitarUsuario.prop('disabled', numSelections === 0);
+                $btnEditarUsuario.prop('disabled', numSelections !== 1);
 
-                $table.bootstrapTable('btnEliminarUsuarios', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnEliminarUsuarios.prop('disabled', true)
             });
-            $btnHabilitarUsuario.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
-
-                $table.bootstrapTable('btnHabilitarUsuario', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnHabilitarUsuario.prop('disabled', true)
-            });
-            $btnDeshabilitarUsuario.click(function() {
-                var ids = $.map($table.bootstrapTable('getSelections'), function(row) {
-                    return row.id
-                })
-
-                $table.bootstrapTable('btnDeshabilitarUsuario', {
-                    field: 'id',
-                    values: ids
-                })
-                $btnDeshabilitarUsuario.prop('disabled', true)
-            })
-        })
+        });
 
 
-        // *SECTION IMPORTAR USUARIOS
+        //////////////////////////////////////////////// *SECTION IMPORTAR USUARIOS
         //Combinacion de metodos para importar usuarios. 
 
         // Listener para el form del csv
@@ -290,7 +275,6 @@
         var columnaPassword = $('#selectImportPassword').val();
         var columnaComment = $('#selectImportComment').val();
 
-        console.log("entra");
         if (columnaUsuario && columnaPassword && columnaComment) {
             ImportarUsuarios(); // Llamar a la función si todos tienen opciones seleccionadas
         } else {
@@ -373,16 +357,20 @@
             contentType: "application/json",
             success: function(response) {
 
-                // Por algun motivo devuelve un "success" en la cadena de texto, lo que hace que no sea parseable a JSON.
-                // Lo que hago es eliminar esos caracteres a mano y despues parsearlo a json
-                let responseJSONvalid = response.substring(20);
-                var jsonResponse = JSON.parse(responseJSONvalid);
+                // Parseamos a json, no se envia correctaemnte el csv con datatype:"json"
 
-                if (jsonResponse[0] == "T") {
+                console.log(response);
+                var jsonResponse = JSON.parse(response);
+                console.log(jsonResponse);
+                if (jsonResponse[0] == true) {
                     RecargarTabla('datatableUsuarios', jsonResponse[1]);
-                    MostrarAlertCorrecto("Uusarios importados correctamente");
+
                     $('#modalImportar').modal('hide');
                     LimpiarDatosModalImportar();
+
+                    if (jsonResponse[2] == "") MostrarAlertCorrecto("Usuarios importados correctamente");
+                    else MostrarAlertError(jsonResponse[2]);
+
                 } else {
                     $('#modalImportar').modal('hide');
                     LimpiarDatosModalImportar();
@@ -397,11 +385,11 @@
         });
     }
 
-    // *SECTION FIN SECCION IMPORTAR USUARIOS
+    ////////////////////////// *SECTION FIN SECCION IMPORTAR USUARIOS
 
 
 
-    function NuevoUsuario() {
+    function GuardarEditarUsuario() {
         var datos = {};
 
         if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
@@ -417,7 +405,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '<?= base_url() ?>/Usuarios/NuevoUsuario',
+            url: '<?= base_url() ?>/Usuarios/GuardarEditarUsuario',
             dataType: 'json',
             data: {
                 datos: datos
@@ -425,14 +413,20 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
-                    MostrarAlertCorrecto("Uusario añadido correctamente");
-                    $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
+                    if (response[2] == "") {
+                        if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
+                        else {
+                            MostrarAlertCorrecto("Usuario modificado correctamente");
+                            $('#btnEditarUsuario').prop('disabled', true);
+                        }
+                    } else {
+                        MostrarAlertError(response[2]);
+                    }
+                    idUsuario = -1;
                 } else {
-                    $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
+                $('#btnCerrarModal').click();
             },
             error: function(error) {
                 console.log("error");
@@ -444,7 +438,7 @@
 
     function EliminarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -462,7 +456,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -477,7 +470,7 @@
 
     function HabilitarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -495,7 +488,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -511,7 +503,7 @@
 
     function DeshabilitarUsuarios() {
 
-        rows = ObtenerFilasCheckeadas();
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
 
         var datos = {
             usuarios: rows
@@ -529,7 +521,6 @@
                     DeshabilitarBotones();
                 } else {
                     $('#btnCerrarModal').click();
-                    LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -543,13 +534,27 @@
         });
     }
 
-    function ObtenerFilasCheckeadas() {
-        var checkedRows = $('#datatableUsuarios').bootstrapTable('getSelections');
-        var rowDetailsArray = checkedRows.map(function(row) {
-            return row;
-        });
-        return rowDetailsArray;
+
+    function ClicEditarUusario() {
+        usuario = ObtenerFilasCheckeadas('datatableUsuarios');
+        idUsuario = usuario[0]['.id'];
+        $('#modalUsuariosTitulo').text('Editar usuario');
+        $('#inputUsuario').val(usuario[0]['Usuario']);
+
+        var perfil = usuario[0]['Perfil'];
+        var $selectPerfiles = $('#selectPerfiles');
+
+        // Comprobar si la opción de perfil existe en el select y si no selecciona la default
+        if ($selectPerfiles.find('option[value="' + perfil + '"]').length) {
+            $selectPerfiles.val(perfil);
+        } else {
+            $selectPerfiles.val('default');
+        }
+
+        $('#inpuComentario').val(usuario[0]['Comentario']);
     }
+
+
 
     function DeshabilitarBotones() {
         $("#btnEliminarUsuarios").prop("disabled", true);

@@ -1,14 +1,14 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Perfiles</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Proquo MKT</li>
-        <li class="breadcrumb-item active">Perfiles </li>
-    </ol>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Perfiles</h1>
+        <div class="container mt-5">
+</div></div>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns, $data, "datatablePerfiles", "Perfiles", "0", false, false, false, true);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatablePerfiles", "Perfiles", "1,3,5,9,10,11", false, false, false);
                 ?>
             </div>
         </div>
@@ -25,7 +25,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPerfilesTitulo">Nuevo perfil</h5>
-                <button type="button" id="btnCerrarModal" class="close" data-dismiss="modal" aria-label="Close">
+                <button id="btnCerrarModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -40,48 +40,43 @@
 
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label>Usuarios simultáneos</label>
-                        <input id="inputSharedUsers" type="number" class="form-control" min="1" max="5" />
+                        <label>Usuarios simultáneos 
+                            <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Usuarios simultáneos" data-bs-content="Limita cuántos dispositivos puede haber conectados con un mismo usuario. Valor por defecto: sin límite."></a>
+                        </label>
+                        <input id="inputSharedUsers" type="number" class="form-control" />
                     </div>
                 </div>
 
                 <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label for="checkboxRateLimit" class="form-label">Rate limit</label>
-                        <input class="form-check-input  ml-2" type="checkbox" id="checkboxRateLimit" />
-                    </div>
-                </div>
-
-                <div class="row mt-2" id="rowRateLimit" style="display:none">
                     <div class="col-md-6">
-                        <label>Upload (en Mbps)</label>
+                        <label>Rate Upload <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Upload (en Mbps)" data-bs-content="Establece un límite de velocidad para la carga de datos. Valor por defecto: sin límite."></a> </label>
                         <input id="inputRateUpload" type="number" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Download (en Mbps)</label>
+                        <label>Rate Download <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Rate Download (en Mbps)" data-bs-content="Establece un límite de velocidad para la descarga de datos. Valor por defecto: sin límite."></a> </label>
                         <input id="inputRateDownload" type="number" class="form-control" />
                     </div>
                 </div>
 
 
                 <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label for="checkboxMacCookie" class="form-label">Mac cookie</label>
+                    <div class="col-md-6">
+                        <label>Cookie Timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Cookie Timeout (en días)" data-bs-content="La cookie de sesión permite que un usuario se conecte sin tener que iniciar sesión. Es posible establecer un límite de tiempo hasta que la cookie expire. Valor por defecto: 3 días."></a></label>
                         <input class="form-check-input  ml-2" type="checkbox" id="checkboxMacCookie" />
+                        <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" disabled />
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi. Valor por defecto: 2 horas."></a></label>
+                        <input id="inputKeepaliveTimeout" type="number" class="form-control" min="1" max="24" />
                     </div>
                 </div>
 
-                <div class="row mt-2" id="rowCookieTimeout" style="display:none">
-                    <div class="col-md-6">
-                        <label>Cookie timeout (en días)</label>
-                        <input id="inputCookieTimeout" type="number" class="form-control" min="1" max="30" />
-                    </div>
-                </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="GuardarEditarPerfil()">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="NuevoPerfil()">Guardar</button>
             </div>
         </div>
     </div>
@@ -90,14 +85,19 @@
 
 <script>
     var idPerfil = -1;
-    var site_id;
+
     $(document).ready(function() {
+
+        // Inicializar los popover
+        $('[data-toggle="popover"]').popover({ trigger: 'hover'});
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
-        
+
+        // ñadir los botones a la datatable
         $('.fixed-table-toolbar').append('<div class="btn-group" role="group">' +
-            '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo perfil</button>' +
+            '<button id="btnNuevoPerfil" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalPerfiles" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo</button>' +
+            '<button id="btnEliminarPerfil" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarPerfil()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '</div>');
 
         $('#btnNuevoPerfil').on('click', function() {
@@ -106,78 +106,97 @@
             idPerfil = -1;
         });
 
+        // Controla cuando se deshabilita el boton de eliminar
+        var $table = $('#datatablePerfiles')
+        var $btnEliminarPerfil = $('#btnEliminarPerfil')
+        $(function() {
+            $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
+                var selections = $table.bootstrapTable('getSelections');
+                var numSelections = selections.length;
+                $btnEliminarPerfil.prop('disabled', numSelections !== 1); // Habilitar solo si hay exactamente una fila seleccionada
+                $btnEliminarPerfil.prop('disabled', selections[0]['name'] == "default"); // Deshabilita si es el perfil por defecto
+            })
 
-        // Listener para mostrar o esconder inputs de rate limit en funcion del checkbox
-        $('#checkboxRateLimit').change(function() {
+        });
+
+
+        // Listener para mostrar o esconder inputs de cookie timeout en función del checkbox
+        $('#checkboxMacCookie').change(function() {
             if ($(this).is(':checked')) {
-                $('#rowRateLimit').show();
+                $('#inputCookieTimeout').prop('disabled', false);
             } else {
-                $('#rowRateLimit').hide();
+                $('#inputCookieTimeout').prop('disabled', true);
             }
         });
+
 
         // lIstener para controlar el input de los usuarios simultaneos
         var inputSharedUsers = document.getElementById('inputSharedUsers');
         inputSharedUsers.addEventListener('input', function() {
-            // Obtiene el valor actual del input como un número
             var value = parseInt(inputSharedUsers.value);
-
-            // Verifica si el valor está fuera del rango permitido
             if (value < 1) {
-                // Si es menor que 1, establece el valor en 1
                 inputSharedUsers.value = 1;
             } else if (value > 5) {
-                // Si es mayor que 5, establece el valor en 5
                 inputSharedUsers.value = 5;
             }
         });
 
-
-        // Listener para mostrar o esconder inputs de cookie timeout en funcion del checkbox
-        $('#checkboxMacCookie').change(function() {
-            if ($(this).is(':checked')) {
-                $('#rowCookieTimeout').show();
-            } else {
-                $('#rowCookieTimeout').hide();
+        // lIstener para controlar el input de rate upload
+        var inputRateUpload = document.getElementById('inputRateUpload');
+        inputRateUpload.addEventListener('input', function() {
+            var value = parseInt(inputRateUpload.value);
+            if (value < 1) {
+                inputRateUpload.value = 1;
+            } else if (value > 300) {
+                inputRateUpload.value = 300;
             }
         });
 
+        // lIstener para controlar el input de la rate download
+        var inputRateDownload = document.getElementById('inputRateDownload');
+        inputRateDownload.addEventListener('input', function() {
+            var value = parseInt(inputRateDownload.value);
+            if (value < 1) {
+                inputRateDownload.value = 1;
+            } else if (value > 300) {
+                inputRateDownload.value = 300;
+            }
+        });
 
         // lIstener para controlar el input de la cookie de sesion
         var inputCookieTimeout = document.getElementById('inputCookieTimeout');
         inputCookieTimeout.addEventListener('input', function() {
-            // Obtiene el valor actual del input como un número
             var value = parseInt(inputCookieTimeout.value);
-
-            // Verifica si el valor está fuera del rango permitido
             if (value < 1) {
-                // Si es menor que 1, establece el valor en 1
                 inputCookieTimeout.value = 1;
             } else if (value > 5) {
-                // Si es mayor que 5, establece el valor en 5
                 inputCookieTimeout.value = 30;
             }
         });
 
+        // lIstener para controlar el input de keepalive timeout
+        var inputKeepaliveTimeout = document.getElementById('inputKeepaliveTimeout');
+        inputKeepaliveTimeout.addEventListener('input', function() {
+            var value = parseInt(inputKeepaliveTimeout.value);
+            if (value < 1) {
+                inputKeepaliveTimeout.value = 1;
+            } else if (value > 1440) {
+                inputKeepaliveTimeout.value = 1440;
+            }
+        });
 
     });
 
-
-
-    function GuardarEditarPerfil() {
+    function NuevoPerfil() {
         var datos = {};
 
-        if ($('#checkboxRateLimit').is(':checked')) {
-            if ($('#inputRateUpload').val() == "" || $('#inputRateDownload').val() == "") var rate = null;
-            else var rate = $('#inputRateUpload').val() + 'M/' + $('#inputRateDownload').val() + 'M';
-        } else {
-            var rate = null;
-        }
-
-        datos['id'] = idPerfil;
         datos['nombre'] = $('#inputNombre').val();
-        datos['sharedUsers'] = $('#inputSharedUsers').val();
+
+        if ($('#inputRateUpload').val() == "" || $('#inputRateDownload').val() == "") var rate = null;
+        else var rate = $('#inputRateUpload').val() + 'M/' + $('#inputRateDownload').val() + 'M';
         datos['rate'] = rate;
+
+        datos['sharedUsers'] = $('#inputSharedUsers').val();
 
         var cookie = $('#checkboxMacCookie').prop('checked') ? 'true' : 'false';
         datos['macCookie'] = cookie;
@@ -188,6 +207,8 @@
             else datos['macCookieTimeout'] = $('#inputCookieTimeout').val() + 'd';
         }
 
+        if ($('#inputKeepaliveTimeout').val() != "") datos['keepaliveTimeout'] = $('#inputKeepaliveTimeout').val() + 'm';
+        else datos['keepaliveTimeout'] = "";
 
         $.ajax({
             type: 'POST',
@@ -203,7 +224,7 @@
                     MostrarAlertCorrecto("Datos guardados correctamente");
                     LimpiarDatosModal();
                 } else {
-                    $('#btnCerrarModal').click();
+                    $('#modalPerfiles').modal('hide');
                     LimpiarDatosModal();
                     MostrarAlertErrorMKT();
                 }
@@ -219,69 +240,65 @@
 
     }
 
-    function ClicEliminarPerfil(id) {
-        var borrar = prompt("Introduzca 1234 para borrar el perfil")
+    function EliminarPerfil(id) {
+        var borrar = prompt('Introduzca "1234" para borrar el perfil');
         if (borrar != "1234") {
             return;
         } else {
 
-            idPerfil = id;
-            var datos = {};
+            rows = ObtenerFilasCheckeadas('datatablePerfiles');
 
-            datos['id'] = idPerfil;
-            datos['site_id'] = site_id;
+            var datos = {
+                perfiles: rows
+            };
 
             $.ajax({
                 type: 'POST',
                 url: '<?= base_url() ?>/Perfiles/EliminarPerfil',
                 dataType: 'json',
-                data: {
-                    datos: datos
-                },
+                data: JSON.stringify(datos),
                 success: function(response) {
-                    RecargarTabla('datatablePerfiles', response[1]);
-                    MostrarAlertCorrecto("Perfil eliminado correctamente");
+                    if (response[0] == true) {
+                        RecargarTabla('datatablePerfiles', response[1]);
+                        MostrarAlertCorrecto("Perfil eliminado correctamente");
+                        DeshabilitarBotones();
+                    } else {
+                        MostrarAlertErrorMKT();
+                    }
                 },
                 error: function(error) {
                     console.log("error");
                     console.log(error);
                     MostrarAlertError("Algo no ha ido según lo esperado");
-
                 }
             });
         }
     }
 
-    function ClicEditarPerfil(id) {
-        var datos = {};
-        $('#modalPerfilesTitulo').text("Editar perfil");
-
-        idPerfil = id;
-        datos['id'] = idPerfil;
-
-        $.ajax({
-            type: 'POST',
-            url: '<?= base_url() ?>/Perfiles/getPerfil',
-            dataType: 'json',
-            data: {
-                datos: datos
-            },
-            success: function(response) {
-                $('#inputNombre').val(response['NOMBRE']);
-                $('#inputPerfil').val(response['USUARIO']);
-                $('#inputPassword').val(response['PASSWORD']);
-                $('#inputPasswordConfirmar').val(response['PASSWORD']);
-                $('#selectRol').val(response['ROL']).trigger('change');
-            }
-        });
-
+    function DeshabilitarBotones() {
+        $("#btnEliminarPerfil").prop("disabled", true);
     }
 
     function LimpiarDatosModal() {
         $('#inputNombre').val("");
-        $('#inputPerfil').val("");
-        $('#inputPassword').val("");
-        $('#inputPasswordConfirmar').val("");
-        $('#selectRol').val(0);
+        $('#inputSharedUsers').val("");
+        $('#inputRateUpload').val("");
+        $('#inputRateDownload').val("");
+        $('#inputCookieTimeout').val("");
+        $('#inputKeepaliveTimeout').val("");
+        $('#checkboxMacCookie').prop('checked', false);
+        $('#inputCookieTimeout').prop('disabled', true);
+    }
+
+    function MostrarInformacion(id) {
+        var infoElement = $('#' + id + 'Text');
+
+        if (infoElement.hasClass('informacion-oculta')) {
+            infoElement.removeClass('informacion-oculta');
+            infoElement.addClass('informacion-visible');
+        } else {
+            infoElement.removeClass('informacion-visible');
+            infoElement.addClass('informacion-oculta');
+        }
     }
 </script>

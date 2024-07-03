@@ -1,23 +1,13 @@
 <div class="container-fluid px-4" style="width: 85%;">
-    <h1 class="mt-4">Dashboard</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item">Proquo MKT</li>
-        <li class="breadcrumb-item active">Dashboard</li>
-    </ol>
-
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizada($columns_usuarios_activos, $data_usuarios_activos, "datatableUsuariosActivos", "Usuarios activos", "", false, false, false);
-                ?>
-            </div>
-        </div>
-
-        <div style="text-align: center;">
-            <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
-                <?php
-                bootstrapTablePersonalizada($columns_ultimas_conexiones, $data_ultimas_conexiones, "datatableUltimasConexiones", "Últimas conexiones", "", false, false, false);
+                bootstrapTablePersonalizada($columns_usuarios_activos, $data_usuarios_activos, "datatableUsuariosActivos", "Usuarios activos", "0", false, false, false);
                 ?>
             </div>
         </div>
@@ -31,18 +21,32 @@
 
 
 <script>
+
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
+        Referscar();
     });
+
+    function Referscar() {
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Dashboard/Refrescar',
+            dataType: 'json',
+            success: function(response) {
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuariosActivos', response[1]);
+                    setTimeout(Referscar, 2100);
+                } else MostrarAlertErrorMKT();
+            }
+        });
+    }
 
     function ExpulsarUsuario(id) {
         var datos = {};
         datos['id'] = id;
-
-        console.log(id);
 
         $.ajax({
             type: 'POST',
@@ -64,4 +68,5 @@
             }
         });
     }
+
 </script>
