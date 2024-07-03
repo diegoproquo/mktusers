@@ -1,6 +1,6 @@
 
 <div id="container">
-    <h1>Unifi Manager</h1>
+    <h1>Proquo MKT</h1>
     <div id="body">
         <button onclick="PruebaConexion()">Prueba de conexión</button>
         <a href="<?= base_url('Prueba') ?>">Ir a admin panel</a>

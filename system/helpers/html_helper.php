@@ -600,19 +600,20 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 				<thead>
 					<tr>
 						<?php
-						$count = 0;
 						foreach ($columns as $index => $columnName) :
 							if ($eliminar !== "" && in_array($index, explode(',', $eliminar))) {
 								// Ocultar esta columna si está en la lista de eliminar
 						?>
 								<th data-visible="false" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
 							<?php
-							} else {
-								// Mostrar esta columna
+							} else { // Mostrar esta columna
 							?>
 								<th data-visible="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
-						<?php
+
+							<?php
 							}
+							?>
+						<?php
 						endforeach; ?>
 					</tr>
 
@@ -666,7 +667,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 
 
 			});
-			
+
 			// Cambiamos de ingles a castellano el tooltip de los botones y la barar de busqueda
 			var search = $('[aria-label="Search"]');
 			search.attr('placeholder', 'Buscar');
@@ -677,6 +678,125 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 			var boton = $('[aria-label="Export data"]');
 			boton.attr('title', 'Exportar datos');
 
+		});
+	</script>
+<?php
+}
+
+//Para añadir checkbox se hace con el data-checkbox="true. Tambien se añade una columna inicial vacia"
+// !IMPORTANT La funcion para controlar la obtencion de los checkbox esta en Usuarios/show  
+
+function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false)
+{
+?>
+	<style>
+		/* Estilo personalizado para cambiar el cursor a pointer en las filas de la tabla */
+		.table-hover tbody tr:hover {
+			cursor: pointer;
+		}
+	</style>
+	<div class="card mb-4">
+		<div class="card-header">
+			<i class="fas fa-chart-area me-1"></i>
+			<?= $titulo ?>
+		</div>
+		<div class="card-body">
+			<table class="table table-hover table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-click-to-select="true" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>">
+				<thead>
+					<tr>
+						<?php
+						$count = 0;
+						foreach ($columns as $index => $columnName) :
+							if ($eliminar !== "" && in_array($index, explode(',', $eliminar))) {
+								// Ocultar esta columna si está en la lista de eliminar
+						?>
+								<th data-visible="false" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+								<?php
+							} else { // Mostrar esta columna
+								if ($count == 0) {
+								?>
+									<th data-checkbox="true"></th>
+								<?php
+								} else {
+								?>
+									<th data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+						<?php
+								}
+							}
+							$count++;
+						endforeach;
+						?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($data as $row) : ?>
+						<tr>
+							<td></td> <!-- Celda de checkbox -->
+							<?php foreach ($row as $cell) : ?>
+								<td><?= $cell ?></td>
+							<?php endforeach; ?>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- Inicialización de Bootstrap Table -->
+	<script>
+		$(document).ready(function() {
+			function rowAttributes(row, index) {
+				if (row["Deshabilitado"] === "true") {
+					return {
+						class: 'table-danger'
+					};
+				}
+				return {};
+			}
+
+			// Función para inicializar la tabla
+			$('#<?= $idTable ?>').bootstrapTable({
+				pagination: true, // Habilita la paginación
+				pageSize: 10, // Establece el número de filas por página
+				rowAttributes: rowAttributes,
+				locale: 'es-ES',
+				formatShowingRows: function(pageFrom, pageTo, totalRows) {
+					return 'Mostrando ' + pageFrom + ' a ' + pageTo + ' de ' + totalRows + ' registros';
+				},
+				formatRecordsPerPage: function(pageNumber) {
+					return pageNumber + ' registros por página';
+				},
+				formatNoMatches: function() {
+					return 'No se encontraron registros';
+				},
+				formatLoadingMessage: function() {
+					return '<b>Cargando registros...</b>';
+				},
+				paginationPreText: '&lsaquo;', // Texto para el botón "Anterior"
+				paginationNextText: '&rsaquo;', // Texto para el botón "Siguiente"
+				showExtendedPagination: true, // Muestra la paginación extendida (control de tamaño de página)
+				showPaginationSwitch: <?= $mostrarTodo ? 'true' : 'false' ?>, // Oculta el selector de tamaño de página
+				columns: [{
+						checkbox: true
+					},
+					<?php foreach ($columns as $index => $columnName) :
+						if ($index > 0) { ?> {
+								field: '<?= $columnName ?>',
+								title: '<?= ucfirst($columnName) ?>'
+							},
+					<?php }
+					endforeach; ?>
+				],
+				data: <?= json_encode($data) ?>
+
+
+			});
+
+			// Cambiamos de ingles a castellano el tooltip de los botones y la barra de búsqueda
+			$('[aria-label="Search"]').attr('placeholder', 'Buscar');
+			$('[name="paginationSwitch"]').attr('title', 'Mostrar todo');
+			$('[aria-label="Columns"]').attr('title', 'Columnas');
+			$('[aria-label="Export data"]').attr('title', 'Exportar datos');
 		});
 	</script>
 <?php

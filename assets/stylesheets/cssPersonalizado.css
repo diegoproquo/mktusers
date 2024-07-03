@@ -81,10 +81,6 @@
         padding-top: 30px !important;
     }
 
-    .footer_pagina {
-        padding-top: 30px;
-        padding-left: 100px;
-    }
 
     .help-block {
         display: block;
@@ -106,6 +102,7 @@
         width: 300px;
         left: 50%;
         top: -100px;
+        border-radius: 4px;
         /* Posición inicial arriba de la pantalla */
         transform: translateX(-50%);
         opacity: 0;
@@ -138,6 +135,7 @@
         width: 300px;
         left: 50%;
         top: -100px;
+        border-radius: 4px;
         /* Posición inicial arriba de la pantalla */
         transform: translateX(-50%);
         opacity: 0;

@@ -312,4 +312,14 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
-require_once BASEPATH.'core/CodeIgniter.php';
+
+
+// Cargar composer autoload
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Cargar el archivo .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// Continuar cargando CodeIgniter
+require_once BASEPATH . 'core/CodeIgniter.php';
