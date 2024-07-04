@@ -48,10 +48,10 @@
     <!--CssPersonalizado-->
     <link rel="stylesheet" href="<?= base_url() ?>assets/stylesheets/cssPersonalizado.css">
 
-    <!--Color picker -->
+    <!--Color picker 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
-
+    -->
 
     <!--DATATABLES BOOSTRAP-->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
