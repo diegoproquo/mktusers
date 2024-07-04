@@ -426,6 +426,7 @@
                     MostrarAlertErrorMKT();
                 }
                 $('#btnCerrarModal').click();
+                DeshabilitarBotones();
             },
             error: function(error) {
                 console.log("error");

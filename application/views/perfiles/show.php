@@ -234,6 +234,7 @@
                     $('#modalPerfiles').modal('hide');
                     MostrarAlertErrorMKT();
                 }
+                DeshabilitarBotones();
                 $('#btnCerrarModal').click();
                 LimpiarDatosModal();
                 idPerfil = -1;
