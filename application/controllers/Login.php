@@ -20,7 +20,7 @@ class Login extends CI_Controller
     public function index()
     {
         $this->load->view('plantillas/login/header');
-        $this->load->view('login/show2');
+        $this->load->view('login/show');
         $this->load->view('plantillas/login/footer');
     }
 
