@@ -68,7 +68,7 @@
 
                     </div>
                     <div class="col-md-6">
-                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi. Valor por defecto: 2 horas."></a></label>
+                        <label>Keepalive timeout <a type="button" class="fas fa-info-circle" data-toggle="popover" title="Keepalive Timeout (en minutos)" data-bs-content="Este valor establece cuánto tiempo permanecerá inactivo un dispositivo antes de que sea desconectado del WiFi. Valor por defecto: 2 minutos."></a></label>
                         <input id="inputKeepaliveTimeout" type="number" class="form-control" min="1" max="24" />
                     </div>
                 </div>

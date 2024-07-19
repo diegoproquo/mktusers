@@ -381,7 +381,7 @@ class MKTModel extends CI_Model
 
 				if (!is_null($keepaliveTimeout) && $keepaliveTimeout !== '') {
 					$query->add('=keepalive-timeout=' . $keepaliveTimeout);
-				} else $query->add('=keepalive-timeout=' . '2h'); //Por defecto mete 2 minutos y te echa constantemente si no estas usando el dispositivo
+				}
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();

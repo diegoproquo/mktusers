@@ -36,7 +36,7 @@ $config['site_url'] = 'http://localhost/mktusers';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'dashboard/show.php';
+$config['index_page'] = 'login/show.php';
 
 /*
 |--------------------------------------------------------------------------

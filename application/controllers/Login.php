@@ -14,6 +14,7 @@ class Login extends CI_Controller
 
         $this->load->library('session');
         $this->load->helper('url');
+
     }
 
     public function index()
@@ -27,37 +28,25 @@ class Login extends CI_Controller
     public function iniciarSesion()
     {
 
-        $host = $this->input->post('host');
         $user = $this->input->post('user');
         $pass = $this->input->post('pass');
 
-		require_once $_ENV['AUTOLOAD'];
+        require_once $_ENV['AUTOLOAD'];
 
         try {
 
-            $config = (new Config())
-                ->set('timeout', 5)
-                ->set('host', $host)
-                ->set('user', $user)
-                ->set('pass', $pass);
+            if ($_ENV['USER'] == $user && $_ENV['PASS'] == $pass) {
 
-            $client = new Client($config);
-
-            $conexion = $client->connect();
-
-            if ($conexion == true) {
                 $session_data = array(
-                    'host'  => $host,
-                    'user'  => $user,
-                    'pass'  => $pass,
                     'logged_in' => true
                 );
 
                 $this->session->set_userdata($session_data);
                 redirect(base_url() . "Dashboard");
                 return;
+                
             } else {
-                $this->session->set_flashdata('error', 'No ha sido posible conectarse con el Mikrotik');
+                $this->session->set_flashdata('error', 'Usuario o contraseña incorrectos');
                 redirect(base_url() . "Login");
                 return;
             }
