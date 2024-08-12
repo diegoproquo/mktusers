@@ -3,7 +3,11 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Usuarios</h1>
-        <button id="uploadButton" class="btn btn-sm btn-primary ms-4"><i class="fas fa-file-import"></i> Importar CSV</button>
+        <div class="btn-group">
+            <button id="downloadButton" class="btn btn-sm btn-info" onclick="DescargarPlantilla()"><i class="fas fa-download"></i> Plantilla CSV</button>
+            <button id="uploadButton" class="btn btn-sm btn-primary ms-1"><i class="fas fa-file-import"></i> Importar CSV</button>
+        </div>
+
     </div>
 
     <div class="mainDiv">
@@ -554,6 +558,25 @@
         $('#inpuComentario').val(usuario[0]['Comentario']);
     }
 
+    function DescargarPlantilla() {
+        var filePath = '<?php echo base_url("assets/PQ_plantilla_usuarios.csv"); ?>';
+
+        // Crea un enlace temporal
+        var a = document.createElement('a');
+        a.href = filePath;
+
+        // Define el nombre del archivo que se descargará
+        a.download = 'PQ_plantilla_usuarios.csv';
+
+        // Añade el enlace temporal al DOM
+        document.body.appendChild(a);
+
+        // Dispara el evento de click en el enlace
+        a.click();
+
+        // Elimina el enlace temporal del DOM
+        document.body.removeChild(a);
+    }
 
 
     function DeshabilitarBotones() {
