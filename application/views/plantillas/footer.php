@@ -8,7 +8,7 @@
     <div class="container">
         <div class="copyright text-center">
         <div>&copy; <a href="https://www.tecnologiasencilla.com/" target="_blank" style="text-decoration:none">ProQuo Tecnología Sencilla SL</a> 2024</div>
-        <a style="position:absolute; right:20px">Versión 1.0</a>
+        <a style="position:absolute; right:20px">Versión 1.01</a>
         </div>
     </div>
 </footer>
@@ -25,9 +25,10 @@
 <!-- Page level plugins -->
 <script src="<?= base_url() ?>vendor/chart.js/Chart.min.js"></script>
 
-<!-- Page level custom scripts -->
+<!-- Page level custom scripts 
 <script src="<?= base_url() ?>js/demo/chart-area-demo.js"></script>
 <script src="<?= base_url() ?>js/demo/chart-pie-demo.js"></script>
+-->
 
 
 

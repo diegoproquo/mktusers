@@ -12,6 +12,11 @@ class Dashboard extends CI_Controller
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
+
+		if (!$this->session->userdata('logged_in')) {
+			redirect(base_url() . "Login");
+			return;
+		}
 	}
 
 	public function index()
@@ -31,7 +36,7 @@ class Dashboard extends CI_Controller
 		$data_usuarios_activos = $this->MKTModel->MostrarRecargarDatosUsuariosActivos();
 
 		$data['data_usuarios_activos'] = $data_usuarios_activos[0];
-		$data['conexionMKT'] = $data_usuarios_activos[1];		
+		$data['conexionMKT'] = $data_usuarios_activos[1];
 
 		$this->load->view('plantillas/header');
 		$this->load->view('dashboard/show', $data);
@@ -63,5 +68,4 @@ class Dashboard extends CI_Controller
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
-
 }

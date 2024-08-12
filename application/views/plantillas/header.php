@@ -48,10 +48,10 @@
     <!--CssPersonalizado-->
     <link rel="stylesheet" href="<?= base_url() ?>assets/stylesheets/cssPersonalizado.css">
 
-    <!--Color picker -->
+    <!--Color picker 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
-
+    -->
 
     <!--DATATABLES BOOSTRAP-->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
@@ -105,8 +105,9 @@
     .nav-link {
         cursor: pointer;
     }
-    .sidebar-divider{
-        border-top:1px solid rgba(255,255,255,.75) !important;
+
+    .sidebar-divider {
+        border-top: 1px solid rgba(255, 255, 255, .75) !important;
     }
 </style>
 
@@ -183,8 +184,14 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownSesion" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownSesion">
+                                    <li><a class="dropdown-item" href="<?php echo base_url('Login/logout'); ?>">Cerrar sesión</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     </ul>
 
                 </nav>

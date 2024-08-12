@@ -13,6 +13,11 @@ class Perfiles extends CI_Controller
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
 
+		if (!$this->session->userdata('logged_in')) {
+			redirect(base_url() . "Login");
+			return;
+		}
+
 	}
 
 	public function show()
@@ -49,11 +54,6 @@ class Perfiles extends CI_Controller
 
 		$datos = $this->input->post('datos');
 		
-		$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
-		$mensajeError = $data[0];
-		$conexionMKT = $data[1];
-
-
 		if ($datos['id'] == "-1") {
 			$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
 			$mensajeError = $data[0];
