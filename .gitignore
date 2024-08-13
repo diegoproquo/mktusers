@@ -6,7 +6,9 @@
 !*/cache/index.html
 !*/cache/.htaccess
 
-
+.env
+.htaccess
+application/config
 
 
 user_guide_src/build/*
