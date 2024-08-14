@@ -14,36 +14,32 @@
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url() ?>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="<?= base_url() ?>css/googleapisfonts.css" rel="stylesheet">
+
+    <!-- JQuery -->
+    <script src="<?= base_url() ?>js/jquery-3.6.0.min.js"></script>
+
+    <!-- Popper.js -->
+    <script src="<?= base_url() ?>js/popper.min1147.js"></script>
+
+    <!-- Bootstrap 5 (incluye tanto CSS como JavaScript) -->
+    <link href="<?= base_url() ?>css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="<?= base_url() ?>css/style.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="<?= base_url() ?>css/all.min.css">
 
 
-    <!-- Carga jQuery desde el servidor local -->
-    <script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="<?= base_url() ?>js/jquery.dataTables.js"></script>
 
-    <!-- Carga Popper.js desde el servidor local -->
-    <script src="js/popper.min.js"></script>
-
-    <!-- Carga Bootstrap desde el servidor local -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?= base_url() ?>css/bootstrap4.min.css" />
+    <script src="<?= base_url() ?>js/bootstrap4.min.js"></script>
 
 
+    <link href="<?= base_url() ?>css/select2.min.css" rel="stylesheet" />
+    <script src="<?= base_url() ?>js/select2.min.js"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha256-aAr2Zpq8MZ+YA/D6JtRD3xtrwpEz2IqOS+pWD/7XKIw=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="<?= base_url() ?>js/chart.js"></script>
 
     <!--CssPersonalizado-->
     <link rel="stylesheet" href="<?= base_url() ?>assets/stylesheets/cssPersonalizado.css">
@@ -54,18 +50,8 @@
     -->
 
     <!--DATATABLES BOOSTRAP-->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+    <link rel="stylesheet" href="<?= base_url() ?>css/bootstrap-table.min113.css">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
-
-    <!-- Latest compiled and minified Locales -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="icon" type="image/png" href="<?= base_url() ?>assets/img/favicon.ico" />
     <!--===============================================================================================-->
@@ -83,17 +69,12 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/vendor/daterangepicker/daterangepicker.css">
 
-
-
-
     <!-- Para poder exportar las datatables de bootstrap  -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.28.0/tableExport.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.28.0/libs/jsPDF/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
-
-
+    <link href="<?= base_url() ?>css/bootstrap-table.min.css" rel="stylesheet">
+    <script src="<?= base_url() ?>js/tableExport.min.js"></script>
+    <script src="<?= base_url() ?>js/jspdf.umd.min.js"></script>
+    <script src="<?= base_url() ?>js/bootstrap-table.min.js"></script>
+    <script src="<?= base_url() ?>js/bootstrap-table-export.min.js"></script>
 
     <!-- Custom styles for this template-->
     <link href="<?= base_url() ?>css/sb-admin-2.min.css" rel="stylesheet">
