@@ -13,9 +13,7 @@
 	"require": {
 		"php": ">=5.3.7",
 		"art-of-wifi/unifi-api-client": "^1.1",
-		"dompdf/dompdf": "^1.0",
 		"phenx/php-font-lib": "^0.5.1",
-		"phenx/php-svg-lib": "^0.3.2",
 		"sabberworm/php-css-parser": "^8.1.0",
 		"evilfreelancer/routeros-api-php": "^1.5",
 		"vlucas/phpdotenv": "^5.6"

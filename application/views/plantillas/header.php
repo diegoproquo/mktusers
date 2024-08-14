@@ -26,8 +26,6 @@
     <link href="<?= base_url() ?>css/bootstrap.min.css" rel="stylesheet">
 
     <link href="<?= base_url() ?>css/style.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="<?= base_url() ?>css/all.min.css">
-
 
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="<?= base_url() ?>js/jquery.dataTables.js"></script>

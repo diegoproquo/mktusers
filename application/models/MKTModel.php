@@ -165,7 +165,7 @@ class MKTModel extends CI_Model
 				$usuarios = $client->query($query)->read();
 
 				foreach ($usuarios as &$item) {
-					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" title="Cerrar sesión"><i class="fa fa-xmark" style="color:red; font-size:20px; cursor:pointer;"></i></a>';
+					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" title="Cerrar sesión"><i style="color:red; font-size:18px; font-weight:700; cursor:pointer;">X</i></a>';
 				}
 				unset($item);
 
