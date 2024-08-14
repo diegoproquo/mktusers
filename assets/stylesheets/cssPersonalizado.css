@@ -191,16 +191,20 @@
     }
 
     .wrapper_login {
-        margin-top: 80px;
+        margin-top: 180px;
         margin-bottom: 80px;
+        background-color:#fff;
     }
 
     .form-signin {
-        max-width: 380px;
+        max-width: 352px;
         padding: 15px 35px 45px;
         margin: 0 auto;
         background-color: #fff;
         border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius:8px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        
     }
 
     .form-signin .form-signin-heading,

@@ -27,4 +27,4 @@
 
 </head>
 
-<body class="sb-nav-fixed" style="background: #eee">
+<body class="sb-nav-fixed" style="background: #fff">

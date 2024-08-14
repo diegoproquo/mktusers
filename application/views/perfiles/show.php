@@ -103,7 +103,7 @@
             '<button id="btnEliminarPerfil" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarPerfil()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '</div>');
 
-        $('#btnGrupo').after('<button id="btnEditarPerfil" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalPerfiles" onclick="ClicEditarPerfil()"><i class="fas fa-pencil"></i> Editar</button>');
+        $('#btnGrupo').after('<button id="btnEditarPerfil" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalPerfiles" onclick="ClicEditarPerfil()"><i class="fas fa-pen"></i> Editar</button>');
 
         $('#btnNuevoPerfil').on('click', function() {
             LimpiarDatosModal();
