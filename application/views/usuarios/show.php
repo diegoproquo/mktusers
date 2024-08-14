@@ -174,7 +174,7 @@
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
             '</div>');
 
-        $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pencil"></i> Editar</button>');
+        $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pen"></i> Editar</button>');
 
         // Listener para limpiar modal siempre que se cierra
         $('#modalUsuarios').on('hidden.bs.modal', function(e) {
