@@ -9,7 +9,10 @@
         </div>
 
     </div>
-
+    <p class="mb-4"> Esta es la ventana para gestionar los usuarios. Podrá añadir nuevos usuarios, asi como eliminarlos o deshabilitarlos. También
+                        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar 
+                        como referencia.
+                        </p>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">

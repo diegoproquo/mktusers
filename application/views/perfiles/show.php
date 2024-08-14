@@ -1,10 +1,15 @@
 <div class="container-fluid px-4" style="width: 85%;">
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-2">
         <h1 class="h3 mb-0 text-gray-800">Perfiles</h1>
         <div class="container mt-5">
         </div>
     </div>
+
+    <p class="mb-4"> Esta es la ventana para gestionar los perfiles de usuario. Un perfil es una serie de reglas que afectarán al comportamiento de los usuarios cuando
+                        hagan uso de la red. Es posible ajustar diferentes parámetros como la velocidad de conexión o el número de usuarios simultáneos entre otros.
+                        </p>
+
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">

@@ -17,7 +17,7 @@
 
     </form>
 
-    <a class="custom">Powered by <img src="assets/img/logo_proquo.png" width="55" ></a>
+    <a class="custom" href="https://proquo.es">Powered by <img src="assets/img/logo_proquo.png" width="55" ></a>
 
 </div>
 

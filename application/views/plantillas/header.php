@@ -120,7 +120,7 @@
             <hr class="sidebar-divider my-0">
 
             <div class="sidebar-heading mt-3">
-                Configuración
+                Ajustes
             </div>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
