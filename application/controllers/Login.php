@@ -35,7 +35,7 @@ class Login extends CI_Controller
 
         try {
 
-            if ($_ENV['USER'] == $user && $_ENV['PASS'] == $pass) {
+            if ($_ENV['USER1'] == $user && $_ENV['PASS1'] == $pass) {
 
                 $session_data = array(
                     'logged_in' => true
@@ -45,7 +45,19 @@ class Login extends CI_Controller
                 redirect(base_url() . "Dashboard");
                 return;
                 
-            } else {
+            }
+            else if ($_ENV['USER2'] == $user && $_ENV['PASS2'] == $pass) {
+
+                $session_data = array(
+                    'logged_in' => true
+                );
+
+                $this->session->set_userdata($session_data);
+                redirect(base_url() . "Dashboard");
+                return;
+                
+            }
+             else {
                 $this->session->set_flashdata('error', 'Usuario o contraseña incorrectos');
                 redirect(base_url() . "Login");
                 return;
