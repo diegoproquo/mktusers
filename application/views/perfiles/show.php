@@ -181,8 +181,8 @@
             var value = parseInt(inputCookieTimeout.value);
             if (value < 1) {
                 inputCookieTimeout.value = 1;
-            } else if (value > 5) {
-                inputCookieTimeout.value = 30;
+            } else if (value > 365) {
+                inputCookieTimeout.value = 365;
             }
         });
 
