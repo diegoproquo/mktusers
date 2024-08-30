@@ -7,7 +7,7 @@
         <input type="text" class="form-control" name="user" placeholder="Usuario" required="" />
         <input type="password" class="form-control" name="pass" placeholder="Contraseña" required="" />
 
-        <button class="btn btn-lg btn-primary btn-block mb-2" type="submit" id="btnLogin">Login</button>
+        <button class="btn btn-lg btn-primary btn-block mb-2" type="submit" id="btnLogin">Acceder</button>
 
         <?php if ($this->session->flashdata('error')) : ?>
             <div class="alert alert-danger" role="alert">
@@ -17,7 +17,7 @@
 
     </form>
 
-    <a class="custom">Powered by <img src="assets/img/logo_proquo.png" width="55" ></a>
+    <a class="custom" href="https://proquo.es">Powered by <img src="assets/img/logo_proquo.png" width="55" ></a>
 
 </div>
 
