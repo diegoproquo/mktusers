@@ -12,6 +12,14 @@
             </div>
         </div>
 
+        <div class="row mt-4">
+            <div class="col-xl-6">
+                <?php
+                graficoBarras($data7Dias, $labels7Dias, "graficoBarras", "Conexiones últimos 7 días");
+                ?>
+            </div>
+        </div>
+
         <div class="footer_pagina">
 
         </div>
@@ -21,7 +29,6 @@
 
 
 <script>
-
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
@@ -68,5 +75,4 @@
             }
         });
     }
-
 </script>

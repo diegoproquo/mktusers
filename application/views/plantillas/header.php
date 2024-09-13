@@ -33,7 +33,6 @@
     <link rel="stylesheet" href="<?= base_url() ?>css/bootstrap4.min.css" />
     <script src="<?= base_url() ?>js/bootstrap4.min.js"></script>
 
-
     <link href="<?= base_url() ?>css/select2.min.css" rel="stylesheet" />
     <script src="<?= base_url() ?>js/select2.min.js"></script>
 

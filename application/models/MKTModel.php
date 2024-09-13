@@ -128,7 +128,7 @@ class MKTModel extends CI_Model
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
 						"Usuario" => isset($usuario["name"]) ? $usuario["name"] : "",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Tiempo total de conexión" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
 						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
 						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
 						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",

@@ -684,7 +684,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 }
 
 //Para añadir checkbox se hace con el data-checkbox="true. Tambien se añade una columna inicial vacia"
-// !IMPORTANT La funcion para controlar la obtencion de los checkbox esta en Usuarios/show  
+// !IMPORTANT La funcion para controlar la obtencion de los checkbox esta en Usuarios/show  (unifimanager)
 
 function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo = "", $eliminar = "", $selectorColumnas = false, $exportar = false, $mostrarTodo = false)
 {
@@ -995,10 +995,10 @@ function actualizarGraficoFuncion($dataLinea, $dataBarras, $labels, $idChart, $t
 
 
 
-function graficoBarras($dataBarras, $dataLinea, $labels, $conexionesMaximas, $idChart, $titulo)
+function graficoBarras($data, $labels, $idChart, $titulo)
 {
 	// Encontrar el máximo de los datos de conexión
-	if (count($dataLinea) >= 1 && count($dataBarras) >= 1)	$maxData = max(max($dataLinea), max($dataBarras));
+	if (count($data) >= 1)	$maxData = max($data);
 	else $maxData = 0.1;
 	// Calcular el máximo para el eje y con un margen adicional
 	$maxY = round($maxData * 1.1);
@@ -1018,29 +1018,21 @@ function graficoBarras($dataBarras, $dataLinea, $labels, $conexionesMaximas, $id
 			Chart.defaults.global.defaultFontColor = '#292b2c';
 
 			var labels = <?= json_encode($labels) ?>;
-			var dataBarras = <?= json_encode($dataBarras) ?>;
-			var dataLinea = <?= json_encode($dataLinea) ?>;
+			var data = <?= json_encode($data) ?>;
 
 			// Bar Chart Example
 			var ctx = document.getElementById('<?= $idChart ?>');
 			var myLineChart = new Chart(ctx, {
 				type: 'bar',
 				data: {
-					labels: labels,
-					datasets: [{
-						label: "Conexiones totales",
-						backgroundColor: "rgba(2,117,216,1)",
-						borderColor: "rgba(2,117,216,1)",
-						data: dataBarras,
-					}, {
-						label: "Registros portal cautivo",
-						borderColor: "rgb(238, 130, 238)",
-						backgroundColor: "rgb(238, 130, 238)",
-						type: 'bar',
-						data: dataLinea,
-						fill: false,
-					}],
-				},
+                    labels: labels,
+                    datasets: [{
+                        label: "Conexiones totales",
+                        backgroundColor: "rgba(2,117,216,1)",
+                        borderColor: "rgba(2,117,216,1)",
+                        data: data
+                    }]
+                },
 				options: {
 					scales: {
 						xAxes: [{
@@ -1066,7 +1058,8 @@ function graficoBarras($dataBarras, $dataLinea, $labels, $conexionesMaximas, $id
 						}],
 					},
 					legend: {
-						display: true
+						display: true,
+						onClick: false
 					}
 				}
 			});
