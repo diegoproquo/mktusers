@@ -10,9 +10,9 @@
 
     </div>
     <p class="mb-4"> Esta es la ventana para gestionar los usuarios. Podrá añadir nuevos usuarios, asi como eliminarlos o deshabilitarlos. También
-                        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar 
-                        como referencia.
-                        </p>
+        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar
+        como referencia.
+    </p>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
@@ -38,19 +38,19 @@
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Nombre de usuario</label>
-                        <input id="inputUsuario" type="text" class="form-control" />
+                        <input id="inputUsuario" type="text" class="form-control" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Contraseña</label>
-                        <input id="inputPassword" type="password" class="form-control" />
+                        <input id="inputPassword" type="password" class="form-control" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control" />
+                        <input id="inputPasswordConfirmar" type="password" class="form-control" oninput="validarInput(this)"/>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -83,7 +83,9 @@
                 </div>
 
             </div>
+
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
             </div>
@@ -159,7 +161,36 @@
     <input id="btnImportarUsuariosFormSubmit" type="submit" value="Subir">
 </form>
 
+<style>
+    #inputUsuario {
+        transition: background-color 0.5s ease;
+    }
+</style>
+
 <script>
+    function validarInput(input) {
+        var regex = /^[a-zA-Z0-9\s-]*$/;
+        var $errorMensaje = $('#errorMensaje');
+        if ($errorMensaje.length === 0) {
+            $errorMensaje = $('<span id="errorMensaje" style="color: #da1b1b; display:none; padding-left:8px;">Caracteres no válidos</span>');
+            $(input).after($errorMensaje);
+        } else {
+            $errorMensaje.remove();
+        }
+        var valorOriginal = $(input).val();
+        var valorFiltrado = valorOriginal.replace(/[^a-zA-Z0-9\s-]/g, '');
+        if (valorOriginal !== valorFiltrado) {
+            $(input).css('backgroundColor', '#f8d7da');$errorMensaje.show().css('opacity', 0).animate({opacity: 1}, 200);
+            $(input).val(valorFiltrado);
+            setTimeout(() => {
+                $errorMensaje.animate({opacity: 0}, 200, function() {$(this).hide();$errorMensaje.remove();});
+                $(input).css('backgroundColor', '');
+            }, 2000);
+        } else {
+            $errorMensaje.animate({opacity: 0}, 200, function() {$(this).hide();});
+        }
+    }
+
     var idUsuario = -1;
     var lines = [];
     var headers;
@@ -419,6 +450,7 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
+                    errorMensaje.style.display = "none";
                     if (response[2] == "") {
                         if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
                         else {
