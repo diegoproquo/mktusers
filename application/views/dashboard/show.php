@@ -29,6 +29,7 @@
 
 
 <script>
+    var isSafari;
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
@@ -40,6 +41,9 @@
         if (!isSafari) {
             Refrescar();
         }
+        $('button.btn-secondary[name="refresh"]').on('click', function() {
+            Refrescar1Vez();
+        });
     });
 
     function Refrescar() {
@@ -51,6 +55,19 @@
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuariosActivos', response[1]);
                     setTimeout(Refrescar, 2100);
+                } else MostrarAlertErrorMKT();
+            }
+        });
+    }
+
+    function Refrescar1Vez() {
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Dashboard/Refrescar',
+            dataType: 'json',
+            success: function(response) {
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuariosActivos', response[1]);
                 } else MostrarAlertErrorMKT();
             }
         });

@@ -647,6 +647,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 				],
 				// Configuración del idioma
 				locale: 'es-ES',
+				showRefresh: true,
 				formatShowingRows: function(pageFrom, pageTo, totalRows) {
 					return 'Mostrando ' + pageFrom + ' a ' + pageTo + ' de ' + totalRows + ' registros';
 				},
