@@ -29,8 +29,8 @@ class Dashboard extends CI_Controller
 		$columna3 = "Tiempo de actividad";
 		$columna4 = "Dirección IP";
 		$columna5 = "Dirección MAC";
-		$columna6 = "Bytes recibidos";
-		$columna7 = "Bytes enviados";
+		$columna6 = "Tráfico descarga";
+		$columna7 = "Tráfico subida";
 		$columna8 = "-";
 
 		$data['columns_usuarios_activos'] = array($columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8);

@@ -29,8 +29,8 @@ class Usuarios extends CI_Controller
 		$columna2 = "Usuario";
 		$columna3 = "Tiempo total de conexión";
 		$columna4 = "Perfil";
-		$columna5 = "Bytes recibidos";
-		$columna6 = "Bytes enviados";
+		$columna5 = "Tráfico descarga";
+		$columna6 = "Tráfico subida";
 		$columna7 = "Comentario";
 		$columna8 = "Deshabilitado";
 		
