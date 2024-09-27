@@ -52,11 +52,11 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
-				$username_utf8 = mb_convert_encoding($username, 'ISO-8859-1', "UTF-8");
+				// Codificamos el comentario para que se muestre bien en el mikrotik
 				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
 
 				$query = new Query('/ip/hotspot/user/add');
-				$query->add('=name=' . $username_utf8);
+				$query->add('=name=' . $username);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
@@ -83,13 +83,13 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
-				$username_utf8 = mb_convert_encoding($username, 'ISO-8859-1', "UTF-8");
+				// Codificamos el comentario para que se muestre bien en el mikrotik
 				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
 
 				// Crear una nueva consulta para editar el usuario existente
 				$query = new Query('/ip/hotspot/user/set');
 				$query->add('=.id=' . $id);
-				$query->add('=name=' . $username_utf8);
+				$query->add('=name=' . $username);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
@@ -133,7 +133,7 @@ class MKTModel extends CI_Model
 				foreach ($usuarios as $usuario) {
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
-						"Usuario" => isset($usuario["name"]) ? mb_convert_encoding($usuario["name"], 'UTF-8', 'ISO-8859-1') : "",
+                        "Usuario" => isset($usuario["name"]) ? $usuario["name"] : "",
 						"Tiempo total de conexión" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
 						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
 						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
