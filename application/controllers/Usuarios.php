@@ -111,6 +111,9 @@ class Usuarios extends CI_Controller
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		$this->UsuariosModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
 	}
@@ -130,6 +133,9 @@ class Usuarios extends CI_Controller
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		$this->UsuariosModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
@@ -157,20 +163,6 @@ class Usuarios extends CI_Controller
 
 		$input = file_get_contents('php://input');
 		$decodedInput = json_decode($input, true);
-
-		$usuarios = $decodedInput['usuarios'];
-
-		$data = $this->MKTModel->deshabilitarUsuarios($usuarios);
-		$conexionMKT = $data[1];
-
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		$conexionMKT = $data[1];
-
-		echo json_encode(array($conexionMKT, $data[0]));
-	}
-
-	public function Prueba()
-	{
 
 		$usuarios = $decodedInput['usuarios'];
 
