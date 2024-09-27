@@ -43,8 +43,7 @@ class ConexionesDiariasModel extends CI_Model
         $conexiones = array_fill(0, 8, 0);
 
         // Consulta para obtener las conexiones sumadas por fecha
-        $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, SUM(conexiones) as total_conexiones");
-        $this->db->group_by('FECHA');
+        $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, CONEXIONES as total_conexiones");
         $this->db->order_by('FECHA', 'DESC');
         $this->db->limit(8);
     

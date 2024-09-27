@@ -13,6 +13,7 @@ class Dashboard extends CI_Controller
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
 		$this->load->model('ConexionesDiariasModel');
+		$this->load->model('TraficoDiarioModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
@@ -40,9 +41,14 @@ class Dashboard extends CI_Controller
 		$data['conexionMKT'] = $data_usuarios_activos[1];
 
 
-		$datos7dias = $this->Conexiones7Dias();
-		$data['data7Dias'] = $datos7dias[0];
-		$data['labels7Dias'] = $datos7dias[1];
+		$datosConexiones7dias = $this->Conexiones7Dias();
+		$data['dataConexiones7Dias'] = $datosConexiones7dias[0];
+		$data['labelsConexiones7Dias'] = $datosConexiones7dias[1];
+
+		$datosTrafico7dias = $this->Trafico7Dias();
+		$data['datatraficoDescarga7Dias'] = $datosTrafico7dias[0];
+		$data['datatraficoCarga7Dias'] = $datosTrafico7dias[1];
+		$data['labels7Dias'] = $datosTrafico7dias[2];
 
 
 		$this->load->view('plantillas/header');
@@ -89,5 +95,22 @@ class Dashboard extends CI_Controller
 		$labels = array_reverse($labels);
 
 		return array($data, $labels);
+	}
+
+	public function Trafico7Dias(){
+		$data = $this->TraficoDiarioModel->getTrafico7dias();
+		$decarga = $data[0];
+		$carga = $data[1];
+
+		$labels = [];
+		$fecha_actual = date('Y-m-d');
+	
+		for ($i = 0; $i < 8; $i++) {
+			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha_actual)));
+		}
+
+		$labels = array_reverse($labels);
+
+		return array($decarga, $carga, $labels);
 	}
 }

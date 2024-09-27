@@ -15,7 +15,7 @@
         <div class="row mt-4">
             <div class="col-xl-6">
                 <?php
-                graficoBarras($data7Dias, $labels7Dias, "graficoBarras", "Conexiones últimos 7 días");
+                graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoBarras", "Conexiones últimos 7 días");
                 ?>
             </div>
         </div>
