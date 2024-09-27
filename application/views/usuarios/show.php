@@ -423,7 +423,6 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuarios', response[1]);
-                    errorMensaje.style.display = "none";
                     if (response[2] == "") {
                         if (idUsuario == -1) MostrarAlertCorrecto("Usuario añadido correctamente");
                         else {
