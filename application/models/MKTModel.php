@@ -319,6 +319,10 @@ class MKTModel extends CI_Model
 				$client->connect();
 
 				$error = "";
+				$duplicados = [];
+				$nombresInvalidos = [];
+				$contrasenasInvalidas = [];
+				$campoVacio = false;
 
 				$usuariosExistentes = $this->MostrarRecargarDatosUsuarios();
 				$usuariosExistentes = $usuariosExistentes[0];
@@ -327,17 +331,45 @@ class MKTModel extends CI_Model
 				$nombresUsuariosExistentes = array_column($usuariosExistentes, 'Usuario');
 				foreach ($usuarios as $usuario) {
 					if (in_array($usuario['name'], $nombresUsuariosExistentes)) {
-						$error = "Hay usuarios que ya existen. Repase el documento CSV.";
-						return array($error, true);
+						$duplicados[] = $usuario['name'];
+					}
+					if (!preg_match('/^[a-zA-Z0-9\s-]*$/', $usuario['name'])) {
+						// Si el nombre es inválida, agregarla a la lista de nombres inválidos
+						$nombresInvalidos[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
+					}
+					if (!preg_match('/^[a-zA-Z0-9\s-]*$/', $usuario['password'])) {
+						// Si la contraseña es inválida, agregarla a la lista de contraseñas inválidas
+						$contrasenasInvalidas[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
+					}
+					if($usuario['name'] == "" || $usuario['password'] == ""){
+						$campoVacio = true;
 					}
 				}
 
+				if(!empty($duplicados)){
+					$error = "Los siguientes usuarios ya existen: " . implode(", ", $duplicados);
+					return array($error, true);
+				}
+				if (!empty($nombresInvalidos)) {
+					$error .= "El nombre de los siguientes usuarios contiene caracteres no permitidos: " . implode(", ", $nombresInvalidos) . ".";
+					return array($error, true);
+				}
+				if (!empty($contrasenasInvalidas)) {
+					$error .= "La contraseña de los siguientes usuarios contiene caracteres no permitidos: " . implode(", ", $contrasenasInvalidas) . ".";
+					return array($error, true);
+				}
+				if ($campoVacio) {
+					$error .= "Se han detectado campos de usuario o contraseña vacíos.";
+					return array($error, true);
+				}
+
 				foreach ($usuarios as $item) {
+					$comentario_utf8 = mb_convert_encoding($item['comment'], 'ISO-8859-1', 'UTF-8');
 					$query = new Query('/ip/hotspot/user/add');
 					$query->add('=name=' . $item['name']);
 					$query->add('=password=' . $item['password']);
 					$query->add('=profile=' . $item['profile']);
-					$query->add('=comment=' . $item['comment']);
+					$query->add('=comment=' . $comentario_utf8);
 
 					// Enviar la consulta al dispositivo MikroTik
 					$response = $client->query($query)->read();

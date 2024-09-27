@@ -260,6 +260,7 @@
                                 return rowDetailsArray;
                             }
 
+                            // Funcion para comprobar caracteres raros y no permitir escribirlos. Basta con añadirla en el atributo oninput del input
                             function validarInput(input) {
                                 var regex = /^[a-zA-Z0-9\s-]*$/;
                                 var $errorMensaje = $('#errorMensaje');
