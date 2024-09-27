@@ -999,7 +999,7 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 {
 	// Encontrar el máximo de los datos de conexión
 	if (count($data) >= 1)	$maxData = max($data);
-	else $maxData = 0.1;
+	if($maxData == 0) $maxData = 1;
 	// Calcular el máximo para el eje y con un margen adicional
 	$maxY = round($maxData * 1.1);
 ?>
