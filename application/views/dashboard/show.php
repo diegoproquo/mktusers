@@ -34,10 +34,15 @@
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
-        Referscar();
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        console.log(isSafari);
+
+        if (!isSafari) {
+            Refrescar();
+        }
     });
 
-    function Referscar() {
+    function Refrescar() {
         $.ajax({
             type: 'POST',
             url: '<?= base_url() ?>/Dashboard/Refrescar',
@@ -45,7 +50,7 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuariosActivos', response[1]);
-                    setTimeout(Referscar, 2100);
+                    setTimeout(Refrescar, 2100);
                 } else MostrarAlertErrorMKT();
             }
         });
