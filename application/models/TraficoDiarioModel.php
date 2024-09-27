@@ -38,13 +38,13 @@ class TraficoDiarioModel extends CI_Model
         }
     }
 
-    // Devuelve un array con los registros de las conexiones de los ultimos 7 dias agrupados por fecha ascendente
+    // Devuelve un array con el trafico de carga y descarga de los ultimos 7 dias agrupados por fecha ascendente
     public function getTrafico7dias()
     {
         $traficoDescarga = array_fill(0, 8, 0);
         $traficoCarga = array_fill(0, 8, 0);
 
-        // Consulta para obtener las conexiones sumadas por fecha
+        // Consulta para obtener el trafico
         $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, BYTES_DESCARGA, BYTES_CARGA");
         $this->db->order_by('FECHA', 'DESC');
         $this->db->limit(7);
@@ -52,7 +52,7 @@ class TraficoDiarioModel extends CI_Model
         $query = $this->db->get("tbl_trafico_diario");
         $resultados = $query->result();
 
-        // Crear un mapa de fechas para actualizar las conexiones
+        // Crear un mapa de fechas para actualizar el trafico
         $fecha_map = [];
         for ($i = 0; $i < 8; $i++) {
             $fecha_map[date('d/m', strtotime("-$i day"))] = $i;
@@ -72,10 +72,11 @@ class TraficoDiarioModel extends CI_Model
             }
         }
 
+        // Invertimos el array para que las fechas más recientes estén al final
         $traficoDescarga = array_reverse($traficoDescarga);
         $traficoCarga = array_reverse($traficoCarga);
 
-        // Invertimos el array para que las fechas más recientes estén al final (opcional)
+
         return array($traficoDescarga, $traficoCarga);
     }
 }

@@ -18,6 +18,12 @@
                 graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoBarras", "Conexiones últimos 7 días");
                 ?>
             </div>
+            
+            <div class="col-xl-6">
+                <?php
+                graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoFuncion", "Trafico acumulado últimos 7 días (MB)")
+                ?>
+            </div>
         </div>
 
         <div class="footer_pagina">

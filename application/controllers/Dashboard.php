@@ -48,7 +48,7 @@ class Dashboard extends CI_Controller
 		$datosTrafico7dias = $this->Trafico7Dias();
 		$data['datatraficoDescarga7Dias'] = $datosTrafico7dias[0];
 		$data['datatraficoCarga7Dias'] = $datosTrafico7dias[1];
-		$data['labels7Dias'] = $datosTrafico7dias[2];
+		$data['labelsTrafico7Dias'] = $datosTrafico7dias[2];
 
 
 		$this->load->view('plantillas/header');

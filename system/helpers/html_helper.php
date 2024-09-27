@@ -804,6 +804,7 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 }
 
 
+// Grafico de barras y funcion
 function graficoFuncion($dataLinea, $dataBarras, $labels, $idChart, $titulo)
 {
 	// Encontrar el máximo de los datos de conexión
@@ -995,12 +996,117 @@ function actualizarGraficoFuncion($dataLinea, $dataBarras, $labels, $idChart, $t
 }
 
 
+// Grafico de cunion doble
+function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo)
+{
+
+	$maxData = 1;
+	for($i = 0; $i < count($dataLinea1); $i++){
+		if($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
+		if($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
+	}
+
+	// Calcular el máximo para el eje y con un margen adicional
+	$maxY = round($maxData * 1.1);
+?>
+	<div class="card mb-4">
+		<div class="card-header">
+			<i class="fas fa-chart-area me-1"></i>
+			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoMenos1" onclick="actualizarGraficoFuncion('-1 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoMas1" onclick="actualizarGraficoFuncion('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
+
+		</div>
+		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+			Chart.defaults.global.defaultFontColor = '#292b2c';
+
+			var labels = <?= json_encode($labels) ?>;
+			var dataLinea1 = <?= json_encode($dataLinea1) ?>;
+			var dataLinea2 = <?= json_encode($dataLinea2) ?>;
+
+			var ctx = document.getElementById('<?= $idChart ?>');
+			var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+					labels: labels,
+					datasets: [{
+							type: 'line',
+							label: 'Descarga',
+							borderColor: 'rgba(0,123,255,1)',
+							lineTension: 0.3,
+							backgroundColor: "rgba(0,123,255,0.2)",
+							pointBorderColor: "rgba(255,255,255,0.8)",
+							pointHoverBackgroundColor: "rgba(0,123,255,1)",
+							pointHoverRadius: 5,
+							pointHitRadius: 50,
+							data: dataLinea1,
+							pointBorderWidth: 2,
+							fill: true
+						},
+						{
+							type: 'line',
+							label: 'Subida',
+							borderColor: 'rgba(255, 0, 132, 1)',
+							lineTension: 0.3,
+							backgroundColor: "rgba(255, 0, 132, 0.2)",
+							pointBorderColor: "rgba(255, 0, 132, 1)",
+							pointHoverBackgroundColor: "rgba(255, 0, 132, 1)",
+							pointHoverRadius: 5,
+							pointHitRadius: 50,
+							data: dataLinea2,
+							pointBorderWidth: 2,
+							fill: true
+						}
+					]
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							time: {
+								unit: 'hour',
+							},
+							gridLines: {
+								display: false
+							},
+							ticks: {
+								maxTicksLimit: 16
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								min: 0,
+								max: <?= $maxY ?>,
+								maxTicksLimit: 10
+							},
+							gridLines: {
+								color: "rgba(0, 0, 0, .125)",
+							}
+						}],
+					},
+					legend: {
+						display: true
+					}
+				}
+			});
+
+		});
+	</script>
+
+<?php
+}
 
 function graficoBarras($data, $labels, $idChart, $titulo)
 {
 	// Encontrar el máximo de los datos de conexión
 	if (count($data) >= 1)	$maxData = max($data);
-	if($maxData == 0) $maxData = 1;
+	if ($maxData == 0) $maxData = 1;
 	// Calcular el máximo para el eje y con un margen adicional
 	$maxY = round($maxData * 1.1);
 ?>
@@ -1026,14 +1132,14 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 			var myLineChart = new Chart(ctx, {
 				type: 'bar',
 				data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Conexiones totales",
-                        backgroundColor: "rgba(2,117,216,1)",
-                        borderColor: "rgba(2,117,216,1)",
-                        data: data
-                    }]
-                },
+					labels: labels,
+					datasets: [{
+						label: "Conexiones totales",
+						backgroundColor: "rgba(2,117,216,1)",
+						borderColor: "rgba(2,117,216,1)",
+						data: data
+					}]
+				},
 				options: {
 					scales: {
 						xAxes: [{
