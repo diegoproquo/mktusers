@@ -52,11 +52,12 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
-				// Codificamos el comentario para que se muestre bien en el mikrotik
+				// Codificamos el comentario para que se muestre bien en el mikrotik y eliminamos espacios en blanco
 				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
+				$nombreSinEspacios = preg_replace('/\s+/', '', trim($username));
 
 				$query = new Query('/ip/hotspot/user/add');
-				$query->add('=name=' . $username);
+				$query->add('=name=' . $nombreSinEspacios);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
@@ -83,13 +84,14 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
-				// Codificamos el comentario para que se muestre bien en el mikrotik
+				// Codificamos el comentario para que se muestre bien en el mikrotik y eliminamos espacios en blanco
 				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
+				$nombreSinEspacios = preg_replace('/\s+/', '', trim($username));
 
 				// Crear una nueva consulta para editar el usuario existente
 				$query = new Query('/ip/hotspot/user/set');
 				$query->add('=.id=' . $id);
-				$query->add('=name=' . $username);
+				$query->add('=name=' . $nombreSinEspacios);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
@@ -365,8 +367,9 @@ class MKTModel extends CI_Model
 
 				foreach ($usuarios as $item) {
 					$comentario_utf8 = mb_convert_encoding($item['comment'], 'ISO-8859-1', 'UTF-8');
+					$nombreSinEspacios = preg_replace('/\s+/', '', trim($item['name']));
 					$query = new Query('/ip/hotspot/user/add');
-					$query->add('=name=' . $item['name']);
+					$query->add('=name=' . $nombreSinEspacios);
 					$query->add('=password=' . $item['password']);
 					$query->add('=profile=' . $item['profile']);
 					$query->add('=comment=' . $comentario_utf8);
