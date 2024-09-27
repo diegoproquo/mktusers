@@ -38,19 +38,19 @@
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Nombre de usuario</label>
-                        <input id="inputUsuario" type="text" class="form-control" oninput="validarInput(this)" />
+                        <input id="inputUsuario" type="text" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Contraseña</label>
-                        <input id="inputPassword" type="password" class="form-control" oninput="validarInput(this)" />
+                        <input id="inputPassword" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control" oninput="validarInput(this)"/>
+                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)"/>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -161,35 +161,8 @@
     <input id="btnImportarUsuariosFormSubmit" type="submit" value="Subir">
 </form>
 
-<style>
-    #inputUsuario {
-        transition: background-color 0.5s ease;
-    }
-</style>
 
 <script>
-    function validarInput(input) {
-        var regex = /^[a-zA-Z0-9\s-]*$/;
-        var $errorMensaje = $('#errorMensaje');
-        if ($errorMensaje.length === 0) {
-            $errorMensaje = $('<span id="errorMensaje" style="color: #da1b1b; display:none; padding-left:8px;">Caracteres no válidos</span>');
-            $(input).after($errorMensaje);
-        } else {
-            $errorMensaje.remove();
-        }
-        var valorOriginal = $(input).val();
-        var valorFiltrado = valorOriginal.replace(/[^a-zA-Z0-9\s-]/g, '');
-        if (valorOriginal !== valorFiltrado) {
-            $(input).css('backgroundColor', '#f8d7da');$errorMensaje.show().css('opacity', 0).animate({opacity: 1}, 200);
-            $(input).val(valorFiltrado);
-            setTimeout(() => {
-                $errorMensaje.animate({opacity: 0}, 200, function() {$(this).hide();$errorMensaje.remove();});
-                $(input).css('backgroundColor', '');
-            }, 2000);
-        } else {
-            $errorMensaje.animate({opacity: 0}, 200, function() {$(this).hide();});
-        }
-    }
 
     var idUsuario = -1;
     var lines = [];
