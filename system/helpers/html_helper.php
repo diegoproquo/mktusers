@@ -608,7 +608,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 							<?php
 							} else { // Mostrar esta columna
 							?>
-								<th data-visible="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+								<th data-visible="true"  data-sortable="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
 
 							<?php
 							}
@@ -720,7 +720,7 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 								<?php
 								} else {
 								?>
-									<th data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+									<th data-field="<?= $columnName ?>" data-sortable="true"><?= ucfirst($columnName) ?></th>
 						<?php
 								}
 							}
