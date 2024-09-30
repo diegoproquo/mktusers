@@ -1007,7 +1007,7 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 	}
 
 	// Calcular el máximo para el eje y con un margen adicional
-	$maxY = round($maxData * 1.1,1);
+	$maxY = $maxData;
 ?>
 	<div class="card mb-4">
 		<div class="card-header">
