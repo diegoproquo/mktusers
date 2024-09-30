@@ -19,6 +19,7 @@ class UsuariosWeb extends CI_Controller
             return;
         }
         if ($this->session->userdata('adm') == "0") {
+            $this->session->set_flashdata('error', 'No tiene permisos suficientes');
             redirect(base_url() . "Login");
             return;
         }
@@ -26,7 +27,6 @@ class UsuariosWeb extends CI_Controller
 
     public function show()
     {
-        //if (!$this->session->userdata('adm')) redirect(base_url() . "Login");
 
         $columna1 = "ID";
         $columna2 = "USUARIO";

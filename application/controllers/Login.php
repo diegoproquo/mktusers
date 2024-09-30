@@ -1,9 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use \RouterOS\Config;
-use \RouterOS\Client;
-use \RouterOS\Query;
 
 class Login extends CI_Controller
 {

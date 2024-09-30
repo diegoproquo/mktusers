@@ -137,16 +137,25 @@
 
             <hr class="sidebar-divider my-0">
 
-            <div class="sidebar-heading mt-3">
-                Ajustes
-            </div>
+            <?php
 
-            <!-- Nav Item - Usuarios Web -->
-            <li class="nav-item">
-                <a class="nav-link" onclick="IrA('UsuariosWeb/show', false)">
-                    <i class="fas fa-address-card"></i>
-                    <span>Usuarios Web</span></a>
-            </li>
+            if ($this->session->userdata('adm') == "1") {
+
+            ?>
+                <div class="sidebar-heading mt-3">
+                    Ajustes
+                </div>
+
+                <!-- Nav Item - Usuarios Web -->
+                <li class="nav-item">
+                    <a class="nav-link" onclick="IrA('UsuariosWeb/show', false)">
+                        <i class="fas fa-address-card"></i>
+                        <span>Usuarios Web</span></a>
+                </li>
+
+            <?php
+            }
+            ?>
 
             <div class="text-center d-none d-md-inline mt-4">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -207,9 +216,7 @@
                             }
 
 
-
-
-                            //FUNCIONES COMUNES
+                            // *SECTION FUNCIONES COMUNES
                             function MostrarAlertCorrecto(texto) {
                                 $('#alertSuccess').html('<span class="closebtn" onclick="cerrarAlert(\'alertSuccess\')">&times;</span><strong>¡Éxito! </strong>' + texto);
 
