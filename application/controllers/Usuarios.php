@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/*Controlador de los usuarios del MIKROTIK*/
+
 class Usuarios extends CI_Controller
 {
 

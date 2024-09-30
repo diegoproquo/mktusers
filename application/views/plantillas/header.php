@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>ProQuo MKT</title>
+    <title>ProQuo WiFi</title>
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url() ?>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -119,16 +119,16 @@
             <hr class="sidebar-divider my-0">
 
             <div class="sidebar-heading mt-3">
-                Ajustes
+                Hotspot
             </div>
-            <!-- Nav Item - Dashboard -->
+            <!-- Nav Item - Usuarios -->
             <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Usuarios/show', false)">
                     <i class="fas fa-users"></i>
                     <span>Usuarios</span></a>
             </li>
 
-            <!-- Nav Item - Dashboard -->
+            <!-- Nav Item - Perfiles -->
             <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Perfiles/show', false)">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -136,6 +136,17 @@
             </li>
 
             <hr class="sidebar-divider my-0">
+
+            <div class="sidebar-heading mt-3">
+                Ajustes
+            </div>
+
+            <!-- Nav Item - Usuarios Web -->
+            <li class="nav-item">
+                <a class="nav-link" onclick="IrA('UsuariosWeb/show', false)">
+                    <i class="fas fa-address-card"></i>
+                    <span>Usuarios Web</span></a>
+            </li>
 
             <div class="text-center d-none d-md-inline mt-4">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
