@@ -262,7 +262,8 @@
 
                             // Funcion para comprobar caracteres raros y no permitir escribirlos. Basta con añadirla en el atributo oninput del input
                             function validarInput(input) {
-                                var regex = /^[a-zA-Z0-9\s-]*$/;
+                                var regex = /^[a-zA-Z0-9\s@.\-]*$/;
+
                                 var $errorMensaje = $('#errorMensaje');
                                 if ($errorMensaje.length === 0) {
                                     $errorMensaje = $('<span id="errorMensaje" style="color: #da1b1b; display:none; padding-left:8px;">Caracteres no válidos</span>');
@@ -271,7 +272,7 @@
                                     $errorMensaje.remove();
                                 }
                                 var valorOriginal = $(input).val();
-                                var valorFiltrado = valorOriginal.replace(/[^a-zA-Z0-9\s-]/g, '');
+                                var valorFiltrado = valorOriginal.replace(/[^a-zA-Z0-9\s@.\-]/g, '');
                                 if (valorOriginal !== valorFiltrado) {
                                     $(input).css('backgroundColor', '#f8d7da');
                                     $errorMensaje.show().css('opacity', 0).animate({
