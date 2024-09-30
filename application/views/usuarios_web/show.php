@@ -199,7 +199,7 @@
         LimpiarDatosModal();
         usuarioweb = ObtenerFilasCheckeadas('datatableUsuariosWeb');
         idUsuarioWeb = usuarioweb[0]['ID'];
-        $('#modalPerfilesTitulo').text('Editar usuarioweb');
+        $('#modalUsuariosWebTitulo').text('Editar usuario web');
         $('#inputUsuario').val(usuarioweb[0]['USUARIO']);
         $('#inputPassword').val(usuarioweb[0]['PASSWORD']);
         $('#inputPasswordConfirmar').val(usuarioweb[0]['PASSWORD']);
