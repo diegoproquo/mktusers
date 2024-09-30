@@ -12,8 +12,8 @@ class RegistroConexion extends CI_Controller {
         $usuario = $this->input->get('usuario');
 
         // Cargar el modelo y guardar los datos
-        $this->load->model('UsuariosModel');
-        $this->UsuariosModel->insertarConexion($usuario);
+        $this->load->model('UsuariosMktModel');
+        $this->UsuariosMktModel->insertarConexion($usuario);
 
         $this->load->model('ConexionesDiariasModel');
         $this->ConexionesDiariasModel->registrarConexionDiaria();
