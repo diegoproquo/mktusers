@@ -1,6 +1,6 @@
 <?php
 
-class TraficoDiarioModel extends CI_Model
+class TraficoModel extends CI_Model
 {
     public $id;
     public $fecha;
@@ -18,7 +18,7 @@ class TraficoDiarioModel extends CI_Model
         $fecha_actual = date('Y-m-d');
 
         // Verificar si ya existe un registro para la fecha actual
-        $query = $this->db->get_where('tbl_trafico_diario', array('fecha' => $fecha_actual));
+        $query = $this->db->get_where('tbl_trafico', array('fecha' => $fecha_actual));
         $registro = $query->row();
 
         if ($registro) {
@@ -26,7 +26,7 @@ class TraficoDiarioModel extends CI_Model
             $this->db->set('BYTES_DESCARGA', 'BYTES_DESCARGA + ' . (int)$bytes_descarga, FALSE);
             $this->db->set('BYTES_CARGA', 'BYTES_CARGA + ' . (int)$bytes_carga, FALSE);
             $this->db->where('FECHA', $fecha_actual);
-            $this->db->update('tbl_trafico_diario');
+            $this->db->update('tbl_trafico');
         } else {
             // Si no existe, crear un nuevo registro con 1 conexión
             $data = array(
@@ -34,7 +34,7 @@ class TraficoDiarioModel extends CI_Model
                 'BYTES_DESCARGA' => (int)$bytes_descarga,
                 'BYTES_CARGA' => (int)$bytes_carga
             );
-            $this->db->insert('tbl_trafico_diario', $data);
+            $this->db->insert('tbl_trafico', $data);
         }
     }
 
@@ -49,7 +49,7 @@ class TraficoDiarioModel extends CI_Model
         $this->db->order_by('FECHA', 'DESC');
         $this->db->limit(7);
 
-        $query = $this->db->get("tbl_trafico_diario");
+        $query = $this->db->get("tbl_trafico");
         $resultados = $query->result();
 
         // Crear un mapa de fechas para actualizar el trafico

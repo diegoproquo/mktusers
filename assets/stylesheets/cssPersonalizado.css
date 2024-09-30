@@ -243,3 +243,10 @@
     .fadeInput {
         transition: background-color 0.5s ease;
     }
+    .nav-link {
+        cursor: pointer;
+    }
+
+    .sidebar-divider {
+        border-top: 1px solid rgba(255, 255, 255, .75) !important;
+    }

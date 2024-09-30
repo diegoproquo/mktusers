@@ -12,7 +12,7 @@ class RegistroTrafico extends CI_Controller {
         $descarga = $this->input->get('descarga');
         $carga = $this->input->get('carga');
 
-        $this->load->model('TraficoDiarioModel');
-        $this->TraficoDiarioModel->registrarTraficoSesion($descarga, $carga);
+        $this->load->model('TraficoModel');
+        $this->TraficoModel->registrarTraficoSesion($descarga, $carga);
     }
 }

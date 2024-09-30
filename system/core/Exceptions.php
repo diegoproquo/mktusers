@@ -126,8 +126,8 @@ class CI_Exceptions {
 		}
 		else
 		{
-			$heading = '404 Page Not Found';
-			$message = 'The page you requested was not found.';
+			$heading = '404 Página No Encontrada';
+			$message = 'No se ha encontrado la página solicitada.';
 		}
 
 		// By default we log this, but allow a dev to skip it

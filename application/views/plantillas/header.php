@@ -41,11 +41,11 @@
     <!--CssPersonalizado-->
     <link rel="stylesheet" href="<?= base_url() ?>assets/stylesheets/cssPersonalizado.css">
 
-    <!--Color picker 
+    <!--Color picker -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
-    -->
 
+    
     <!--DATATABLES BOOSTRAP-->
     <link rel="stylesheet" href="<?= base_url() ?>css/bootstrap-table.min113.css">
 
@@ -79,15 +79,6 @@
 
 </head>
 
-<style>
-    .nav-link {
-        cursor: pointer;
-    }
-
-    .sidebar-divider {
-        border-top: 1px solid rgba(255, 255, 255, .75) !important;
-    }
-</style>
 
 <body id="page-top">
 
@@ -135,6 +126,13 @@
                     <span>Perfiles</span></a>
             </li>
 
+            <!-- Nav Item - Tags -->
+            <li class="nav-item">
+                <a class="nav-link" onclick="IrA('Tags/show', false)">
+                    <i class="fas fa-tags"></i>
+                    <span>Tags</span></a>
+            </li>
+
             <hr class="sidebar-divider my-0">
 
             <?php
@@ -143,7 +141,7 @@
 
             ?>
                 <div class="sidebar-heading mt-3">
-                    Ajustes
+                    Ajustes Web
                 </div>
 
                 <!-- Nav Item - Usuarios Web -->
@@ -169,7 +167,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content"  style="background-color: #F7F7F7">
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
