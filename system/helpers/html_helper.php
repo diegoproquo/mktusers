@@ -608,7 +608,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 							<?php
 							} else { // Mostrar esta columna
 							?>
-								<th data-visible="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+								<th data-visible="true"  data-sortable="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
 
 							<?php
 							}
@@ -720,7 +720,7 @@ function bootstrapTablePersonalizadaCheckbox($columns, $data, $idTable, $titulo 
 								<?php
 								} else {
 								?>
-									<th data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+									<th data-field="<?= $columnName ?>" data-sortable="true"><?= ucfirst($columnName) ?></th>
 						<?php
 								}
 							}
@@ -1007,17 +1007,12 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 	}
 
 	// Calcular el máximo para el eje y con un margen adicional
-	$maxY = round($maxData * 1.1);
+	$maxY = $maxData;
 ?>
 	<div class="card mb-4">
 		<div class="card-header">
 			<i class="fas fa-chart-area me-1"></i>
 			<?= $titulo ?>
-			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoMenos1" onclick="actualizarGraficoFuncion('-1 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoMas1" onclick="actualizarGraficoFuncion('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
-			</div>
-
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
 	</div>

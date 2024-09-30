@@ -371,11 +371,11 @@ class MKTModel extends CI_Model
 					if (in_array($usuario['name'], $nombresUsuariosExistentes)) {
 						$duplicados[] = $usuario['name'];
 					}
-					if (!preg_match('/^[a-zA-Z0-9\s-]*$/', $usuario['name'])) {
+					if (!preg_match('/^[a-zA-Z0-9\s@.-]*$/', $usuario['name'])) { //Se permiten @ y .
 						// Si el nombre es inválida, agregarla a la lista de nombres inválidos
 						$nombresInvalidos[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
 					}
-					if (!preg_match('/^[a-zA-Z0-9\s-]*$/', $usuario['password'])) {
+					if (!preg_match('/^[a-zA-Z0-9\s@.-]*$/', $usuario['name'])) { //Se permiten @ y .
 						// Si la contraseña es inválida, agregarla a la lista de contraseñas inválidas
 						$contrasenasInvalidas[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
 					}

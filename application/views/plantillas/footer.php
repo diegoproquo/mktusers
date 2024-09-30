@@ -13,6 +13,10 @@
     </div>
 </footer>
 
+<!-- Custom scripts for all pages-->
+<script src="<?= base_url() ?>js/sb-admin-2.min.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="<?= base_url() ?>public/js/scripts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
