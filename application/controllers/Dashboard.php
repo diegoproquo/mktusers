@@ -12,8 +12,8 @@ class Dashboard extends CI_Controller
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
-		$this->load->model('ConexionesDiariasModel');
-		$this->load->model('TraficoDiarioModel');
+		$this->load->model('ConexionesModel');
+		$this->load->model('TraficoModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
@@ -83,7 +83,7 @@ class Dashboard extends CI_Controller
 	}
 
 	public function Conexiones7Dias(){
-		$data = $this->ConexionesDiariasModel->getConexiones7Dias();
+		$data = $this->ConexionesModel->getConexiones7Dias();
 
 		$labels = [];
 		$fecha_actual = date('Y-m-d');
@@ -98,7 +98,7 @@ class Dashboard extends CI_Controller
 	}
 
 	public function Trafico7Dias(){
-		$data = $this->TraficoDiarioModel->getTrafico7dias();
+		$data = $this->TraficoModel->getTrafico7dias();
 		$decarga = $data[0];
 		$carga = $data[1];
 
