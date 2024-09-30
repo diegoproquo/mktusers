@@ -79,15 +79,6 @@
 
 </head>
 
-<style>
-    .nav-link {
-        cursor: pointer;
-    }
-
-    .sidebar-divider {
-        border-top: 1px solid rgba(255, 255, 255, .75) !important;
-    }
-</style>
 
 <body id="page-top">
 
