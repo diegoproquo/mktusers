@@ -12,6 +12,20 @@
             </div>
         </div>
 
+        <div class="row mt-4">
+            <div class="col-xl-6">
+                <?php
+                graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoBarras", "Conexiones últimos 7 días");
+                ?>
+            </div>
+            
+            <div class="col-xl-6">
+                <?php
+                graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoFuncion", "Trafico acumulado últimos 7 días (MB)")
+                ?>
+            </div>
+        </div>
+
         <div class="footer_pagina">
 
         </div>
@@ -21,16 +35,24 @@
 
 
 <script>
-
+    var isSafari;
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
 
-        Referscar();
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        console.log(isSafari);
+
+        if (!isSafari) {
+            Refrescar();
+        }
+        $('button.btn-secondary[name="refresh"]').on('click', function() {
+            Refrescar1Vez();
+        });
     });
 
-    function Referscar() {
+    function Refrescar() {
         $.ajax({
             type: 'POST',
             url: '<?= base_url() ?>/Dashboard/Refrescar',
@@ -38,7 +60,20 @@
             success: function(response) {
                 if (response[0] == true) {
                     RecargarTabla('datatableUsuariosActivos', response[1]);
-                    setTimeout(Referscar, 2100);
+                    setTimeout(Refrescar, 5000);
+                } else MostrarAlertErrorMKT();
+            }
+        });
+    }
+
+    function Refrescar1Vez() {
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Dashboard/Refrescar',
+            dataType: 'json',
+            success: function(response) {
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuariosActivos', response[1]);
                 } else MostrarAlertErrorMKT();
             }
         });
@@ -68,5 +103,4 @@
             }
         });
     }
-
 </script>

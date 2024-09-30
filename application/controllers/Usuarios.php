@@ -12,6 +12,7 @@ class Usuarios extends CI_Controller
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
+		$this->load->model('UsuariosModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
@@ -26,13 +27,13 @@ class Usuarios extends CI_Controller
 		$columna0 = ".";
 		$columna1 = ".id";
 		$columna2 = "Usuario";
-		$columna3 = "Tiempo de actividad";
+		$columna3 = "Tiempo total de conexión";
 		$columna4 = "Perfil";
-		$columna5 = "Bytes recibidos";
-		$columna6 = "Bytes enviados";
+		$columna5 = "Tráfico descarga";
+		$columna6 = "Tráfico subida";
 		$columna7 = "Comentario";
 		$columna8 = "Deshabilitado";
-
+		
 		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8);
 
 		$usuarios = $this->MKTModel->MostrarRecargarDatosUsuarios();
@@ -83,6 +84,8 @@ class Usuarios extends CI_Controller
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
+		$this->UsuariosModel->sincronizarUsuarios($usuarios);
+
 		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
 
@@ -108,6 +111,9 @@ class Usuarios extends CI_Controller
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		$this->UsuariosModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
 	}
@@ -123,8 +129,13 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->eliminarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
+		$this->UsuariosModel->eliminarUsuarios($usuarios);
+
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
+		$usuarios = $data[0];
+
+		$this->UsuariosModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
@@ -163,4 +174,5 @@ class Usuarios extends CI_Controller
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
+
 }

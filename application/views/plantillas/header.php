@@ -33,7 +33,6 @@
     <link rel="stylesheet" href="<?= base_url() ?>css/bootstrap4.min.css" />
     <script src="<?= base_url() ?>js/bootstrap4.min.js"></script>
 
-
     <link href="<?= base_url() ?>css/select2.min.css" rel="stylesheet" />
     <script src="<?= base_url() ?>js/select2.min.js"></script>
 
@@ -259,5 +258,41 @@
                                     return row;
                                 });
                                 return rowDetailsArray;
+                            }
+
+                            // Funcion para comprobar caracteres raros y no permitir escribirlos. Basta con añadirla en el atributo oninput del input
+                            function validarInput(input) {
+                                var regex = /^[a-zA-Z0-9\s-]*$/;
+                                var $errorMensaje = $('#errorMensaje');
+                                if ($errorMensaje.length === 0) {
+                                    $errorMensaje = $('<span id="errorMensaje" style="color: #da1b1b; display:none; padding-left:8px;">Caracteres no válidos</span>');
+                                    $(input).after($errorMensaje);
+                                } else {
+                                    $errorMensaje.remove();
+                                }
+                                var valorOriginal = $(input).val();
+                                var valorFiltrado = valorOriginal.replace(/[^a-zA-Z0-9\s-]/g, '');
+                                if (valorOriginal !== valorFiltrado) {
+                                    $(input).css('backgroundColor', '#f8d7da');
+                                    $errorMensaje.show().css('opacity', 0).animate({
+                                        opacity: 1
+                                    }, 200);
+                                    $(input).val(valorFiltrado);
+                                    setTimeout(() => {
+                                        $errorMensaje.animate({
+                                            opacity: 0
+                                        }, 200, function() {
+                                            $(this).hide();
+                                            $errorMensaje.remove();
+                                        });
+                                        $(input).css('backgroundColor', '');
+                                    }, 2000);
+                                } else {
+                                    $errorMensaje.animate({
+                                        opacity: 0
+                                    }, 200, function() {
+                                        $(this).hide();
+                                    });
+                                }
                             }
                         </script>

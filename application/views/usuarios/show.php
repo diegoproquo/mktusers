@@ -10,9 +10,9 @@
 
     </div>
     <p class="mb-4"> Esta es la ventana para gestionar los usuarios. Podrá añadir nuevos usuarios, asi como eliminarlos o deshabilitarlos. También
-                        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar 
-                        como referencia.
-                        </p>
+        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar
+        como referencia.
+    </p>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
@@ -38,19 +38,19 @@
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Nombre de usuario</label>
-                        <input id="inputUsuario" type="text" class="form-control" />
+                        <input id="inputUsuario" type="text" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Contraseña</label>
-                        <input id="inputPassword" type="password" class="form-control" />
+                        <input id="inputPassword" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control" />
+                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)"/>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -83,7 +83,9 @@
                 </div>
 
             </div>
+
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
             </div>
@@ -159,7 +161,9 @@
     <input id="btnImportarUsuariosFormSubmit" type="submit" value="Subir">
 </form>
 
+
 <script>
+
     var idUsuario = -1;
     var lines = [];
     var headers;
