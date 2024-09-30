@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/*Controlador de los usuarios del MIKROTIK*/
+
 class Usuarios extends CI_Controller
 {
 
@@ -12,7 +14,7 @@ class Usuarios extends CI_Controller
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
-		$this->load->model('UsuariosModel');
+		$this->load->model('UsuariosMktModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
@@ -84,7 +86,7 @@ class Usuarios extends CI_Controller
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
-		$this->UsuariosModel->sincronizarUsuarios($usuarios);
+		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
@@ -113,7 +115,7 @@ class Usuarios extends CI_Controller
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
-		$this->UsuariosModel->sincronizarUsuarios($usuarios);
+		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
 	}
@@ -129,13 +131,13 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->eliminarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
-		$this->UsuariosModel->eliminarUsuarios($usuarios);
+		$this->UsuariosMktModel->eliminarUsuarios($usuarios);
 
 		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
-		$this->UsuariosModel->sincronizarUsuarios($usuarios);
+		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
