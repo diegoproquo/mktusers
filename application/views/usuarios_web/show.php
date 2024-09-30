@@ -167,7 +167,6 @@
         } else {
 
             rows = ObtenerFilasCheckeadas('datatableUsuariosWeb');
-            console.log(rows);
             var datos = {
                 usuariosweb: rows
             };
