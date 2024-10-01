@@ -49,13 +49,8 @@
         border-color: #990000;
     }
 
-    .drag-clone {
-        position: absolute;
-        pointer-events: none;
-        z-index: 1000;
-        opacity: 1;
-    }
 </style>
+
 <div class="container-fluid px-4" style="width: 85%;overflow: hidden;">
 
     <!-- Page Heading -->
@@ -80,13 +75,11 @@
             </div>
 
             <div class="col-md-4 mt-4">
-                <div class="dropzone dropzoneEditar" id="dropzoneEditar">Editar</div>
-                <div class="dropzone dropzoneEliminar" id="dropzoneEliminar">Eliminar</div>
+                <div class="dropzone dropzoneEditar h3 font-weight-bold" id="dropzoneEditar">Editar &nbsp;<i class="fas fa-pen "></i></div>
+                <div class="dropzone dropzoneEliminar h3 font-weight-bold" id="dropzoneEliminar">Eliminar &nbsp;<i class="fas fa-trash"></i></div>
             </div>
         </div>
     </div>
-
-
 
 
     <div class="modal fade" id="modalTags" tabindex="-1" role="dialog" aria-labelledby="modalTagsTitulo" aria-hidden="true">
@@ -300,6 +293,8 @@
         }
 
 
+        // Este metodo sirve para controlar los eventos drag and drop. Basicamente se crea un clon de la card y el elemento original se le da una opacidad de 0 para que sea invisible.
+        // Despues abajo del todo establecemos el eventoq eu queremos que suceda al soltar el elemento en el dropzone
         function InicializarTags() {
 
             // Obtener todas las cards que pueden ser arrastradas
