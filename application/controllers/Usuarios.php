@@ -111,14 +111,15 @@ class Usuarios extends CI_Controller
 			$conexionMKT = $data[1];
 		}
 
-		$data = $this->UsuariosMktModel->actualizarTag($datos['id'], $datos['tag']);
 
 		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
+		$this->UsuariosMktModel->sincronizarUsuarios($data[0]);
+
+		$this->UsuariosMktModel->actualizarTag($datos['usuario'], $datos['tag']);
 
 		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
 
-		$this->UsuariosMktModel->sincronizarUsuarios($data[0]);
 
 		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
@@ -174,7 +175,10 @@ class Usuarios extends CI_Controller
 
 		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
 
-		echo json_encode(array($conexionMKT, $data[0]));
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
+
+
+		echo json_encode(array($conexionMKT, $usuarios));
 	}
 
 	public function HabilitarUsuarios()
@@ -191,7 +195,9 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 
-		echo json_encode(array($conexionMKT, $data[0]));
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
+
+		echo json_encode(array($conexionMKT, $usuarios));
 	}
 
 	public function DeshabilitarUsuarios()
@@ -209,7 +215,9 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 
-		echo json_encode(array($conexionMKT, $data[0]));
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
+
+		echo json_encode(array($conexionMKT, $usuarios));
 	}
 
 	public function MostrarRecargarDatosUsuarios($usuariosDB)
@@ -222,7 +230,6 @@ class Usuarios extends CI_Controller
 			if ($item["COLOR"] != null) {
 				$color = $item["COLOR"];
 				$nombreTag = $item["NOMBRE_TAG"];
-
 
 				$item['Tags'] = "<div class='card shadow-sm' style='border-left: .15rem solid $color;'>
 									<div class='card-body p-2'>

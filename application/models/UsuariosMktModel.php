@@ -37,7 +37,7 @@ class UsuariosMktModel extends CI_Model
             // Obtener el ID del MikroTik y el nombre del usuario
             $id_mkt = $item['.id'];  // ID del Mikrotik
             $nombre_usuario = $item['Usuario'];  // Nombre del usuario
-    
+
             // Verificar si el usuario ya existe en la base de datos
             $this->db->where('id_mkt', $id_mkt);
             $query = $this->db->get('tbl_usuarios_mkt');  // Nombre de tu tabla en la base de datos
@@ -46,7 +46,7 @@ class UsuariosMktModel extends CI_Model
             if ($usuario_existente) {
                 // Si el usuario existe, actualizamos el nombre (unico campo que se puede editar)
                 $data = array(
-                    'nombre' => $nombre_usuario
+                    'nombre' => $nombre_usuario,
                 );
                 $this->db->where('id_mkt', $id_mkt);
                 $this->db->update('tbl_usuarios_mkt', $data);
@@ -97,20 +97,15 @@ class UsuariosMktModel extends CI_Model
     }
     
     
-    public function actualizarTag($id_mkt, $idtag){
+    public function actualizarTag($nombre, $idtag){
         $data = array(
             'ID_TAG' => $idtag
         );
     
-        $this->db->where('ID_MKT', $id_mkt);
+        $this->db->where('NOMBRE', $nombre);
         return $this->db->update('tbl_usuarios_mkt', $data);
     }
     
-
-    
-
-
-
 
 
 }

@@ -581,6 +581,7 @@
         }
 
         $('#inpuComentario').val(usuario[0]['Comentario']);
+        
     }
 
     function DescargarPlantilla() {
@@ -615,6 +616,7 @@
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
+        $('#inputTag').val(null);
     }
 
     function LimpiarDatosModalImportar() {
