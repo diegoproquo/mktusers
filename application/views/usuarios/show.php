@@ -17,7 +17,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, true, true);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,7,8", false, true, true);
                 ?>
             </div>
         </div>
@@ -75,6 +75,23 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Comentario</label>
@@ -412,6 +429,7 @@
         datos['password'] = $('#inputPassword').val();
         datos['perfil'] = $('#selectPerfiles').val();
         datos['comentario'] = $('#inpuComentario').val();
+        datos['tag'] = $('#selectTags').val();
 
         $.ajax({
             type: 'POST',

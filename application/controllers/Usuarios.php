@@ -15,12 +15,12 @@ class Usuarios extends CI_Controller
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
 		$this->load->model('UsuariosMktModel');
+		$this->load->model('TagsModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
 			return;
 		}
-		
 	}
 
 	public function show()
@@ -35,16 +35,20 @@ class Usuarios extends CI_Controller
 		$columna6 = "Tráfico subida";
 		$columna7 = "Comentario";
 		$columna8 = "Deshabilitado";
-		
-		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8);
+		$columna9 = "Tags";
 
-		$usuarios = $this->MKTModel->MostrarRecargarDatosUsuarios();
-		$data['data'] = $usuarios[0];
+		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9);
+
+		$usuarios = $this->MKTModel->getUsuariosMKT();
+
+		$data['data'] = $this->MostrarRecargarDatosUsuarios($usuarios[0]);
 		$data['conexionMKT'] = $usuarios[1];
 
 		$perfiles = $this->MKTModel->MostrarRecargarDatosPerfiles();
 		$data['perfiles'] = $perfiles[0];
 		$data['conexionMKT'] = $perfiles[1];
+
+		$data['tags'] = $this->TagsModel->getTags();
 
 		$this->load->view('plantillas/header');
 		$this->load->view('usuarios/show', $data);
@@ -79,10 +83,9 @@ class Usuarios extends CI_Controller
 			$data = $this->MKTModel->importarUsuarios($usuarios);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
-
 		}
 
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
@@ -90,9 +93,6 @@ class Usuarios extends CI_Controller
 
 		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
-
-
-
 
 	public function GuardarEditarUsuario()
 	{
@@ -105,19 +105,54 @@ class Usuarios extends CI_Controller
 			$data = $this->MKTModel->nuevoUsuarioHotspot($datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
-		}else{
+		} else {
 			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}
 
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data = $this->UsuariosMktModel->actualizarTag($datos['id'], $datos['tag']);
+
+		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
-		$usuarios = $data[0];
 
-		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
 
-		echo json_encode(array($conexionMKT, $data[0], $mensajeError));
+		$this->UsuariosMktModel->sincronizarUsuarios($data[0]);
+
+		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
+	}
+
+	public function AgregarTags($usuarios)
+	{
+
+		$usuariosBD = $this->UsuariosMktModel->getUsuariosPorID_MKT($usuarios);
+
+		// Crear un mapa de usuariosBD con todos los campos que necesitas (ID_TAG, COLOR, NOMBRE_TAG)
+		$usuariosBDMap = [];
+		foreach ($usuariosBD as $usuarioBD) {
+			$usuariosBDMap[$usuarioBD->ID_MKT] = [
+				'ID_TAG' => $usuarioBD->ID_TAG,
+				'COLOR' => $usuarioBD->COLOR,
+				'NOMBRE_TAG' => $usuarioBD->NOMBRE_TAG
+			];
+		}
+
+		// Iterar sobre los usuarios y añadir los datos desde usuariosBDMap
+		foreach ($usuarios as &$usuario) {
+			if (isset($usuariosBDMap[$usuario['.id']])) {
+				$usuario['ID_TAG'] = $usuariosBDMap[$usuario['.id']]['ID_TAG'];
+				$usuario['COLOR'] = $usuariosBDMap[$usuario['.id']]['COLOR'];
+				$usuario['NOMBRE_TAG'] = $usuariosBDMap[$usuario['.id']]['NOMBRE_TAG'];
+			} else {
+				// Si no se encuentra, asignar valores nulos
+				$usuario['ID_TAG'] = null;
+				$usuario['COLOR'] = null;
+				$usuario['NOMBRE_TAG'] = null;
+			}
+		}
+
+		return $usuarios;
 	}
 
 	public function EliminarUsuarios()
@@ -133,7 +168,7 @@ class Usuarios extends CI_Controller
 
 		$this->UsuariosMktModel->eliminarUsuarios($usuarios);
 
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 		$usuarios = $data[0];
 
@@ -153,7 +188,7 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->habilitarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 
 		echo json_encode(array($conexionMKT, $data[0]));
@@ -171,10 +206,32 @@ class Usuarios extends CI_Controller
 		$data = $this->MKTModel->deshabilitarUsuarios($usuarios);
 		$conexionMKT = $data[1];
 
-		$data = $this->MKTModel->MostrarRecargarDatosUsuarios();
+		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];
 
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
+	public function MostrarRecargarDatosUsuarios($usuariosDB)
+	{
+
+		$usuarios = $this->AgregarTags($usuariosDB);
+
+		foreach ($usuarios as &$item) {
+
+			if ($item["COLOR"] != null) {
+				$color = $item["COLOR"];
+				$nombreTag = $item["NOMBRE_TAG"];
+
+
+				$item['Tags'] = "<div class='card shadow-sm' style='border-left: .15rem solid $color;'>
+									<div class='card-body p-2'>
+										<div class='text-xs font-weight-bold text-uppercase' style='color: $color;'>$nombreTag</div>
+									</div>
+								</div>";
+			}
+		}
+
+		return $usuarios;
+	}
 }

@@ -67,22 +67,46 @@ class UsuariosMktModel extends CI_Model
     public function eliminarUsuarios($usuarios)
     {
         foreach ($usuarios as $user) {
-            // Obtener el ID del MikroTik del usuario
             $id_mkt = $user['.id'];
-            // Verificar si el usuario existe en la base de datos antes de eliminar
             $this->db->where('id_mkt', $id_mkt);
-            $this->db->delete('tbl_usuarios_mkt');  // Reemplaza 'tbl_usuarios_mkt' por el nombre de tu tabla
+            $this->db->delete('tbl_usuarios_mkt');
         }
     }
     
-
-    public function getUsuarios(){
-        return $this->db->get("tbl_usuarios")->result();
+    public function getUsuariosPorID_MKT($usuarios) {
+        // Crear un array de IDs de usuarios
+        $ids = [];
+        foreach ($usuarios as $item) {
+            $ids[] = $item['.id'];
+        }
+    
+        // Verificar si el array de IDs no está vacío
+        if (!empty($ids)) {
+            // Filtrar los usuarios que coincidan con los IDs
+            $this->db->where_in('tbl_usuarios_mkt.ID_MKT', $ids);
+        }
+    
+        // Seleccionar los campos de ambas tablas y asignar alias al campo NOMBRE y COLOR de tbl_tags
+        $this->db->select('tbl_usuarios_mkt.*, tbl_tags.NOMBRE as NOMBRE_TAG, tbl_tags.COLOR');
+    
+        // Realizar la INNER JOIN con tbl_tags
+        $this->db->join('tbl_tags', 'tbl_usuarios_mkt.ID_TAG = tbl_tags.ID');
+    
+        // Ejecutar la consulta y obtener los resultados
+        return $this->db->get('tbl_usuarios_mkt')->result();
     }
-
-    public function getUsuarioPorId($site_id){
-        return $this->db->get_where("tbl_usuarios", array("ID_MKT" => $site_id))->row();
+    
+    
+    public function actualizarTag($id_mkt, $idtag){
+        $data = array(
+            'ID_TAG' => $idtag
+        );
+    
+        $this->db->where('ID_MKT', $id_mkt);
+        return $this->db->update('tbl_usuarios_mkt', $data);
     }
+    
+
     
 
 

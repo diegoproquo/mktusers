@@ -57,7 +57,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tags</h1>
         <div class="btn-group">
-            <button id="btnNuevoTag" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTags" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo</button>
+            <button id="btnNuevoTag" class="btn btn-primary" data-toggle="modal" data-target="#modalTags" style="margin-left:20px"><i class="fas fa-plus"></i> Nuevo</button>
         </div>
 
     </div>
@@ -75,8 +75,8 @@
             </div>
 
             <div class="col-md-4 mt-4">
-                <div class="dropzone dropzoneEditar h3 font-weight-bold" id="dropzoneEditar">Editar &nbsp;<i class="fas fa-pen "></i></div>
-                <div class="dropzone dropzoneEliminar h3 font-weight-bold" id="dropzoneEliminar">Eliminar &nbsp;<i class="fas fa-trash"></i></div>
+                <div class="dropzone dropzoneEditar h4 font-weight-bold" id="dropzoneEditar">Editar &nbsp;<i class="fas fa-pen "></i></div>
+                <div class="dropzone dropzoneEliminar h4 font-weight-bold" id="dropzoneEliminar">Eliminar &nbsp;<i class="fas fa-trash"></i></div>
             </div>
         </div>
     </div>
@@ -102,7 +102,7 @@
                     </div>
                     <div class="row mt-2 mb-2">
                         <div class="col-md-9">
-                            <input id="inputNombre" type="text" class="form-control" />
+                            <input id="inputNombre" type="text" class="form-control" style="text-transform:uppercase"/>
                         </div>
                         <div class="col-md-3">
                             <input type="text" class="form-control color-picker" id="inputColor" value="#ffffff">

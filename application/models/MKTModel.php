@@ -112,7 +112,7 @@ class MKTModel extends CI_Model
 	}
 
 
-	public function MostrarRecargarDatosUsuarios()
+	public function getUsuariosMKT()
 	{
 
 		$client = $this->conexionMKT();
@@ -362,7 +362,7 @@ class MKTModel extends CI_Model
 				$contrasenasInvalidas = [];
 				$campoVacio = false;
 
-				$usuariosExistentes = $this->MostrarRecargarDatosUsuarios();
+				$usuariosExistentes = $this->getUsuariosMKT();
 				$usuariosExistentes = $usuariosExistentes[0];
 
 				// Comprueba que los usuarios que se están importado sno existen ya. Si hay algun duplicado, no importará ningunn usuario. ()
