@@ -35,7 +35,7 @@
     }
 
     .card {
-        max-height: 110px;
+        height: 110px;
         max-width: 417px;
     }
 
