@@ -92,10 +92,12 @@ class Usuarios extends CI_Controller
 
 		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
 
-
-		foreach($usuariosCSV as $item){
-			$this->UsuariosMktModel->actualizarTag($item['name'], $item['tags']);
+		if ($mensajeError == "") {
+			foreach ($usuariosCSV as $item) {
+				$this->UsuariosMktModel->actualizarTag($item['name'], $item['tags']);
+			}
 		}
+
 
 
 		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
