@@ -17,7 +17,7 @@
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
                 <?php
-                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,7,8", false, true, true);
+                bootstrapTablePersonalizadaCheckbox($columns, $data, "datatableUsuarios", "Usuarios", "1,8", false, true, true);
                 ?>
             </div>
         </div>
@@ -566,6 +566,7 @@
 
     function ClicEditarUusario() {
         usuario = ObtenerFilasCheckeadas('datatableUsuarios');
+        console.log(usuario);
         idUsuario = usuario[0]['.id'];
         $('#modalUsuariosTitulo').text('Editar usuario');
         $('#inputUsuario').val(usuario[0]['Usuario']);
@@ -580,8 +581,9 @@
             $selectPerfiles.val('default');
         }
 
+        $('#selectTags').val(usuario[0]['ID_TAG']);
         $('#inpuComentario').val(usuario[0]['Comentario']);
-        
+
     }
 
     function DescargarPlantilla() {
@@ -616,7 +618,7 @@
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
-        $('#inputTag').val(null);
+        $('#selectTags').val(null);
     }
 
     function LimpiarDatosModalImportar() {

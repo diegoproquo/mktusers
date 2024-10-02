@@ -98,7 +98,7 @@ class UsuariosMktModel extends CI_Model
     
     
     public function actualizarTag($nombre, $idtag){
-        if($idtag = "null") $idtag = null;
+
         $data = array(
             'ID_TAG' => $idtag
         );
