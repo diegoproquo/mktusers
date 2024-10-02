@@ -75,6 +75,23 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Comentario</label>
@@ -119,6 +136,21 @@
                         <label for="selectImportPassword" class="form-label">Contraseña</label>
                         <select class="form-control select-header" id="selectImportPassword">
 
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectImportTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -351,7 +383,9 @@
     function ImportarUsuarios() {
         var columnaUsuario = $('#selectImportUser').val();
         var columnaPassword = $('#selectImportPassword').val();
+        
         var columnaComment = $('#selectImportComment').val();
+        var tags = $('#selectImportTags').val();
         var perfil = $('#selectImportPerfiles').val();
 
         $.ajax({
@@ -362,7 +396,8 @@
                 columnaUsuario: columnaUsuario,
                 columnaPassword: columnaPassword,
                 columnaComment: columnaComment,
-                perfil: perfil
+                perfil: perfil,
+                tags: tags
 
             }),
             contentType: "application/json",
@@ -412,6 +447,7 @@
         datos['password'] = $('#inputPassword').val();
         datos['perfil'] = $('#selectPerfiles').val();
         datos['comentario'] = $('#inpuComentario').val();
+        datos['tag'] = $('#selectTags').val();
 
         $.ajax({
             type: 'POST',
@@ -548,6 +584,7 @@
 
     function ClicEditarUusario() {
         usuario = ObtenerFilasCheckeadas('datatableUsuarios');
+        console.log(usuario);
         idUsuario = usuario[0]['.id'];
         $('#modalUsuariosTitulo').text('Editar usuario');
         $('#inputUsuario').val(usuario[0]['Usuario']);
@@ -562,7 +599,9 @@
             $selectPerfiles.val('default');
         }
 
+        $('#selectTags').val(usuario[0]['ID_TAG']);
         $('#inpuComentario').val(usuario[0]['Comentario']);
+
     }
 
     function DescargarPlantilla() {
@@ -597,6 +636,7 @@
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
+        $('#selectTags').val(null);
     }
 
     function LimpiarDatosModalImportar() {
@@ -604,5 +644,6 @@
         $('#selectImportPassword').empty();
         $('#selectImportComment').empty();
         $('#importarUsuariosForm')[0].reset();
+        $('#selectImportTags').val(null);
     }
 </script>

@@ -4,6 +4,7 @@ class TagsModel extends CI_Model
 {
     public $id;
     public $nombre;
+    public $color;
     public $deleted_at;
 
     public function __construct()
@@ -11,29 +12,39 @@ class TagsModel extends CI_Model
         $this->load->database();
     }
 
-    public function nuevoTag ($id, $nombre)
+    public function nuevoTag ($id, $nombre, $color)
     {
 
         $this->id = $id;
         $this->nombre = $nombre;
+        $this->color = $color;
         $this->deleted_at = null;
 
         $this->db->insert('tbl_tags', $this);
         return $this->db->insert_id();
     }
 
-    public function guardarCambios($id, $nombre)
+    public function guardarCambios($id, $nombre, $color)
     {
         $this->id = $id;
         $this->nombre = $nombre;
+        $this->color = $color;
     
         return $this->db->update('tbl_tags', $this, array("ID" => $id));
     }
     
     public function getTags()
     {
-        return $this->db->where("DELETED_AT IS NULL")->get("tbl_tags")->result();
+        $sql = "SELECT t.*, 
+                        COUNT(u.ID_TAG) AS USUARIOS
+                 FROM tbl_tags t
+                 LEFT JOIN tbl_usuarios_mkt u ON t.ID = u.ID_TAG
+                 WHERE t.DELETED_AT IS NULL 
+                 GROUP BY t.ID;";
+    
+        return $this->db->query($sql)->result();
     }
+    
     
     public function eliminar($id)
     {
