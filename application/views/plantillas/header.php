@@ -141,21 +141,24 @@
 
             ?>
                 <div class="sidebar-heading mt-3">
-                    Ajustes
+                    Administrar
                 </div>
 
-                <!-- Nav Item - Usuarios Web -->
+                <!-- Nav Item - Ajustes Collapse Menu -->
                 <li class="nav-item">
-                    <a class="nav-link" onclick="IrA('UsuariosWeb/show', false)">
-                        <i class="fas fa-address-card"></i>
-                        <span>Usuarios Web</span></a>
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" style="cursor:pointer" onclick="IrA('UsuariosWeb/show', false)"> <i class="fas fa-address-card"></i>&nbsp;&nbsp; Usuarios Web</a>
+                            <a class="collapse-item" style="cursor:pointer" onclick="IrA('Scripts/show', false)"> <i class="fas fa-code"></i> &nbsp;&nbsp;Scripts</a>
+                        </div>
+                    </div>
                 </li>
-                <!-- Nav Item - Scripts -->
-                <li class="nav-item">
-                    <a class="nav-link" onclick="IrA('Scripts/show', false)">
-                        <i class="fas fa-code"></i>
-                        <span>Scripts</span></a>
-                </li>
+
 
             <?php
             }

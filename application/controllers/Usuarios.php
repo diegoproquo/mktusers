@@ -33,9 +33,9 @@ class Usuarios extends CI_Controller
 		$columna4 = "Perfil";
 		$columna5 = "Tráfico descarga";
 		$columna6 = "Tráfico subida";
-		$columna7 = "Comentario";
+		$columna7 = "Tag";
 		$columna8 = "Deshabilitado";
-		$columna9 = "Tags";
+		$columna9 = "Comentario";
 
 		$data['columns'] = array($columna0, $columna1, $columna2, $columna3, $columna4, $columna5, $columna6, $columna7, $columna8, $columna9);
 
@@ -97,8 +97,6 @@ class Usuarios extends CI_Controller
 				$this->UsuariosMktModel->actualizarTag($item['name'], $item['tags']);
 			}
 		}
-
-
 
 		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
 
@@ -242,7 +240,7 @@ class Usuarios extends CI_Controller
 				$color = $item["COLOR"];
 				$nombreTag = $item["NOMBRE_TAG"];
 
-				$item['Tags'] = "<div class='card shadow-sm' style='border-left: .15rem solid $color;'>
+				$item['Tag'] = "<div class='card shadow-sm' style='border-left: .15rem solid $color;'>
 									<div class='card-body p-2'>
 										<div class='text-xs font-weight-bold text-uppercase' style='color: $color;'>$nombreTag</div>
 									</div>
