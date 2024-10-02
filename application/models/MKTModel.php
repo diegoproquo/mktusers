@@ -452,6 +452,12 @@ class MKTModel extends CI_Model
 				$query->add('=shared-users=' . $sharedUsers);
 				$query->add('=add-mac-cookie=' . $macCookie);
 
+				$onLoginScript = ':local usuario $user;/log info "Usuario: $usuario";/tool fetch url="http://192.168.168.24/mktusers/RegistroConexion?usuario=$usuario" output=none;';
+				$query->add('=on-login=' . $onLoginScript);
+
+				$onLogoutScript = ':local descarga $"bytes-out":local carga $"bytes-in":local usuario $"user"/log info "Usuario: $usuario - Descarga: $descarga bytes - Carga: $carga bytes"/tool fetch url="http://192.168.168.24/mktusers/RegistroTrafico?descarga=$descarga&carga=$carga" output=none;';
+				$query->add('=on-logout=' . $onLogoutScript);
+
 				if (!is_null($macCookieTimeout) && $macCookieTimeout !== '') {
 					$query->add('=mac-cookie-timeout=' . $macCookieTimeout);
 				}
