@@ -12,6 +12,7 @@ class Perfiles extends CI_Controller
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->model('MKTModel');
+		$this->load->model('ScriptsModel');
 
 		if (!$this->session->userdata('logged_in')) {
 			redirect(base_url() . "Login");
@@ -55,9 +56,12 @@ class Perfiles extends CI_Controller
 		$datos = $this->input->post('datos');
 		
 		if ($datos['id'] == "-1") {
-			$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
+			$scripts = $this->ScriptsModel->getScripts(); //Le añadimos scripts de onlogin y onlogout
+			$data = $this->MKTModel->addUserProfile($datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout'], $scripts);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
+
+
 		}else{
 			$data = $this->MKTModel->editUserProfile($datos['id'], $datos['nombre'], $datos['rate'],$datos['sharedUsers'], $datos['macCookie'], $datos['macCookieTimeout'], $datos['keepaliveTimeout']);
 			$mensajeError = $data[0];
