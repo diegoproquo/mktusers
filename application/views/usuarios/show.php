@@ -644,5 +644,6 @@
         $('#selectImportPassword').empty();
         $('#selectImportComment').empty();
         $('#importarUsuariosForm')[0].reset();
+        $('#selectImportTags').val(null);
     }
 </script>
