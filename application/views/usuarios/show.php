@@ -141,6 +141,21 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
+                        <label for="selectImportTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectImportTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
                         <label for="selectImportComment" class="form-label">Comentario</label>
                         <select class="form-control select-header" id="selectImportComment">
 
@@ -368,7 +383,9 @@
     function ImportarUsuarios() {
         var columnaUsuario = $('#selectImportUser').val();
         var columnaPassword = $('#selectImportPassword').val();
+        
         var columnaComment = $('#selectImportComment').val();
+        var tags = $('#selectImportTags').val();
         var perfil = $('#selectImportPerfiles').val();
 
         $.ajax({
@@ -379,7 +396,8 @@
                 columnaUsuario: columnaUsuario,
                 columnaPassword: columnaPassword,
                 columnaComment: columnaComment,
-                perfil: perfil
+                perfil: perfil,
+                tags: tags
 
             }),
             contentType: "application/json",

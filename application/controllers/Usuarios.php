@@ -68,7 +68,7 @@ class Usuarios extends CI_Controller
 		if (isset($decodedInput['csvData']) && !empty($decodedInput['csvData'])) {
 			$csvData = $decodedInput['csvData'];
 
-			$usuarios = array();
+			$usuariosCSV = array();
 
 			// Procesar los datos del CSV y asociarlos a un campo de usuario Mikrotik
 			foreach ($csvData as $row) {
@@ -77,10 +77,11 @@ class Usuarios extends CI_Controller
 				$user['password'] = $row[$decodedInput['columnaPassword']];
 				$user['comment'] = $row[$decodedInput['columnaComment']];
 				$user['profile'] = $decodedInput['perfil'];
-				$usuarios[] = $user;
+				$user['tags'] = $decodedInput['tags'];
+				$usuariosCSV[] = $user;
 			}
 
-			$data = $this->MKTModel->importarUsuarios($usuarios);
+			$data = $this->MKTModel->importarUsuarios($usuariosCSV);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}
@@ -90,6 +91,14 @@ class Usuarios extends CI_Controller
 		$usuarios = $data[0];
 
 		$this->UsuariosMktModel->sincronizarUsuarios($usuarios);
+
+
+		foreach($usuariosCSV as $item){
+			$this->UsuariosMktModel->actualizarTag($item['name'], $item['tags']);
+		}
+
+
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
 
 		echo json_encode(array($conexionMKT, $usuarios, $mensajeError));
 	}
