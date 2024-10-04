@@ -35,6 +35,10 @@
                 </button>
             </div>
             <div class="modal-body">
+
+            <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
+
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Nombre de usuario</label>
@@ -601,6 +605,7 @@
 
         $('#selectTags').val(usuario[0]['ID_TAG']);
         $('#inpuComentario').val(usuario[0]['Comentario']);
+        $('#textoNuevaPass').show();
 
     }
 
@@ -637,6 +642,7 @@
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
         $('#selectTags').val(null);
+        $('#textoNuevaPass').hide();
     }
 
     function LimpiarDatosModalImportar() {
