@@ -996,7 +996,7 @@ function actualizarGraficoFuncion($dataLinea, $dataBarras, $labels, $idChart, $t
 }
 
 
-// Grafico de cunion doble
+// Grafico de funcion doble
 function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo)
 {
 
@@ -1013,6 +1013,10 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 		<div class="card-header">
 			<i class="fas fa-chart-area me-1"></i>
 			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
 	</div>
@@ -1097,6 +1101,113 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 <?php
 }
 
+
+// Grafico de funcion doble
+function actualizarGraficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo)
+{
+
+	$maxData = 1;
+	for($i = 0; $i < count($dataLinea1); $i++){
+		if($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
+		if($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
+	}
+
+	// Calcular el máximo para el eje y con un margen adicional
+	$maxY = $maxData;
+?>
+	<div class="card mb-4">
+		<div class="card-header">
+			<i class="fas fa-chart-area me-1"></i>
+			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
+		</div>
+		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+			Chart.defaults.global.defaultFontColor = '#292b2c';
+
+			var labels = <?= json_encode($labels) ?>;
+			var dataLinea1 = <?= json_encode($dataLinea1) ?>;
+			var dataLinea2 = <?= json_encode($dataLinea2) ?>;
+
+			var ctx = document.getElementById('<?= $idChart ?>');
+			var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+					labels: labels,
+					datasets: [{
+							type: 'line',
+							label: 'Descarga',
+							borderColor: 'rgba(0,123,255,1)',
+							lineTension: 0.3,
+							backgroundColor: "rgba(0,123,255,0.2)",
+							pointBorderColor: "rgba(255,255,255,0.8)",
+							pointHoverBackgroundColor: "rgba(0,123,255,1)",
+							pointHoverRadius: 5,
+							pointHitRadius: 50,
+							data: dataLinea1,
+							pointBorderWidth: 2,
+							fill: true
+						},
+						{
+							type: 'line',
+							label: 'Subida',
+							borderColor: 'rgba(255, 0, 132, 1)',
+							lineTension: 0.3,
+							backgroundColor: "rgba(255, 0, 132, 0.2)",
+							pointBorderColor: "rgba(255, 0, 132, 1)",
+							pointHoverBackgroundColor: "rgba(255, 0, 132, 1)",
+							pointHoverRadius: 5,
+							pointHitRadius: 50,
+							data: dataLinea2,
+							pointBorderWidth: 2,
+							fill: true
+						}
+					]
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							time: {
+								unit: 'hour',
+							},
+							gridLines: {
+								display: false
+							},
+							ticks: {
+								maxTicksLimit: 16
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								min: 0,
+								max: <?= $maxY ?>,
+								maxTicksLimit: 10
+							},
+							gridLines: {
+								color: "rgba(0, 0, 0, .125)",
+							}
+						}],
+					},
+					legend: {
+						display: true
+					}
+				}
+			});
+
+		});
+	</script>
+<?php
+	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+	return $html_grafico; // Retorna el HTML del gráfico
+}
+
 function graficoBarras($data, $labels, $idChart, $titulo)
 {
 	// Encontrar el máximo de los datos de conexión
@@ -1110,8 +1221,8 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 			<i class="fas fa-chart-bar me-1"></i>
 			<?= $titulo ?>
 			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoBarras('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoBarras('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
 			</div>
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
@@ -1188,8 +1299,8 @@ function actualizarGraficoBarras($data, $labels, $idChart, $titulo)
 			<i class="fas fa-chart-bar me-1"></i>
 			<?= $titulo ?>
 			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoBarras('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoBarras('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
 			</div>
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>

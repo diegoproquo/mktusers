@@ -99,7 +99,7 @@ class Dashboard extends CI_Controller
 	}
 
 	public function Trafico7Dias($fecha){
-		$data = $this->TraficoModel->getTrafico7dias();
+		$data = $this->TraficoModel->getTrafico7dias($fecha);
 		$decarga = $data[0];
 		$carga = $data[1];
 
@@ -114,7 +114,7 @@ class Dashboard extends CI_Controller
 		return array($decarga, $carga, $labels);
 	}
 
-	public function ActualizarGraficoFuncion(){
+	public function ActualizarGraficoBarras(){
 		$datos = $this->input->post('datos');
 
 		$fecha = $datos["fechaConexiones"];
@@ -128,6 +128,20 @@ class Dashboard extends CI_Controller
 
 		echo json_encode(array(true, $nueva_fecha, $html_grafico));
 
+	}
+	
+	public function ActualizarGraficoFuncion(){
+		$datos = $this->input->post('datos');
+
+		$fecha = $datos["fechaTrafico"];
+		$accion = $datos["accion"];
+
+		$nueva_fecha = date("Y-m-d", strtotime($fecha . " " . $accion));
+		$trafico = $this->Trafico7Dias($nueva_fecha);
+
+		$html_grafico = actualizarGraficoFuncionDoble($trafico[0], $trafico[1], $trafico[2], "graficoTrafico", "Trafico semanal acumulado (MB)");
+		
+		echo json_encode(array(true, $nueva_fecha, $html_grafico));
 
 	}
 }
