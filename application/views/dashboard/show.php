@@ -78,7 +78,7 @@
         $grafico.animate({
             transform: 'translateX(' + salida + ')',
             opacity: 0
-        }, 400, function() {
+        }, 200, function() {
             // Mostrar un spinner
             $('#divGraficoConexiones').html('<div class="text-center mt-4"><div class="fa fa-spinner fa-spin mt-5" style="font-size:40px; color:rgba(2,117,216,1);" role="status" id="spinnerCargando"><span class="sr-only">Cargando...</span></div></div>');
 
@@ -102,7 +102,7 @@
                     $('#graficoConexionesWrapper').animate({
                         transform: 'translateX(0)',
                         opacity: 1
-                    }, 800);
+                    }, 200);
                 },
                 error: function(error) {
                     console.log("error");
