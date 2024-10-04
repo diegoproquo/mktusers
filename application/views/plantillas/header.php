@@ -104,7 +104,7 @@
             <li class="nav-item">
                 <a class="nav-link" onclick="IrA('Dashboard', false)">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Panel Principal</span></a>
             </li>
 
             <hr class="sidebar-divider my-0">

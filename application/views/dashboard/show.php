@@ -14,17 +14,22 @@
 
         <div class="row mt-4">
             <div class="col-xl-6">
-                <?php
-                graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoBarras", "Conexiones últimos 7 días");
-                ?>
+                <div id="divGraficoConexiones">
+                    <div id="graficoConexionesWrapper">
+                        <?php
+                        graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoConexiones", "Conexiones semanales");
+                        ?>
+                    </div>
+                </div>
             </div>
-            
+
             <div class="col-xl-6">
                 <?php
-                graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoFuncion", "Trafico acumulado últimos 7 días (MB)")
+                graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoTrafico", "Trafico acumulado últimos 7 días (MB)")
                 ?>
             </div>
         </div>
+
 
         <div class="footer_pagina">
 
@@ -36,10 +41,18 @@
 
 <script>
     var isSafari;
+    var fechaConexiones;
+    var fechaTrafico;
+    var fechaActual;
+
     $(document).ready(function() {
 
         var conexionMKT = <?= json_encode($conexionMKT) ?>;
         if (conexionMKT == false) MostrarAlertErrorMKT();
+
+        fechaConexiones = <?= json_encode($fecha_actual) ?>;
+        fechaTrafico = <?= json_encode($fecha_actual) ?>;
+        fechaActual = <?= json_encode($fecha_actual) ?>;
 
         var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         console.log(isSafari);
@@ -51,6 +64,57 @@
             Refrescar1Vez();
         });
     });
+
+    function actualizarGraficoFuncion(accion) {
+        var datos = {};
+        datos['fechaConexiones'] = fechaConexiones;
+        datos['accion'] = accion;
+
+        var direction = accion === 'next' ? 'left' : 'right';
+        var $grafico = $('#graficoConexionesWrapper');
+        var salida = (direction === 'left' ? '-100%' : '100%');
+        var entrada = (direction === 'left' ? '100%' : '0%');
+
+        $grafico.animate({
+            transform: 'translateX(' + salida + ')',
+            opacity: 0
+        }, 400, function() {
+            // Mostrar un spinner
+            $('#divGraficoConexiones').html('<div class="text-center mt-4"><div class="spinner-border text-primary" role="status" id="spinnerCargando"><span class="sr-only">Cargando...</span></div></div>');
+
+            $.ajax({
+                type: 'POST',
+                url: '<?= base_url() ?>/Dashboard/ActualizarGraficoFuncion',
+                dataType: 'json',
+                data: {
+                    datos: datos
+                },
+                success: function(response) {
+                    $('#divGraficoConexiones').html('<div id="graficoConexionesWrapper" style="transform: translateX(' + entrada + '); opacity: 0;">' + response[2] + '</div>');
+
+                    fechaConexiones = response[1];
+
+                    if (fechaConexiones === fechaActual) {
+                        $('#btnGraficoBarrasMas1').prop('disabled', true);
+                    } else {
+                        $('#btnGraficoBarrasMas1').prop('disabled', false);
+                    }
+                    $('#graficoConexionesWrapper').animate({
+                        transform: 'translateX(0)',
+                        opacity: 1
+                    }, 800);
+                },
+                error: function(error) {
+                    console.log("error");
+                    console.log(error);
+                }
+            });
+        });
+    }
+
+
+
+
 
     function Refrescar() {
         $.ajax({

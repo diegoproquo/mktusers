@@ -1109,6 +1109,10 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 		<div class="card-header">
 			<i class="fas fa-chart-bar me-1"></i>
 			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
 	</div>
@@ -1168,4 +1172,84 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 		});
 	</script>
 <?php
+}
+
+
+function actualizarGraficoBarras($data, $labels, $idChart, $titulo)
+{
+	// Encontrar el máximo de los datos de conexión
+	if (count($data) >= 1)	$maxData = max($data);
+	if ($maxData == 0) $maxData = 1;
+	// Calcular el máximo para el eje y con un margen adicional
+	$maxY = round($maxData * 1.1);
+?>
+	<div class="card mb-4">
+		<div class="card-header">
+			<i class="fas fa-chart-bar me-1"></i>
+			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
+		</div>
+		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			// Set new default font family and font color to mimic Bootstrap's default styling
+			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+			Chart.defaults.global.defaultFontColor = '#292b2c';
+
+			var labels = <?= json_encode($labels) ?>;
+			var data = <?= json_encode($data) ?>;
+
+			// Bar Chart Example
+			var ctx = document.getElementById('<?= $idChart ?>');
+			var myLineChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+					labels: labels,
+					datasets: [{
+						label: "Conexiones totales",
+						backgroundColor: "rgba(2,117,216,1)",
+						borderColor: "rgba(2,117,216,1)",
+						data: data
+					}]
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							time: {
+								unit: 'day'
+							},
+							gridLines: {
+								display: false
+							},
+							ticks: {
+								maxTicksLimit: 12
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								min: 0,
+								max: <?= $maxY ?>,
+								maxTicksLimit: 10
+							},
+							gridLines: {
+								display: true
+							}
+						}],
+					},
+					legend: {
+						display: true,
+						onClick: false
+					}
+				}
+			});
+		});
+	</script>
+<?php
+	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+	return $html_grafico; // Retorna el HTML del gráfico
 }

@@ -40,12 +40,14 @@ class Dashboard extends CI_Controller
 		$data['data_usuarios_activos'] = $data_usuarios_activos[0];
 		$data['conexionMKT'] = $data_usuarios_activos[1];
 
+		$fecha_actual = date('Y-m-d');
+		$data['fecha_actual'] = $fecha_actual;
 
-		$datosConexiones7dias = $this->Conexiones7Dias();
+		$datosConexiones7dias = $this->Conexiones7Dias($fecha_actual);
 		$data['dataConexiones7Dias'] = $datosConexiones7dias[0];
 		$data['labelsConexiones7Dias'] = $datosConexiones7dias[1];
 
-		$datosTrafico7dias = $this->Trafico7Dias();
+		$datosTrafico7dias = $this->Trafico7Dias($fecha_actual);
 		$data['datatraficoDescarga7Dias'] = $datosTrafico7dias[0];
 		$data['datatraficoCarga7Dias'] = $datosTrafico7dias[1];
 		$data['labelsTrafico7Dias'] = $datosTrafico7dias[2];
@@ -82,14 +84,13 @@ class Dashboard extends CI_Controller
 		echo json_encode(array($conexionMKT, $data[0]));
 	}
 
-	public function Conexiones7Dias(){
-		$data = $this->ConexionesModel->getConexiones7Dias();
+	public function Conexiones7Dias($fecha){
+		$data = $this->ConexionesModel->getConexiones7Dias($fecha);
 
 		$labels = [];
-		$fecha_actual = date('Y-m-d');
 	
 		for ($i = 0; $i < 8; $i++) {
-			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha_actual)));
+			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha)));
 		}
 
 		$labels = array_reverse($labels);
@@ -97,20 +98,36 @@ class Dashboard extends CI_Controller
 		return array($data, $labels);
 	}
 
-	public function Trafico7Dias(){
+	public function Trafico7Dias($fecha){
 		$data = $this->TraficoModel->getTrafico7dias();
 		$decarga = $data[0];
 		$carga = $data[1];
 
 		$labels = [];
-		$fecha_actual = date('Y-m-d');
 	
 		for ($i = 0; $i < 8; $i++) {
-			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha_actual)));
+			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha)));
 		}
 
 		$labels = array_reverse($labels);
 
 		return array($decarga, $carga, $labels);
+	}
+
+	public function ActualizarGraficoFuncion(){
+		$datos = $this->input->post('datos');
+
+		$fecha = $datos["fechaConexiones"];
+		$accion = $datos["accion"];
+
+		$nueva_fecha = date("Y-m-d", strtotime($fecha . " " . $accion));
+		$conexiones = $this->Conexiones7Dias($nueva_fecha);
+
+		$html_grafico = actualizarGraficoBarras($conexiones[0], $conexiones[1], "graficoConexiones", "Conexiones semanales");
+
+
+		echo json_encode(array(true, $nueva_fecha, $html_grafico));
+
+
 	}
 }

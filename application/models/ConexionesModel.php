@@ -38,10 +38,11 @@ class ConexionesModel extends CI_Model
 
 
     // Devuelve un array con los registros de las conexiones de los ultimos 7 dias agrupados por fecha ascendente
-    public function getConexiones7Dias()
+    public function getConexiones7Dias($fecha)
     {
         $conexiones = array_fill(0, 8, 0);
-
+        $fecha_base = strtotime($fecha);
+        
         // Consulta para obtener las conexiones sumadas por fecha
         $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, CONEXIONES as total_conexiones");
         $this->db->order_by('FECHA', 'DESC');
@@ -49,11 +50,11 @@ class ConexionesModel extends CI_Model
     
         $query = $this->db->get("tbl_conexiones");
         $resultados = $query->result();
-    
+
         // Crear un mapa de fechas para actualizar las conexiones
         $fecha_map = [];
         for ($i = 0; $i < 8; $i++) {
-            $fecha_map[date('d/m', strtotime("-$i day"))] = $i;
+            $fecha_map[date('d/m', strtotime("-$i day", $fecha_base))] = $i;
         }
     
         // Rellenamos los valores del array con los resultados de la consulta
