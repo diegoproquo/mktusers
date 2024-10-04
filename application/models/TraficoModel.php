@@ -41,8 +41,8 @@ class TraficoModel extends CI_Model
     // Devuelve un array con el trafico de carga y descarga de los ultimos 7 dias agrupados por fecha ascendente
     public function getTrafico7dias($fecha)
     {
-        $traficoDescarga = array_fill(0, 8, 0);
-        $traficoCarga = array_fill(0, 8, 0);
+        $traficoDescarga = array_fill(0, 7, 0);
+        $traficoCarga = array_fill(0, 7, 0);
         $fecha_base = strtotime($fecha);
 
         // Consulta para obtener el trafico
@@ -55,7 +55,7 @@ class TraficoModel extends CI_Model
 
         // Crear un mapa de fechas para actualizar el trafico
         $fecha_map = [];
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $fecha_map[date('d/m', strtotime("-$i day", $fecha_base))] = $i;
         }
 

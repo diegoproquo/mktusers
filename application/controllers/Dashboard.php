@@ -89,7 +89,7 @@ class Dashboard extends CI_Controller
 
 		$labels = [];
 	
-		for ($i = 0; $i < 8; $i++) {
+		for ($i = 0; $i < 7; $i++) {
 			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha)));
 		}
 
@@ -105,7 +105,7 @@ class Dashboard extends CI_Controller
 
 		$labels = [];
 	
-		for ($i = 0; $i < 8; $i++) {
+		for ($i = 0; $i < 7; $i++) {
 			$labels[] = date('d/m', strtotime("-$i day", strtotime($fecha)));
 		}
 
