@@ -80,7 +80,7 @@
             opacity: 0
         }, 400, function() {
             // Mostrar un spinner
-            $('#divGraficoConexiones').html('<div class="text-center mt-4"><div class="spinner-border text-primary" role="status" id="spinnerCargando"><span class="sr-only">Cargando...</span></div></div>');
+            $('#divGraficoConexiones').html('<div class="text-center mt-4"><div class="fa fa-spinner fa-spin mt-5" style="font-size:40px; color:rgba(2,117,216,1);" role="status" id="spinnerCargando"><span class="sr-only">Cargando...</span></div></div>');
 
             $.ajax({
                 type: 'POST',
