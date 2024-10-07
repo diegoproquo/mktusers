@@ -96,6 +96,13 @@ class UsuariosMktModel extends CI_Model
         return $this->db->get('tbl_usuarios_mkt')->result();
     }
     
+    public function getUsuarioPorNomnre($nombre){
+
+        $this->db->where('NOMBRE', $nombre);
+        $query = $this->db->get('tbl_usuarios_mkt');
+        return $query->row();
+    }
+    
     
     public function actualizarTag($nombre, $idtag){
 

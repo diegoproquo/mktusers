@@ -5,6 +5,7 @@ class ConexionesModel extends CI_Model
     public $id;
     public $fecha;
     public $conexiones;
+    public $id_tag;
 
 
     public function __construct()
@@ -12,25 +13,35 @@ class ConexionesModel extends CI_Model
         $this->load->database();
     }
 
-    public function registrarConexionDiaria()
+    public function registrarConexionDiaria($usuario)
     {
+
+        $this->load->model('ConexionesModel');
+        $this->load->model('ObtenerUltimoIdModel');
+
         // Obtener la fecha actual
         $fecha_actual = date('Y-m-d');
 
+        $usuarioMKT = $this->UsuariosMktModel->getUsuarioPorNomnre($usuario);
+
         // Verificar si ya existe un registro para la fecha actual
-        $query = $this->db->get_where('tbl_conexiones', array('fecha' => $fecha_actual));
+        $query = $this->db->get_where('tbl_conexiones', array('FECHA' => $fecha_actual, 'ID_TAG' => $usuarioMKT->ID_TAG));
         $registro = $query->row();
 
         if ($registro) {
             // Si existe el registro, incrementar el número de conexiones
             $this->db->set('CONEXIONES', 'CONEXIONES+1', FALSE);
             $this->db->where('FECHA', $fecha_actual);
+            $this->db->where('ID_TAG', $usuarioMKT->ID_TAG);
             $this->db->update('tbl_conexiones');
         } else {
             // Si no existe, crear un nuevo registro con 1 conexión
+            $id = $this->ObtenerUltimoIdModel->obtenerUltimoId('tbl_conexiones');
             $data = array(
+                'ID' => $id,
                 'FECHA' => $fecha_actual,
-                'CONEXIONES' => 1
+                'CONEXIONES' => 1,
+                'ID_TAG' => $usuarioMKT->ID_TAG,
             );
             $this->db->insert('tbl_conexiones', $data);
         }
@@ -42,15 +53,16 @@ class ConexionesModel extends CI_Model
     {
         $conexiones = array_fill(0, 7, 0);
         $fecha_base = strtotime($fecha);
-        
+    
         // Consulta para obtener las conexiones sumadas por fecha
-        $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, CONEXIONES as total_conexiones");
-        $this->db->order_by('FECHA', 'DESC');
+        $this->db->select("DATE_FORMAT(FECHA, '%d/%m') as fecha_formateada, SUM(CONEXIONES) as total_conexiones");
+        $this->db->group_by("FECHA");  // Agrupar por fecha formateada
+        $this->db->order_by('FECHA', 'DESC');  // Ordenar por la fecha original
         $this->db->limit(7);
     
         $query = $this->db->get("tbl_conexiones");
         $resultados = $query->result();
-
+    
         // Crear un mapa de fechas para actualizar las conexiones
         $fecha_map = [];
         for ($i = 0; $i < 7; $i++) {
@@ -68,4 +80,27 @@ class ConexionesModel extends CI_Model
         // Invertimos el array para que las fechas más recientes estén al final (opcional)
         return array_reverse($conexiones);
     }
-}
+    
+    // Devuelve las conexiones agrupadas por tag de un dia en concreto
+    public function getConexionesPorTagDia($fecha)
+    {
+        // Convertimos la fecha a un formato adecuado para la consulta
+        $fecha_base = date('Y-m-d', strtotime($fecha));
+    
+        // Consulta para obtener las conexiones sumadas por ID_TAG y unir con tbl_tags
+        $this->db->select("c.ID_TAG, t.NOMBRE, t.COLOR, SUM(c.CONEXIONES) as CONEXIONES");
+        $this->db->from("tbl_conexiones c"); // Usamos un alias para tbl_conexiones
+        $this->db->join("tbl_tags t", "c.ID_TAG = t.ID", "inner"); // Realizamos el INNER JOIN
+        $this->db->where('DATE(c.FECHA)', $fecha_base); // Usamos DATE() para comparar solo la parte de la fecha
+        $this->db->group_by("c.ID_TAG"); // Agrupamos por ID_TAG
+        $this->db->order_by('c.ID_TAG'); // Ordenamos por ID_TAG
+    
+        $query = $this->db->get();
+        $resultados = $query->result();
+    
+        return $resultados; // Devolvemos los resultados
+    }
+    
+    
+        }
+
