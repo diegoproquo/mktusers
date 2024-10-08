@@ -1378,7 +1378,7 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMenos1" onclick="actualizarGraficoDonut('-1 day')"><i class="fas fa-arrow-left"></i></button>
 				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMas1" onclick="actualizarGraficoDonut('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
 			</div>
-	
+
 		</div>
 		<div class="card-body">
 			<canvas id="<?= $idChart ?>" width="100%"></canvas>
@@ -1407,23 +1407,23 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 
 			//! IMPORTANTE: ESTO APLICA A TODOS LOS CHART RENDERIZADOS EN LA MISMA PAGINA
 			Chart.plugins.register({
-                afterDraw: function(chart) {
-                    if (chart.data.datasets[0].data.length === 0 || chart.data.datasets[0].data.every(val => val === 0)) {
-                        // No hay datos, mostrar mensaje
-                        var ctx = chart.chart.ctx;
-                        var width = chart.chart.width;
-                        var height = chart.chart.height;
-                        ctx.save();
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = '#aaa';
-                        ctx.fillText('No hay datos disponibles', width / 2, height / 2);
-                        ctx.restore();
-                    }
-                }
-            });
-			
+				afterDraw: function(chart) {
+					if (chart.data.datasets[0].data.length === 0 || chart.data.datasets[0].data.every(val => val === 0)) {
+						// No hay datos, mostrar mensaje
+						var ctx = chart.chart.ctx;
+						var width = chart.chart.width;
+						var height = chart.chart.height;
+						ctx.save();
+						ctx.textAlign = 'center';
+						ctx.textBaseline = 'middle';
+						ctx.font = '16px Arial';
+						ctx.fillStyle = '#aaa';
+						ctx.fillText('No hay datos disponibles', width / 2, height / 2);
+						ctx.restore();
+					}
+				}
+			});
+
 			// Crear gráfico de donut
 			var ctx = document.getElementById('<?= $idChart ?>');
 			var myDoughnutChart = new Chart(ctx, {
@@ -1444,7 +1444,17 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 					responsive: true,
 					maintainAspectRatio: false,
 					cutoutPercentage: 70, // Hace que el gráfico sea un donut
+					tooltips: {
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.labels[tooltipItem.index] || '';
+								var value = data.datasets[0].data[tooltipItem.index];
+								return label + ': ' + value + ' conexiones'; // Aquí se añade "conexiones"
+							}
+						}
+					}
 				}
+
 			});
 		});
 	</script>
@@ -1465,7 +1475,7 @@ function actualizarGraficoDonut($conexionesTag, $idChart, $titulo)
 				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMenos1" onclick="actualizarGraficoDonut('-1 day')"><i class="fas fa-arrow-left"></i></button>
 				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMas1" onclick="actualizarGraficoDonut('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
 			</div>
-	
+
 		</div>
 		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%"></canvas></div>
 	</div>
@@ -1510,6 +1520,15 @@ function actualizarGraficoDonut($conexionesTag, $idChart, $titulo)
 					responsive: true,
 					maintainAspectRatio: false,
 					cutoutPercentage: 70, // Hace que el gráfico sea un donut
+					tooltips: {
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.labels[tooltipItem.index] || '';
+								var value = data.datasets[0].data[tooltipItem.index];
+								return label + ': ' + value + ' conexiones'; // Aquí se añade "conexiones"
+							}
+						}
+					}
 				}
 			});
 		});
@@ -1518,4 +1537,3 @@ function actualizarGraficoDonut($conexionesTag, $idChart, $titulo)
 	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
 	return $html_grafico; // Retorna el HTML del gráfico
 }
-
