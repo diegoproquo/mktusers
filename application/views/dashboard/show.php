@@ -17,7 +17,7 @@
                 <div id="divGraficoDonut">
                     <div id="graficoDonutWrapper">
                         <?php
-                        graficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias");
+                        graficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias hoy");
                         ?>
                     </div>
                 </div>

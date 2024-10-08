@@ -162,8 +162,9 @@ class Dashboard extends CI_Controller
 		$nueva_fecha = date("Y-m-d", strtotime($fecha . " " . $accion));
 		$conexionesTag = $this->ConexionesModel->getConexionesPorTagDia($nueva_fecha);
 
-
-		$html_grafico = actualizarGraficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias " .$nueva_fecha);
+		$titulo = "Conexiones diarias " .$nueva_fecha;
+		if($nueva_fecha == date("Y-m-d")) $titulo = "Conexiones diarias hoy";
+		$html_grafico = actualizarGraficoDonut($conexionesTag, "graficoDonut", $titulo);
 
 		echo json_encode(array(true, $nueva_fecha, $html_grafico));
 	}
