@@ -16,7 +16,7 @@ class TagsModel extends CI_Model
     {
 
         $this->id = $id;
-        $this->nombre = $nombre;
+        $this->nombre = strtoupper($nombre);
         $this->color = $color;
         $this->deleted_at = null;
 
@@ -27,7 +27,7 @@ class TagsModel extends CI_Model
     public function guardarCambios($id, $nombre, $color)
     {
         $this->id = $id;
-        $this->nombre = $nombre;
+        $this->nombre = strtoupper($nombre);
         $this->color = $color;
     
         return $this->db->update('tbl_tags', $this, array("ID" => $id));

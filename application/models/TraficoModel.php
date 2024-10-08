@@ -14,6 +14,8 @@ class TraficoModel extends CI_Model
 
     public function registrarTraficoSesion($bytes_descarga, $bytes_carga)
     {
+        $this->load->model('ObtenerUltimoIdModel');
+
         // Obtener la fecha actual
         $fecha_actual = date('Y-m-d');
 
@@ -28,8 +30,10 @@ class TraficoModel extends CI_Model
             $this->db->where('FECHA', $fecha_actual);
             $this->db->update('tbl_trafico');
         } else {
-            // Si no existe, crear un nuevo registro con 1 conexión
+            // Si no existe, crear un nuevo registro con trafico
+            $id = $this->ObtenerUltimoIdModel->obtenerUltimoId('tbl_trafico');
             $data = array(
+                'ID' => $id,
                 'FECHA' => $fecha_actual,
                 'BYTES_DESCARGA' => (int)$bytes_descarga,
                 'BYTES_CARGA' => (int)$bytes_carga

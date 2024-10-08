@@ -596,7 +596,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 			<?= $titulo ?>
 		</div>
 		<div class="card-body">
-			<table class="table table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>" data-unique-id="ID">
+			<table class="table table-striped table-bordered" id="<?= $idTable ?>" data-show-columns="<?= $selectorColumnas ?>" data-search="true" data-search-accent-neutralise="true" data-search-highlight="true" data-show-export="<?= $exportar ?>" data-unique-id="ID" data-fixed-scroll="true" data-height="500">
 				<thead>
 					<tr>
 						<?php
@@ -608,7 +608,7 @@ function bootstrapTablePersonalizada($columns, $data, $idTable, $titulo = "", $e
 							<?php
 							} else { // Mostrar esta columna
 							?>
-								<th data-visible="true"  data-sortable="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
+								<th data-visible="true" data-sortable="true" data-field="<?= $columnName ?>"><?= ucfirst($columnName) ?></th>
 
 							<?php
 							}
@@ -1001,9 +1001,9 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 {
 
 	$maxData = 1;
-	for($i = 0; $i < count($dataLinea1); $i++){
-		if($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
-		if($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
+	for ($i = 0; $i < count($dataLinea1); $i++) {
+		if ($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
+		if ($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
 	}
 
 	// Calcular el máximo para el eje y con un margen adicional
@@ -1072,7 +1072,7 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 								unit: 'hour',
 							},
 							gridLines: {
-								display: false
+								display: true
 							},
 							ticks: {
 								maxTicksLimit: 16
@@ -1107,9 +1107,9 @@ function actualizarGraficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idCha
 {
 
 	$maxData = 1;
-	for($i = 0; $i < count($dataLinea1); $i++){
-		if($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
-		if($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
+	for ($i = 0; $i < count($dataLinea1); $i++) {
+		if ($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
+		if ($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
 	}
 
 	// Calcular el máximo para el eje y con un margen adicional
@@ -1178,7 +1178,7 @@ function actualizarGraficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idCha
 								unit: 'hour',
 							},
 							gridLines: {
-								display: false
+								display: true
 							},
 							ticks: {
 								maxTicksLimit: 16
@@ -1355,6 +1355,179 @@ function actualizarGraficoBarras($data, $labels, $idChart, $titulo)
 					legend: {
 						display: true,
 						onClick: false
+					}
+				}
+			});
+		});
+	</script>
+<?php
+	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+	return $html_grafico; // Retorna el HTML del gráfico
+}
+
+//! Es un grafico personalizado para que muestre conexiones. Habra que hacer cambios aqui (en el for) en caso de querer mostrar otros datos
+function graficoDonut($conexionesTag, $idChart, $titulo)
+{
+
+?>
+	<div class="card mb-4" style="min-height:591px;">
+		<div class="card-header">
+			<i class="fas fa-chart-pie me-1"></i>
+			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMenos1" onclick="actualizarGraficoDonut('-1 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMas1" onclick="actualizarGraficoDonut('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
+
+		</div>
+		<div class="card-body">
+			<canvas id="<?= $idChart ?>" width="100%"></canvas>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			// Configuración por defecto
+			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+			Chart.defaults.global.defaultFontColor = '#292b2c';
+
+
+			// Agrupamos los datos en 3 variables para pasarselas a la funcion del donut
+			var conexionesTag = <?= json_encode($conexionesTag) ?>;
+
+			var data = [];
+			var labels = [];
+			var colors = [];
+
+			for (var i = 0; i < conexionesTag.length; i++) {
+				data.push(conexionesTag[i]['CONEXIONES']);
+				labels.push(conexionesTag[i]['NOMBRE']);
+				colors.push(conexionesTag[i]['COLOR']);
+			}
+
+			//! IMPORTANTE: ESTO APLICA A TODOS LOS CHART RENDERIZADOS EN LA MISMA PAGINA
+			Chart.plugins.register({
+				afterDraw: function(chart) {
+					if (chart.data.datasets[0].data.length === 0 || chart.data.datasets[0].data.every(val => val === 0)) {
+						// No hay datos, mostrar mensaje
+						var ctx = chart.chart.ctx;
+						var width = chart.chart.width;
+						var height = chart.chart.height;
+						ctx.save();
+						ctx.textAlign = 'center';
+						ctx.textBaseline = 'middle';
+						ctx.font = '16px Arial';
+						ctx.fillStyle = '#aaa';
+						ctx.fillText('No hay datos disponibles', width / 2, height / 2);
+						ctx.restore();
+					}
+				}
+			});
+
+			// Crear gráfico de donut
+			var ctx = document.getElementById('<?= $idChart ?>');
+			var myDoughnutChart = new Chart(ctx, {
+				type: 'doughnut',
+				data: {
+					labels: labels,
+					datasets: [{
+						data: data,
+						backgroundColor: colors,
+						hoverBackgroundColor: colors,
+					}]
+				},
+				options: {
+					legend: {
+						display: true,
+						position: 'top',
+					},
+					responsive: true,
+					maintainAspectRatio: false,
+					cutoutPercentage: 70, // Hace que el gráfico sea un donut
+					tooltips: {
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.labels[tooltipItem.index] || '';
+								var value = data.datasets[0].data[tooltipItem.index];
+								return label + ': ' + value + ' conexiones'; // Aquí se añade "conexiones"
+							}
+						}
+					}
+				}
+
+			});
+		});
+	</script>
+<?php
+}
+
+
+
+function actualizarGraficoDonut($conexionesTag, $idChart, $titulo)
+{
+
+?>
+	<div class="card mb-4" style="min-height:591px;">
+		<div class="card-header">
+			<i class="fas fa-chart-pie me-1"></i>
+			<?= $titulo ?>
+			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMenos1" onclick="actualizarGraficoDonut('-1 day')"><i class="fas fa-arrow-left"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMas1" onclick="actualizarGraficoDonut('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
+			</div>
+
+		</div>
+		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%"></canvas></div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			// Configuración por defecto
+			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+			Chart.defaults.global.defaultFontColor = '#292b2c';
+
+
+			// Agrupamos los datos en 3 variables para pasarselas a la funcion del donut
+			var conexionesTag = <?= json_encode($conexionesTag) ?>;
+
+			var data = [];
+			var labels = [];
+			var colors = [];
+
+			for (var i = 0; i < conexionesTag.length; i++) {
+				data.push(conexionesTag[i]['CONEXIONES']);
+				labels.push(conexionesTag[i]['NOMBRE']);
+				colors.push(conexionesTag[i]['COLOR']);
+			}
+
+			// Crear gráfico de donut
+			var ctx = document.getElementById('<?= $idChart ?>');
+			var myDoughnutChart = new Chart(ctx, {
+				type: 'doughnut',
+				data: {
+					labels: labels,
+					datasets: [{
+						data: data,
+						backgroundColor: colors,
+						hoverBackgroundColor: colors,
+					}]
+				},
+				options: {
+					legend: {
+						display: true,
+						position: 'top',
+					},
+					responsive: true,
+					maintainAspectRatio: false,
+					cutoutPercentage: 70, // Hace que el gráfico sea un donut
+					tooltips: {
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.labels[tooltipItem.index] || '';
+								var value = data.datasets[0].data[tooltipItem.index];
+								return label + ': ' + value + ' conexiones'; // Aquí se añade "conexiones"
+							}
+						}
 					}
 				}
 			});
