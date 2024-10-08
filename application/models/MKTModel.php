@@ -52,11 +52,15 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
+				// Codificamos el comentario para que se muestre bien en el mikrotik y eliminamos espacios en blanco
+				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
+				$nombreSinEspacios = preg_replace('/\s+/', '', trim($username));
+
 				$query = new Query('/ip/hotspot/user/add');
-				$query->add('=name=' . $username);
+				$query->add('=name=' . $nombreSinEspacios);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
-				$query->add('=comment=' . $comentario);
+				$query->add('=comment=' . $comentario_utf8);
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
@@ -80,13 +84,17 @@ class MKTModel extends CI_Model
 				// Conectarse al dispositivo MikroTik
 				$client->connect();
 
+				// Codificamos el comentario para que se muestre bien en el mikrotik y eliminamos espacios en blanco
+				$comentario_utf8 = mb_convert_encoding($comentario, 'ISO-8859-1', 'UTF-8');
+				$nombreSinEspacios = preg_replace('/\s+/', '', trim($username));
+
 				// Crear una nueva consulta para editar el usuario existente
 				$query = new Query('/ip/hotspot/user/set');
 				$query->add('=.id=' . $id);
-				$query->add('=name=' . $username);
+				$query->add('=name=' . $nombreSinEspacios);
 				$query->add('=password=' . $password);
 				$query->add('=profile=' . $profile);
-				$query->add('=comment=' . $comentario);
+				$query->add('=comment=' . $comentario_utf8);
 
 				// Enviar la consulta al dispositivo MikroTik
 				$response = $client->query($query)->read();
@@ -104,7 +112,7 @@ class MKTModel extends CI_Model
 	}
 
 
-	public function MostrarRecargarDatosUsuarios()
+	public function getUsuariosMKT()
 	{
 
 		$client = $this->conexionMKT();
@@ -125,17 +133,33 @@ class MKTModel extends CI_Model
 
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
+
+					if (isset($usuario["bytes-in"])) {
+						$bytes_in = round($usuario["bytes-in"] * 0.000001, 2);
+						if ($bytes_in >= 1000) {
+							$bytes_in = $bytes_in / 1000;
+							$bytes_in = $bytes_in . " GB";
+						} else $bytes_in = $bytes_in . " MB";
+					}
+					if (isset($usuario["bytes-out"])) {
+						$bytes_out = round($usuario["bytes-out"] * 0.000001, 2);
+						if ($bytes_out >= 1000) {
+							$bytes_out = $bytes_out / 1000;
+							$bytes_out = $bytes_out . " GB";
+						} else $bytes_out = $bytes_out . " MB";
+					}
+
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
 						"Usuario" => isset($usuario["name"]) ? $usuario["name"] : "",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
-						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
-						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
+						"Tiempo total de conexión" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Tráfico descarga" => isset($usuario["bytes-in"]) ? $bytes_in  : "",
+						"Tráfico subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
 						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
 						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
 						"Dinámico" => isset($usuario["dynamic"]) ? $usuario["dynamic"] : "",
 						"Deshabilitado" => isset($usuario["disabled"]) ? $usuario["disabled"] : "",
-						"Comentario" => isset($usuario["comment"]) ? $usuario["comment"] : "",
+						"Comentario" => isset($usuario["comment"]) ? mb_convert_encoding($usuario["comment"], 'UTF-8', 'ISO-8859-1') : "",
 						"Perfil" => isset($usuario["profile"]) ? $usuario["profile"] : ""
 					);
 					$usuariosFormateados[] = $usuarioFormateado;
@@ -165,20 +189,36 @@ class MKTModel extends CI_Model
 				$usuarios = $client->query($query)->read();
 
 				foreach ($usuarios as &$item) {
-					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" title="Cerrar sesión"><i style="color:red; font-size:18px; font-weight:700; cursor:pointer;">X</i></a>';
+					$item['-'] = '<a type="button" onclick="ExpulsarUsuario(\'' . $item[".id"] . '\')" class="btn btn-danger btn-icon-split btn-sm"><span class="icon text-white-50"><i class="fas fa-trash"></i></span><span class="text text-white">Cerrar sesión</span></a>';
 				}
 				unset($item);
 
 				$usuariosFormateados = array();
 				foreach ($usuarios as $usuario) {
+
+					if (isset($usuario["bytes-in"])) {
+						$bytes_in = round($usuario["bytes-in"] * 0.000001, 2);
+						if ($bytes_in >= 1000) {
+							$bytes_in = $bytes_in / 1000;
+							$bytes_in = $bytes_in . " GB";
+						} else $bytes_in = $bytes_in . " MB";
+					}
+					if (isset($usuario["bytes-out"])) {
+						$bytes_out = round($usuario["bytes-out"] * 0.000001, 2);
+						if ($bytes_out >= 1000) {
+							$bytes_out = $bytes_out / 1000;
+							$bytes_out = $bytes_out . " GB";
+						} else $bytes_out = $bytes_out . " MB";
+					}
+
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
 						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "",
 						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
 						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "",
 						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "",
-						"Bytes recibidos" => isset($usuario["bytes-in"]) ? $usuario["bytes-in"] : "",
-						"Bytes enviados" => isset($usuario["bytes-out"]) ? $usuario["bytes-out"] : "",
+						"Tráfico descarga" => isset($usuario["bytes-in"]) ? $bytes_in : "",
+						"Tráfico subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
 						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
 						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
 						"-" => isset($usuario["-"]) ? $usuario["-"] : "-"
@@ -313,25 +353,58 @@ class MKTModel extends CI_Model
 				$client->connect();
 
 				$error = "";
+				$duplicados = [];
+				$nombresInvalidos = [];
+				$contrasenasInvalidas = [];
+				$campoVacio = false;
 
-				$usuariosExistentes = $this->MostrarRecargarDatosUsuarios();
+				$usuariosExistentes = $this->getUsuariosMKT();
 				$usuariosExistentes = $usuariosExistentes[0];
 
 				// Comprueba que los usuarios que se están importado sno existen ya. Si hay algun duplicado, no importará ningunn usuario. ()
 				$nombresUsuariosExistentes = array_column($usuariosExistentes, 'Usuario');
 				foreach ($usuarios as $usuario) {
 					if (in_array($usuario['name'], $nombresUsuariosExistentes)) {
-						$error = "Hay usuarios que ya existen. Repase el documento CSV.";
-						return array($error, true);
+						$duplicados[] = $usuario['name'];
+					}
+					if (!preg_match('/^[a-zA-Z0-9\s@.-]*$/', $usuario['name'])) { //Se permiten @ y .
+						// Si el nombre es inválida, agregarla a la lista de nombres inválidos
+						$nombresInvalidos[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
+					}
+					if (!preg_match('/^[a-zA-Z0-9\s@.-]*$/', $usuario['name'])) { //Se permiten @ y .
+						// Si la contraseña es inválida, agregarla a la lista de contraseñas inválidas
+						$contrasenasInvalidas[] = $usuario['name']; // Guardamos el nombre para saber a quién pertenece
+					}
+					if ($usuario['name'] == "" || $usuario['password'] == "") {
+						$campoVacio = true;
 					}
 				}
 
+				if (!empty($duplicados)) {
+					$error = "Los siguientes usuarios ya existen: " . implode(", ", $duplicados);
+					return array($error, true);
+				}
+				if (!empty($nombresInvalidos)) {
+					$error .= "El nombre de los siguientes usuarios contiene caracteres no permitidos: " . implode(", ", $nombresInvalidos) . ".";
+					return array($error, true);
+				}
+				if (!empty($contrasenasInvalidas)) {
+					$error .= "La contraseña de los siguientes usuarios contiene caracteres no permitidos: " . implode(", ", $contrasenasInvalidas) . ".";
+					return array($error, true);
+				}
+				if ($campoVacio) {
+					$error .= "Se han detectado campos de usuario o contraseña vacíos.";
+					return array($error, true);
+				}
+
 				foreach ($usuarios as $item) {
+					$comentario_utf8 = mb_convert_encoding($item['comment'], 'ISO-8859-1', 'UTF-8');
+					$nombreSinEspacios = preg_replace('/\s+/', '', trim($item['name']));
 					$query = new Query('/ip/hotspot/user/add');
-					$query->add('=name=' . $item['name']);
+					$query->add('=name=' . $nombreSinEspacios);
 					$query->add('=password=' . $item['password']);
 					$query->add('=profile=' . $item['profile']);
-					$query->add('=comment=' . $item['comment']);
+					$query->add('=comment=' . $comentario_utf8);
 
 					// Enviar la consulta al dispositivo MikroTik
 					$response = $client->query($query)->read();
@@ -350,7 +423,7 @@ class MKTModel extends CI_Model
 
 
 	// * SECTION PERFILES: Código relacionado con PERFILES Hotspot
-	public function addUserProfile($nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $keepaliveTimeout)
+	public function addUserProfile($nombre, $rateLimit, $sharedUsers, $macCookie, $macCookieTimeout, $keepaliveTimeout, $scripts)
 	{
 		$client = $this->conexionMKT();
 
@@ -361,7 +434,6 @@ class MKTModel extends CI_Model
 				$client->connect();
 
 				$error = "";
-
 
 				// Consulta para añadir un perfil de usuario al hotspot
 				$query = new Query('/ip/hotspot/user/profile/add');
@@ -374,6 +446,14 @@ class MKTModel extends CI_Model
 
 				$query->add('=shared-users=' . $sharedUsers);
 				$query->add('=add-mac-cookie=' . $macCookie);
+
+				$query->add('=shared-users=' . $sharedUsers);
+				$query->add('=add-mac-cookie=' . $macCookie);
+
+				$onLoginScript = $scripts[0]->SCRIPT;
+				$onLogoutScript = $scripts[1]->SCRIPT;
+				$query->add('=on-login=' . $onLoginScript);
+				$query->add('=on-logout=' . $onLogoutScript);
 
 				if (!is_null($macCookieTimeout) && $macCookieTimeout !== '') {
 					$query->add('=mac-cookie-timeout=' . $macCookieTimeout);
@@ -391,7 +471,6 @@ class MKTModel extends CI_Model
 				}
 
 				return array($error, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -410,7 +489,7 @@ class MKTModel extends CI_Model
 
 				$error = "";
 
-				// Consulta para añadir un perfil de usuario al hotspot
+				// Consulta para editar un perfil de usuario al hotspot
 				$query = new Query('/ip/hotspot/user/profile/set');
 				$query->add('=.id=' . $id);
 
@@ -437,7 +516,6 @@ class MKTModel extends CI_Model
 				}
 
 				return array($error, true);
-
 			} catch (\Exception $e) {
 				echo "Error: " . $e->getMessage() . "\n";
 			}
@@ -507,5 +585,44 @@ class MKTModel extends CI_Model
 				echo "Error: " . $e->getMessage() . "\n";
 			}
 		} else return array(array(), false);
+	}
+
+	public function sincronizarScripts($scripts, $perfiles)
+	{
+		$client = $this->conexionMKT();
+
+		if ($client != false) {
+
+			try {
+
+				$client->connect();
+
+				$error = "";
+
+				$onLoginScript = $scripts[0]->SCRIPT;
+				$onLogoutScript = $scripts[1]->SCRIPT;
+
+				foreach ($perfiles as $perfil) {
+					// Consulta para editar un perfil de usuario al hotspot
+					$query = new Query('/ip/hotspot/user/profile/set');
+					$query->add('=.id=' . $perfil['.id']);
+
+					$query->add('=add-mac-cookie=' . $perfil['add-mac-cookie']);
+
+					$query->add('=on-login=' . $onLoginScript);
+					$query->add('=on-logout=' . $onLogoutScript);
+
+					// Enviar la consulta al dispositivo MikroTik
+					$response = $client->query($query)->read();
+
+					if (isset($response["after"]['message'])) {
+						$error = $response["after"]['message'];
+					}
+				}
+
+			} catch (\Exception $e) {
+				echo "Error: " . $e->getMessage() . "\n";
+			}
+		} else return;
 	}
 }

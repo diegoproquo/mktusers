@@ -1,9 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use \RouterOS\Config;
-use \RouterOS\Client;
-use \RouterOS\Query;
 
 class Login extends CI_Controller
 {
@@ -27,46 +24,44 @@ class Login extends CI_Controller
 
     public function iniciarSesion()
     {
+        $this->load->library('session');
+        $this->load->helper('url');
+        $this->load->model('UsuariosWebModel');
+        $usuario = $this->input->post('user');
+        $contrasena = $this->input->post('pass');
 
-        $user = $this->input->post('user');
-        $pass = $this->input->post('pass');
 
-        require_once $_ENV['AUTOLOAD'];
+        // Buscar el usuario en la base de datos
+        $usuario_db = $this->UsuariosWebModel->obtenerUsuarioPorNombre($usuario);
 
-        try {
 
-            if ($_ENV['USER1'] == $user && $_ENV['PASS1'] == $pass) {
-
-                $session_data = array(
+        if ($usuario_db) {
+            if (password_verify($contrasena, $usuario_db->PASSWORD)) {
+                $user = array(
+                    'id'  => $usuario_db->ID,
+                    'usuario'  => $usuario,
+                    'adm'  => $usuario_db->ROL,
                     'logged_in' => true
                 );
-
-                $this->session->set_userdata($session_data);
-                redirect(base_url() . "Dashboard");
+                $this->UsuariosWebModel->actualizarLastLogin($usuario_db->ID);
+                $this->session->set_userdata($user);
+                redirect(base_url()."Dashboard");
                 return;
-                
-            }
-            else if ($_ENV['USER2'] == $user && $_ENV['PASS2'] == $pass) {
-
-                $session_data = array(
-                    'logged_in' => true
-                );
-
-                $this->session->set_userdata($session_data);
-                redirect(base_url() . "Dashboard");
-                return;
-                
-            }
-             else {
-                $this->session->set_flashdata('error', 'Usuario o contraseña incorrectos');
-                redirect(base_url() . "Login");
+            } else {
+                $this->session->set_flashdata('error', 'Contraseña incorrecta');
+                redirect(base_url()."Login");
                 return;
             }
-        } catch (\Exception $e) {
-            $this->session->set_flashdata('error', "Error: " . $e->getMessage() . "\n");
-            redirect(base_url() . "Login");
+        } else {
+            $this->session->set_flashdata('error', 'Usuario no encontrado');
+            redirect(base_url()."Login");
             return;
         }
+
+        $this->session->set_flashdata('error', 'Algo no salió como se esperaba');
+        redirect(base_url()."Login");
+        return;
+
     }
 
     public function logout()

@@ -10,9 +10,9 @@
 
     </div>
     <p class="mb-4"> Esta es la ventana para gestionar los usuarios. Podrá añadir nuevos usuarios, asi como eliminarlos o deshabilitarlos. También
-                        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar 
-                        como referencia.
-                        </p>
+        es posible importar múltiples usuarios al mismo tiempo mediante un archivo CSV. Dispone de un plantilla que puede usar
+        como referencia.
+    </p>
     <div class="mainDiv">
         <div style="text-align: center;">
             <div id="divTabla" style="width: 100%; display: inline-block; text-align: left;">
@@ -35,22 +35,26 @@
                 </button>
             </div>
             <div class="modal-body">
+
+            <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
+
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Nombre de usuario</label>
-                        <input id="inputUsuario" type="text" class="form-control" />
+                        <input id="inputUsuario" type="text" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Contraseña</label>
-                        <input id="inputPassword" type="password" class="form-control" />
+                        <input id="inputPassword" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control" />
+                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)"/>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -75,6 +79,23 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Comentario</label>
@@ -83,7 +104,9 @@
                 </div>
 
             </div>
+
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="GuardarEditarUsuario()">Guardar</button>
             </div>
@@ -117,6 +140,21 @@
                         <label for="selectImportPassword" class="form-label">Contraseña</label>
                         <select class="form-control select-header" id="selectImportPassword">
 
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectImportTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectImportTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -159,7 +197,9 @@
     <input id="btnImportarUsuariosFormSubmit" type="submit" value="Subir">
 </form>
 
+
 <script>
+
     var idUsuario = -1;
     var lines = [];
     var headers;
@@ -347,7 +387,9 @@
     function ImportarUsuarios() {
         var columnaUsuario = $('#selectImportUser').val();
         var columnaPassword = $('#selectImportPassword').val();
+        
         var columnaComment = $('#selectImportComment').val();
+        var tags = $('#selectImportTags').val();
         var perfil = $('#selectImportPerfiles').val();
 
         $.ajax({
@@ -358,7 +400,8 @@
                 columnaUsuario: columnaUsuario,
                 columnaPassword: columnaPassword,
                 columnaComment: columnaComment,
-                perfil: perfil
+                perfil: perfil,
+                tags: tags
 
             }),
             contentType: "application/json",
@@ -408,6 +451,7 @@
         datos['password'] = $('#inputPassword').val();
         datos['perfil'] = $('#selectPerfiles').val();
         datos['comentario'] = $('#inpuComentario').val();
+        datos['tag'] = $('#selectTags').val();
 
         $.ajax({
             type: 'POST',
@@ -544,6 +588,7 @@
 
     function ClicEditarUusario() {
         usuario = ObtenerFilasCheckeadas('datatableUsuarios');
+        console.log(usuario);
         idUsuario = usuario[0]['.id'];
         $('#modalUsuariosTitulo').text('Editar usuario');
         $('#inputUsuario').val(usuario[0]['Usuario']);
@@ -558,7 +603,10 @@
             $selectPerfiles.val('default');
         }
 
+        $('#selectTags').val(usuario[0]['ID_TAG']);
         $('#inpuComentario').val(usuario[0]['Comentario']);
+        $('#textoNuevaPass').show();
+
     }
 
     function DescargarPlantilla() {
@@ -593,6 +641,8 @@
         $('#inputPassword').val("");
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
+        $('#selectTags').val(null);
+        $('#textoNuevaPass').hide();
     }
 
     function LimpiarDatosModalImportar() {
@@ -600,5 +650,6 @@
         $('#selectImportPassword').empty();
         $('#selectImportComment').empty();
         $('#importarUsuariosForm')[0].reset();
+        $('#selectImportTags').val(null);
     }
 </script>
