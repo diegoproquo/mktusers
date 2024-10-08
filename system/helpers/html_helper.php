@@ -1365,7 +1365,7 @@ function actualizarGraficoBarras($data, $labels, $idChart, $titulo)
 	return $html_grafico; // Retorna el HTML del gráfico
 }
 
-
+//! Es un grafico personalizado para que muestre conexiones. Habra que hacer cambios aqui (en el for) en caso de querer mostrar otros datos
 function graficoDonut($conexionesTag, $idChart, $titulo)
 {
 
@@ -1380,7 +1380,9 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 			</div>
 	
 		</div>
-		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%"></canvas></div>
+		<div class="card-body">
+			<canvas id="<?= $idChart ?>" width="100%"></canvas>
+		</div>
 	</div>
 
 	<script>
@@ -1403,6 +1405,25 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 				colors.push(conexionesTag[i]['COLOR']);
 			}
 
+			//! IMPORTANTE: ESTO APLICA A TODOS LOS CHART RENDERIZADOS EN LA MISMA PAGINA
+			Chart.plugins.register({
+                afterDraw: function(chart) {
+                    if (chart.data.datasets[0].data.length === 0 || chart.data.datasets[0].data.every(val => val === 0)) {
+                        // No hay datos, mostrar mensaje
+                        var ctx = chart.chart.ctx;
+                        var width = chart.chart.width;
+                        var height = chart.chart.height;
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = '#aaa';
+                        ctx.fillText('No hay datos disponibles', width / 2, height / 2);
+                        ctx.restore();
+                    }
+                }
+            });
+			
 			// Crear gráfico de donut
 			var ctx = document.getElementById('<?= $idChart ?>');
 			var myDoughnutChart = new Chart(ctx, {

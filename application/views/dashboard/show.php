@@ -3,11 +3,9 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
     </div>
+
     <div class="mainDiv">
-
-
         <div class="row mt-4">
-
             <div class="col-md-9">
                 <div id="divTabla">
                     <?php
@@ -15,20 +13,16 @@
                     ?>
                 </div>
             </div>
-
             <div class="col-md-3">
                 <div id="divGraficoDonut">
                     <div id="graficoDonutWrapper">
                         <?php
-
                         graficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias");
                         ?>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 
 
