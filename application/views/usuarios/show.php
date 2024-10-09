@@ -36,7 +36,7 @@
             </div>
             <div class="modal-body">
 
-            <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
+                <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
 
 
                 <div class="row mt-2">
@@ -54,7 +54,7 @@
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)"/>
+                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -121,7 +121,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalImportarTitulo">Importación de usuarios</h5>
-                <button type="button" id="btnCerrarModal" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" id="btnCerrarModalImportar" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -191,6 +191,41 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalAsignarTags" tabindex="-1" role="dialog" aria-labelledby="modalAsignarTagsTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAsignarTagsTitulo">Asignar Tags</h5>
+                <button type="button" id="btnCerrarModalTags" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <label for="selectAsignarTags" class="form-label">Tag</label>
+                        <select class="form-control" id="selectAsignarTags">
+                            <option value="null"></option>
+                            <?php
+                            foreach ($tags as $tag) {
+                            ?>
+                                <option value="<?= $tag->ID ?>"> <?= $tag->NOMBRE  ?> </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="btnConfirmarAsignarTags" onclick="AsignarTags()" type="button" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form id="importarUsuariosForm" style="display:none">
     <label for="file">Selecciona el archivo CSV:</label>
     <input type="file" name="file" id="file" accept=".csv">
@@ -199,7 +234,6 @@
 
 
 <script>
-
     var idUsuario = -1;
     var lines = [];
     var headers;
@@ -214,7 +248,8 @@
             '<button id="btnNuevoUsuario" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalUsuarios"><i class="fas fa-plus"></i> Nuevo</button>' +
             '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-success ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
-            '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-xmark"></i> Deshabilitar</button>' +
+            '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-times"></i> Deshabilitar</button>' +
+            '<button id="btnAsignarTag" disabled class="btn btn-sm btn-warning ms-1"  data-toggle="modal" data-target="#modalAsignarTags" style="background-color:#e200ff; color:white;"><i class="fas fa-tag"></i> Asignar Tag</button>' +
             '</div>');
 
         $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pen"></i> Editar</button>');
@@ -241,6 +276,7 @@
         var $btnHabilitarUsuario = $('#btnHabilitarUsuario');
         var $btnDeshabilitarUsuario = $('#btnDeshabilitarUsuario');
         var $btnEditarUsuario = $('#btnEditarUsuario');
+        var $btnAsignarTag = $('#btnAsignarTag');
         $(function() {
             $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function() {
                 var selections = $table.bootstrapTable('getSelections');
@@ -248,6 +284,7 @@
                 $btnEliminarUsuarios.prop('disabled', numSelections === 0);
                 $btnHabilitarUsuario.prop('disabled', numSelections === 0);
                 $btnDeshabilitarUsuario.prop('disabled', numSelections === 0);
+                $btnAsignarTag.prop('disabled', numSelections === 0);
                 $btnEditarUsuario.prop('disabled', numSelections !== 1);
 
             });
@@ -387,7 +424,7 @@
     function ImportarUsuarios() {
         var columnaUsuario = $('#selectImportUser').val();
         var columnaPassword = $('#selectImportPassword').val();
-        
+
         var columnaComment = $('#selectImportComment').val();
         var tags = $('#selectImportTags').val();
         var perfil = $('#selectImportPerfiles').val();
@@ -571,7 +608,6 @@
                     MostrarAlertCorrecto("Usuario deshabilitado correctamente");
                     DeshabilitarBotones();
                 } else {
-                    $('#btnCerrarModal').click();
                     MostrarAlertErrorMKT();
                 }
             },
@@ -586,9 +622,42 @@
     }
 
 
+    function AsignarTags() {
+
+        rows = ObtenerFilasCheckeadas('datatableUsuarios');
+
+        var datos = {
+            usuarios: rows,
+            tag: $('#selectAsignarTags').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url() ?>/Usuarios/AsignarTags',
+            dataType: 'json',
+            data: JSON.stringify(datos),
+            success: function(response) {
+                if (response[0] == true) {
+                    RecargarTabla('datatableUsuarios', response[1]);
+                    MostrarAlertCorrecto("Tags actualizados correctamente");
+                    DeshabilitarBotones();
+                    $('#btnCerrarModalTags').click();
+                } else {
+                    $('#btnCerrarModalTags').click();
+                    MostrarAlertErrorMKT();
+                }
+            },
+            error: function(error) {
+                console.log("error");
+                console.log(error);
+                MostrarAlertError("Algo no ha ido según lo esperado");
+                DeshabilitarBotones();
+            }
+        });
+    }
+
     function ClicEditarUusario() {
         usuario = ObtenerFilasCheckeadas('datatableUsuarios');
-        console.log(usuario);
         idUsuario = usuario[0]['.id'];
         $('#modalUsuariosTitulo').text('Editar usuario');
         $('#inputUsuario').val(usuario[0]['Usuario']);

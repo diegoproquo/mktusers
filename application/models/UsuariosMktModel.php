@@ -113,6 +113,19 @@ class UsuariosMktModel extends CI_Model
         $this->db->where('NOMBRE', $nombre);
         return $this->db->update('tbl_usuarios_mkt', $data);
     }
+
+    public function actualizarTagMasivo($nombres, $idtag) {
+
+        $usuarios = array_column($nombres, 'Usuario');
+
+        $data = array(
+            'ID_TAG' => $idtag
+        );
+    
+        $this->db->where_in('NOMBRE', $usuarios);
+        return $this->db->update('tbl_usuarios_mkt', $data);
+    }
+    
     
 
 

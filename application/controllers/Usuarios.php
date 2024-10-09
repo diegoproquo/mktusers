@@ -229,6 +229,26 @@ class Usuarios extends CI_Controller
 		echo json_encode(array($conexionMKT, $usuarios));
 	}
 
+	public function AsignarTags()
+	{
+		$conexionMKT = true;
+
+		$input = file_get_contents('php://input');
+		$decodedInput = json_decode($input, true);
+
+		$usuarios = $decodedInput['usuarios'];
+		$tag = $decodedInput['tag'];
+
+		$data = $this->UsuariosMktModel->actualizarTagMasivo($usuarios, $tag);
+
+		$data = $this->MKTModel->getUsuariosMKT();
+		$conexionMKT = $data[1];
+
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
+
+		echo json_encode(array($conexionMKT, $usuarios));
+	}
+
 	public function MostrarRecargarDatosUsuarios($usuariosDB)
 	{
 
