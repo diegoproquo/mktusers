@@ -214,11 +214,11 @@ class MKTModel extends CI_Model
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
 						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
 						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "",
 						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "",
-						"Tráfico descarga" => isset($usuario["bytes-in"]) ? $bytes_in : "",
-						"Tráfico subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
+						"Descarga" => isset($usuario["bytes-in"]) ? $bytes_in : "",
+						"Subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
 						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
 						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
 						"-" => isset($usuario["-"]) ? $usuario["-"] : "-"
