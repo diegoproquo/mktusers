@@ -610,7 +610,7 @@
                 } else {
                     MostrarAlertErrorMKT();
                 }
-            },
+            },  
             error: function(error) {
                 console.log("error");
                 console.log(error);
@@ -642,6 +642,7 @@
                     MostrarAlertCorrecto("Tags actualizados correctamente");
                     DeshabilitarBotones();
                     $('#btnCerrarModalTags').click();
+                    $('#selectAsignarTags').val("");
                 } else {
                     $('#btnCerrarModalTags').click();
                     MostrarAlertErrorMKT();
@@ -703,6 +704,8 @@
         $("#btnEliminarUsuarios").prop("disabled", true);
         $("#btnHabilitarUsuario").prop("disabled", true);
         $("#btnDeshabilitarUsuario").prop("disabled", true);
+        $("#btnEditarUsuario").prop("disabled", true);
+        $("#btnAsignarTag").prop("disabled", true);
     }
 
     function LimpiarDatosModal() {
