@@ -131,7 +131,7 @@ class Dashboard extends CI_Controller
 		$nueva_fecha = date("Y-m-d", strtotime($fecha . " " . $accion));
 		$conexiones = $this->Conexiones7Dias($nueva_fecha);
 
-		$html_grafico = actualizarGraficoBarras($conexiones[0], $conexiones[1], "graficoConexiones", "Conexiones semanales");
+		$html_grafico = graficoBarras($conexiones[0], $conexiones[1], "graficoConexiones", "Conexiones semanales", true);
 
 
 		echo json_encode(array(true, $nueva_fecha, $html_grafico));
@@ -147,7 +147,7 @@ class Dashboard extends CI_Controller
 		$nueva_fecha = date("Y-m-d", strtotime($fecha . " " . $accion));
 		$trafico = $this->Trafico7Dias($nueva_fecha);
 
-		$html_grafico = actualizarGraficoFuncionDoble($trafico[0], $trafico[1], $trafico[2], "graficoTrafico", "Trafico semanal acumulado (MB)");
+		$html_grafico = graficoFuncionDoble($trafico[0], $trafico[1], $trafico[2], "graficoTrafico", "Trafico semanal acumulado (MB)", true);
 
 		echo json_encode(array(true, $nueva_fecha, $html_grafico));
 	}
@@ -164,7 +164,7 @@ class Dashboard extends CI_Controller
 
 		$titulo = "Conexiones diarias " .$nueva_fecha;
 		if($nueva_fecha == date("Y-m-d")) $titulo = "Conexiones diarias hoy";
-		$html_grafico = actualizarGraficoDonut($conexionesTag, "graficoDonut", $titulo);
+		$html_grafico = graficoDonut($conexionesTag, "graficoDonut", $titulo, true);
 
 		echo json_encode(array(true, $nueva_fecha, $html_grafico));
 	}

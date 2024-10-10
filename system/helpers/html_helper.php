@@ -997,7 +997,7 @@ function actualizarGraficoFuncion($dataLinea, $dataBarras, $labels, $idChart, $t
 
 
 // Grafico de funcion doble
-function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo)
+function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo, $actualizar)
 {
 
 	$maxData = 1;
@@ -1099,116 +1099,14 @@ function graficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titul
 	</script>
 
 <?php
-}
-
-
-// Grafico de funcion doble
-function actualizarGraficoFuncionDoble($dataLinea1, $dataLinea2, $labels, $idChart, $titulo)
-{
-
-	$maxData = 1;
-	for ($i = 0; $i < count($dataLinea1); $i++) {
-		if ($dataLinea1[$i] > $maxData) $maxData = $dataLinea1[$i];
-		if ($dataLinea2[$i] > $maxData) $maxData = $dataLinea2[$i];
+	if ($actualizar) {
+		$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+		return $html_grafico; // Retorna el HTML del gráfico
 	}
-
-	// Calcular el máximo para el eje y con un margen adicional
-	$maxY = $maxData;
-?>
-	<div class="card mb-4">
-		<div class="card-header">
-			<i class="fas fa-chart-area me-1"></i>
-			<?= $titulo ?>
-			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMenos1" onclick="actualizarGraficoFuncion('-8 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoFuncionDobleMas1" onclick="actualizarGraficoFuncion('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
-			</div>
-		</div>
-		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
-	</div>
-
-	<script>
-		$(document).ready(function() {
-			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-			Chart.defaults.global.defaultFontColor = '#292b2c';
-
-			var labels = <?= json_encode($labels) ?>;
-			var dataLinea1 = <?= json_encode($dataLinea1) ?>;
-			var dataLinea2 = <?= json_encode($dataLinea2) ?>;
-
-			var ctx = document.getElementById('<?= $idChart ?>');
-			var myChart = new Chart(ctx, {
-				type: 'bar',
-				data: {
-					labels: labels,
-					datasets: [{
-							type: 'line',
-							label: 'Descarga',
-							borderColor: 'rgba(0,123,255,1)',
-							lineTension: 0.3,
-							backgroundColor: "rgba(0,123,255,0.2)",
-							pointBorderColor: "rgba(255,255,255,0.8)",
-							pointHoverBackgroundColor: "rgba(0,123,255,1)",
-							pointHoverRadius: 5,
-							pointHitRadius: 50,
-							data: dataLinea1,
-							pointBorderWidth: 2,
-							fill: true
-						},
-						{
-							type: 'line',
-							label: 'Subida',
-							borderColor: 'rgba(255, 0, 132, 1)',
-							lineTension: 0.3,
-							backgroundColor: "rgba(255, 0, 132, 0.2)",
-							pointBorderColor: "rgba(255, 0, 132, 1)",
-							pointHoverBackgroundColor: "rgba(255, 0, 132, 1)",
-							pointHoverRadius: 5,
-							pointHitRadius: 50,
-							data: dataLinea2,
-							pointBorderWidth: 2,
-							fill: true
-						}
-					]
-				},
-				options: {
-					scales: {
-						xAxes: [{
-							time: {
-								unit: 'hour',
-							},
-							gridLines: {
-								display: true
-							},
-							ticks: {
-								maxTicksLimit: 16
-							}
-						}],
-						yAxes: [{
-							ticks: {
-								min: 0,
-								max: <?= $maxY ?>,
-								maxTicksLimit: 10
-							},
-							gridLines: {
-								color: "rgba(0, 0, 0, .125)",
-							}
-						}],
-					},
-					legend: {
-						display: true
-					}
-				}
-			});
-
-		});
-	</script>
-<?php
-	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
-	return $html_grafico; // Retorna el HTML del gráfico
 }
 
-function graficoBarras($data, $labels, $idChart, $titulo)
+
+function graficoBarras($data, $labels, $idChart, $titulo, $actualizar)
 {
 	// Encontrar el máximo de los datos de conexión
 	if (count($data) >= 1)	$maxData = max($data);
@@ -1283,90 +1181,15 @@ function graficoBarras($data, $labels, $idChart, $titulo)
 		});
 	</script>
 <?php
+	if ($actualizar) {
+		$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+		return $html_grafico; // Retorna el HTML del gráfico
+	}
 }
 
-
-function actualizarGraficoBarras($data, $labels, $idChart, $titulo)
-{
-	// Encontrar el máximo de los datos de conexión
-	if (count($data) >= 1)	$maxData = max($data);
-	if ($maxData == 0) $maxData = 1;
-	// Calcular el máximo para el eje y con un margen adicional
-	$maxY = round($maxData * 1.1);
-?>
-	<div class="card mb-4">
-		<div class="card-header">
-			<i class="fas fa-chart-bar me-1"></i>
-			<?= $titulo ?>
-			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMenos1" onclick="actualizarGraficoBarras('-8 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoBarrasMas1" onclick="actualizarGraficoBarras('+8 day')" disabled><i class="fas fa-arrow-right"></i></button>
-			</div>
-		</div>
-		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%" height="40"></canvas></div>
-	</div>
-
-	<script>
-		$(document).ready(function() {
-			// Set new default font family and font color to mimic Bootstrap's default styling
-			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-			Chart.defaults.global.defaultFontColor = '#292b2c';
-
-			var labels = <?= json_encode($labels) ?>;
-			var data = <?= json_encode($data) ?>;
-
-			// Bar Chart Example
-			var ctx = document.getElementById('<?= $idChart ?>');
-			var myLineChart = new Chart(ctx, {
-				type: 'bar',
-				data: {
-					labels: labels,
-					datasets: [{
-						label: "Conexiones totales",
-						backgroundColor: "rgba(2,117,216,1)",
-						borderColor: "rgba(2,117,216,1)",
-						data: data
-					}]
-				},
-				options: {
-					scales: {
-						xAxes: [{
-							time: {
-								unit: 'day'
-							},
-							gridLines: {
-								display: false
-							},
-							ticks: {
-								maxTicksLimit: 12
-							}
-						}],
-						yAxes: [{
-							ticks: {
-								min: 0,
-								max: <?= $maxY ?>,
-								maxTicksLimit: 10
-							},
-							gridLines: {
-								display: true
-							}
-						}],
-					},
-					legend: {
-						display: true,
-						onClick: false
-					}
-				}
-			});
-		});
-	</script>
-<?php
-	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
-	return $html_grafico; // Retorna el HTML del gráfico
-}
 
 //! Es un grafico personalizado para que muestre conexiones. Habra que hacer cambios aqui (en el for) en caso de querer mostrar otros datos
-function graficoDonut($conexionesTag, $idChart, $titulo)
+function graficoDonut($conexionesTag, $idChart, $titulo, $actualizar)
 {
 
 ?>
@@ -1443,7 +1266,7 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 					},
 					responsive: true,
 					maintainAspectRatio: false,
-					cutoutPercentage: 70, // Hace que el gráfico sea un donut
+					cutoutPercentage: 70,
 					tooltips: {
 						callbacks: {
 							label: function(tooltipItem, data) {
@@ -1459,81 +1282,8 @@ function graficoDonut($conexionesTag, $idChart, $titulo)
 		});
 	</script>
 <?php
-}
-
-
-
-function actualizarGraficoDonut($conexionesTag, $idChart, $titulo)
-{
-
-?>
-	<div class="card mb-4" style="min-height:591px;">
-		<div class="card-header">
-			<i class="fas fa-chart-pie me-1"></i>
-			<?= $titulo ?>
-			<div class="btn-group float-end" role="group" aria-label="Botones de navegación">
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMenos1" onclick="actualizarGraficoDonut('-1 day')"><i class="fas fa-arrow-left"></i></button>
-				<button type="button" class="btn btn-outline-secondary btn-sm" id="btnGraficoDonutMas1" onclick="actualizarGraficoDonut('+1 day')" disabled><i class="fas fa-arrow-right"></i></button>
-			</div>
-
-		</div>
-		<div class="card-body"><canvas id="<?= $idChart ?>" width="100%"></canvas></div>
-	</div>
-
-	<script>
-		$(document).ready(function() {
-			// Configuración por defecto
-			Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-			Chart.defaults.global.defaultFontColor = '#292b2c';
-
-
-			// Agrupamos los datos en 3 variables para pasarselas a la funcion del donut
-			var conexionesTag = <?= json_encode($conexionesTag) ?>;
-
-			var data = [];
-			var labels = [];
-			var colors = [];
-
-			for (var i = 0; i < conexionesTag.length; i++) {
-				data.push(conexionesTag[i]['CONEXIONES']);
-				labels.push(conexionesTag[i]['NOMBRE']);
-				colors.push(conexionesTag[i]['COLOR']);
-			}
-
-			// Crear gráfico de donut
-			var ctx = document.getElementById('<?= $idChart ?>');
-			var myDoughnutChart = new Chart(ctx, {
-				type: 'doughnut',
-				data: {
-					labels: labels,
-					datasets: [{
-						data: data,
-						backgroundColor: colors,
-						hoverBackgroundColor: colors,
-					}]
-				},
-				options: {
-					legend: {
-						display: true,
-						position: 'top',
-					},
-					responsive: true,
-					maintainAspectRatio: false,
-					cutoutPercentage: 70, // Hace que el gráfico sea un donut
-					tooltips: {
-						callbacks: {
-							label: function(tooltipItem, data) {
-								var label = data.labels[tooltipItem.index] || '';
-								var value = data.datasets[0].data[tooltipItem.index];
-								return label + ': ' + value + ' conexiones'; // Aquí se añade "conexiones"
-							}
-						}
-					}
-				}
-			});
-		});
-	</script>
-<?php
-	$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
-	return $html_grafico; // Retorna el HTML del gráfico
+	if ($actualizar) {
+		$html_grafico = ob_get_clean(); // Obtén el contenido del búfer de salida y límpialo
+		return $html_grafico; // Retorna el HTML del gráfico
+	}
 }
