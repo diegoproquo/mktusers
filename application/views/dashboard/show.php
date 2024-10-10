@@ -74,14 +74,10 @@
         fechaDonut = <?= json_encode($fecha_actual) ?>;
         fechaActual = <?= json_encode($fecha_actual) ?>;
 
-        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-        if (!isSafari) {
-            Refrescar();
-        }
         $('button.btn-secondary[name="refresh"]').on('click', function() {
             Refrescar1Vez();
         });
+        
     });
 
     function actualizarGraficoBarras(accion) {
