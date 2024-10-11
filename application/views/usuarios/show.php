@@ -36,7 +36,7 @@
             </div>
             <div class="modal-body">
 
-                <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
+                <p class="mt-1" id="textoNuevaPass" style="color:red; font-size:14px; display:none;">Por seguridad, no es posible recuperar las contraseñas al editar un usuario. Tenga en cuenta que tendrá que introducir otra.</p>
 
 
                 <div class="row mt-2">
@@ -45,18 +45,29 @@
                         <input id="inputUsuario" type="text" class="form-control fadeInput" oninput="validarInput(this)" />
                     </div>
                 </div>
-                <div class="row mt-2">
+
+                <div class="row mt-2" id="divCheckboxPassword" style="display:none">
                     <div class="col-md-12">
-                        <label>Contraseña</label>
-                        <input id="inputPassword" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
+                        <label>Modificar contraseña </label>
+                        <input class="form-check-input  ml-2" type="checkbox" id="checkboxPassword" />
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label>Confirmar contraseña</label>
-                        <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
+
+                <div id="divPassword">
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label>Contraseña</label>
+                            <input id="inputPassword" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label>Confirmar contraseña</label>
+                            <input id="inputPasswordConfirmar" type="password" class="form-control fadeInput" oninput="validarInput(this)" />
+                        </div>
                     </div>
                 </div>
+
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <label for="selectPerfiles" class="form-label">Perfiles</label>
@@ -290,6 +301,16 @@
             });
         });
 
+        // Listener para mostrar o esconder inputs de cookie timeout en función del checkbox
+        $('#checkboxPassword').change(function() {
+            if ($(this).is(':checked')) {
+                $('#divPassword').show();
+                $('#textoNuevaPass').show();
+            } else {
+                $('#divPassword').hide();
+                $('#textoNuevaPass').hide();
+            }
+        });
 
         //////////////////////////////////////////////// *SECTION IMPORTAR USUARIOS
         //Combinacion de metodos para importar usuarios. 
@@ -469,23 +490,45 @@
                 MostrarAlertError("Algo no ha ido según lo esperado");
             }
         });
+        ////////////////////////// *SECTION FIN SECCION IMPORTAR USUARIOS
     }
 
-    ////////////////////////// *SECTION FIN SECCION IMPORTAR USUARIOS
+
 
 
 
     function GuardarEditarUsuario() {
         var datos = {};
 
-        if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
-            alert("Las contraseñas no coinciden");
-            return;
+        if (idUsuario != -1) {
+            datos['password'] = "";
+            var modificarPassword = $('#checkboxPassword').prop('checked') ? 'true' : 'false';
+            if (modificarPassword == 'false'){
+                console.log(modificarPassword);
+                datos['modificarPassword'] = false;
+            } 
+            else {
+                if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
+                    alert("Las contraseñas no coinciden");
+                    return;
+                }
+                datos['modificarPassword'] = true;
+                datos['password'] = $('#inputPassword').val();
+            }
+        } else {
+            if ($('#inputPassword').val() != $('#inputPasswordConfirmar').val()) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+            datos['modificarPassword'] = true;
+            datos['password'] = $('#inputPassword').val();
+
         }
+
+
 
         datos['id'] = idUsuario;
         datos['usuario'] = $('#inputUsuario').val();
-        datos['password'] = $('#inputPassword').val();
         datos['perfil'] = $('#selectPerfiles').val();
         datos['comentario'] = $('#inpuComentario').val();
         datos['tag'] = $('#selectTags').val();
@@ -610,7 +653,7 @@
                 } else {
                     MostrarAlertErrorMKT();
                 }
-            },  
+            },
             error: function(error) {
                 console.log("error");
                 console.log(error);
@@ -675,7 +718,10 @@
 
         $('#selectTags').val(usuario[0]['ID_TAG']);
         $('#inpuComentario').val(usuario[0]['Comentario']);
-        $('#textoNuevaPass').show();
+
+        $('#divPassword').hide();
+        $('#divCheckboxPassword').show();
+
 
     }
 
@@ -714,6 +760,9 @@
         $('#inputPasswordConfirmar').val("");
         $('#inpuComentario').val("");
         $('#selectTags').val(null);
+        $('#textoNuevaPass').hide();
+        $('#divCheckboxPassword').hide();
+        $('#checkboxPassword').prop('checked', false);
         $('#textoNuevaPass').hide();
     }
 

@@ -115,7 +115,7 @@ class Usuarios extends CI_Controller
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		} else {
-			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['modificarPassword'], $datos['perfil'], $datos['comentario']);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}

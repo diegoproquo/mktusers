@@ -75,7 +75,7 @@ class MKTModel extends CI_Model
 		} else return array(array(), false);
 	}
 
-	public function editarUsuarioHotpot($id, $username, $password, $profile, $comentario)
+	public function editarUsuarioHotpot($id, $username, $password, $modificarPassword, $profile, $comentario)
 	{
 		$client = $this->conexionMKT();
 
@@ -92,7 +92,11 @@ class MKTModel extends CI_Model
 				$query = new Query('/ip/hotspot/user/set');
 				$query->add('=.id=' . $id);
 				$query->add('=name=' . $nombreSinEspacios);
-				$query->add('=password=' . $password);
+
+				if ($modificarPassword == "true") {
+					$query->add('=password=' . $password);
+				}
+
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
 
