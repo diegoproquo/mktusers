@@ -31,20 +31,20 @@ class UsuariosMktModel extends CI_Model
 
     }
     
+    // Sincroniza los usuarios almacenados en el mikrotik con la BD. De esta forma, manda el Mikrotik permitiendo seguir almacenando los datos correspondientes de cada usuario en BD
     public function sincronizarUsuarios($usuarios)
     {
         foreach ($usuarios as $item) {
-            // Obtener el ID del MikroTik y el nombre del usuario
-            $id_mkt = $item['.id'];  // ID del Mikrotik
-            $nombre_usuario = $item['Usuario'];  // Nombre del usuario
+            $id_mkt = $item['.id']; 
+            $nombre_usuario = $item['Usuario'];
 
             // Verificar si el usuario ya existe en la base de datos
             $this->db->where('id_mkt', $id_mkt);
-            $query = $this->db->get('tbl_usuarios_mkt');  // Nombre de tu tabla en la base de datos
+            $query = $this->db->get('tbl_usuarios_mkt'); 
             $usuario_existente = $query->row();
     
             if ($usuario_existente) {
-                // Si el usuario existe, actualizamos el nombre (unico campo que se puede editar)
+                // Si el usuario existe, actualizamos el nombre (unico campo que se puede editar en BD)
                 $data = array(
                     'nombre' => $nombre_usuario,
                 );
@@ -113,6 +113,19 @@ class UsuariosMktModel extends CI_Model
         $this->db->where('NOMBRE', $nombre);
         return $this->db->update('tbl_usuarios_mkt', $data);
     }
+
+    public function actualizarTagMasivo($nombres, $idtag) {
+
+        $usuarios = array_column($nombres, 'Usuario');
+
+        $data = array(
+            'ID_TAG' => $idtag
+        );
+    
+        $this->db->where_in('NOMBRE', $usuarios);
+        return $this->db->update('tbl_usuarios_mkt', $data);
+    }
+    
     
 
 

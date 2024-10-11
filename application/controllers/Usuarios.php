@@ -115,7 +115,7 @@ class Usuarios extends CI_Controller
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		} else {
-			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['perfil'], $datos['comentario']);
+			$data = $this->MKTModel->editarUsuarioHotpot($datos['id'], $datos['usuario'], $datos['password'], $datos['modificarPassword'], $datos['perfil'], $datos['comentario']);
 			$mensajeError = $data[0];
 			$conexionMKT = $data[1];
 		}
@@ -220,6 +220,26 @@ class Usuarios extends CI_Controller
 
 		$data = $this->MKTModel->deshabilitarUsuarios($usuarios);
 		$conexionMKT = $data[1];
+
+		$data = $this->MKTModel->getUsuariosMKT();
+		$conexionMKT = $data[1];
+
+		$usuarios = $this->MostrarRecargarDatosUsuarios($data[0]);
+
+		echo json_encode(array($conexionMKT, $usuarios));
+	}
+
+	public function AsignarTags()
+	{
+		$conexionMKT = true;
+
+		$input = file_get_contents('php://input');
+		$decodedInput = json_decode($input, true);
+
+		$usuarios = $decodedInput['usuarios'];
+		$tag = $decodedInput['tag'];
+
+		$data = $this->UsuariosMktModel->actualizarTagMasivo($usuarios, $tag);
 
 		$data = $this->MKTModel->getUsuariosMKT();
 		$conexionMKT = $data[1];

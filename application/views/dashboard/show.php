@@ -17,7 +17,7 @@
                 <div id="divGraficoDonut">
                     <div id="graficoDonutWrapper">
                         <?php
-                        graficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias hoy");
+                        graficoDonut($conexionesTag, "graficoDonut", "Conexiones diarias hoy", false);
                         ?>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
             <div id="divGraficoConexiones">
                 <div id="graficoConexionesWrapper">
                     <?php
-                    graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoConexiones", "Conexiones semanales");
+                    graficoBarras($dataConexiones7Dias, $labelsConexiones7Dias, "graficoConexiones", "Conexiones semanales", false);
                     ?>
                 </div>
             </div>
@@ -42,7 +42,7 @@
             <div id="divGraficoTrafico">
                 <div id="graficoTraficoWrapper">
                     <?php
-                    graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoTrafico", "Trafico semanal acumulado (MB)")
+                    graficoFuncionDoble($datatraficoDescarga7Dias, $datatraficoCarga7Dias, $labelsTrafico7Dias, "graficoTrafico", "Trafico semanal acumulado (MB)", false)
                     ?>
                 </div>
             </div>
@@ -74,14 +74,10 @@
         fechaDonut = <?= json_encode($fecha_actual) ?>;
         fechaActual = <?= json_encode($fecha_actual) ?>;
 
-        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-        if (!isSafari) {
-            Refrescar();
-        }
         $('button.btn-secondary[name="refresh"]').on('click', function() {
             Refrescar1Vez();
         });
+        
     });
 
     function actualizarGraficoBarras(accion) {

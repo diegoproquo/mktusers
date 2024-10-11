@@ -75,7 +75,7 @@ class MKTModel extends CI_Model
 		} else return array(array(), false);
 	}
 
-	public function editarUsuarioHotpot($id, $username, $password, $profile, $comentario)
+	public function editarUsuarioHotpot($id, $username, $password, $modificarPassword, $profile, $comentario)
 	{
 		$client = $this->conexionMKT();
 
@@ -92,7 +92,11 @@ class MKTModel extends CI_Model
 				$query = new Query('/ip/hotspot/user/set');
 				$query->add('=.id=' . $id);
 				$query->add('=name=' . $nombreSinEspacios);
-				$query->add('=password=' . $password);
+
+				if ($modificarPassword == "true") {
+					$query->add('=password=' . $password);
+				}
+
 				$query->add('=profile=' . $profile);
 				$query->add('=comment=' . $comentario_utf8);
 
@@ -137,14 +141,15 @@ class MKTModel extends CI_Model
 					if (isset($usuario["bytes-in"])) {
 						$bytes_in = round($usuario["bytes-in"] * 0.000001, 2);
 						if ($bytes_in >= 1000) {
-							$bytes_in = $bytes_in / 1000;
+							$bytes_in = round($bytes_in / 1000,2);
 							$bytes_in = $bytes_in . " GB";
 						} else $bytes_in = $bytes_in . " MB";
 					}
+
 					if (isset($usuario["bytes-out"])) {
 						$bytes_out = round($usuario["bytes-out"] * 0.000001, 2);
 						if ($bytes_out >= 1000) {
-							$bytes_out = $bytes_out / 1000;
+							$bytes_out = round($bytes_out / 1000,2);
 							$bytes_out = $bytes_out . " GB";
 						} else $bytes_out = $bytes_out . " MB";
 					}
@@ -199,14 +204,15 @@ class MKTModel extends CI_Model
 					if (isset($usuario["bytes-in"])) {
 						$bytes_in = round($usuario["bytes-in"] * 0.000001, 2);
 						if ($bytes_in >= 1000) {
-							$bytes_in = $bytes_in / 1000;
+							$bytes_in = round($bytes_in / 1000,2);
 							$bytes_in = $bytes_in . " GB";
 						} else $bytes_in = $bytes_in . " MB";
 					}
+
 					if (isset($usuario["bytes-out"])) {
 						$bytes_out = round($usuario["bytes-out"] * 0.000001, 2);
 						if ($bytes_out >= 1000) {
-							$bytes_out = $bytes_out / 1000;
+							$bytes_out = round($bytes_out / 1000,2);
 							$bytes_out = $bytes_out . " GB";
 						} else $bytes_out = $bytes_out . " MB";
 					}
@@ -214,11 +220,11 @@ class MKTModel extends CI_Model
 					$usuarioFormateado = array(
 						".id" => isset($usuario[".id"]) ? $usuario[".id"] : "",
 						"Usuario" => isset($usuario["user"]) ? $usuario["user"] : "",
-						"Tiempo de actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
+						"Actividad" => isset($usuario["uptime"]) ? $usuario["uptime"] : "",
 						"Dirección IP" => isset($usuario["address"]) ? $usuario["address"] : "",
 						"Dirección MAC" => isset($usuario["mac-address"]) ? $usuario["mac-address"] : "",
-						"Tráfico descarga" => isset($usuario["bytes-in"]) ? $bytes_in : "",
-						"Tráfico subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
+						"Descarga" => isset($usuario["bytes-in"]) ? $bytes_in : "",
+						"Subida" => isset($usuario["bytes-out"]) ? $bytes_out : "",
 						"Paquetes recibidos" => isset($usuario["packets-in"]) ? $usuario["packets-in"] : "",
 						"Paquetes enviados" => isset($usuario["packets-out"]) ? $usuario["packets-out"] : "",
 						"-" => isset($usuario["-"]) ? $usuario["-"] : "-"
