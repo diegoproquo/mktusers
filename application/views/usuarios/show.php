@@ -260,7 +260,7 @@
             '<button id="btnEliminarUsuarios" disabled class="btn btn-sm btn-danger ms-1" onclick="EliminarUsuarios()"><i class="fas fa-minus"></i> Eliminar</button>' +
             '<button id="btnHabilitarUsuario" disabled class="btn btn-sm btn-success ms-1" onclick="HabilitarUsuarios()"><i class="fas fa-check"></i> Habilitar</button>' +
             '<button id="btnDeshabilitarUsuario" disabled class="btn btn-sm btn-warning ms-1" onclick="DeshabilitarUsuarios()"><i class="fas fa-times"></i> Deshabilitar</button>' +
-            '<button id="btnAsignarTag" disabled class="btn btn-sm btn-warning ms-1"  data-toggle="modal" data-target="#modalAsignarTags" style="background-color:#e200ff; color:white;"><i class="fas fa-tag"></i> Asignar Tag</button>' +
+            '<button id="btnAsignarTag" disabled class="btn btn-sm ms-1"  data-toggle="modal" data-target="#modalAsignarTags" style="background-color:#e200ff; border-color: #e200ff; color:white;"><i class="fas fa-tag"></i> Asignar Tag</button>' +
             '</div>');
 
         $('#btnGrupo').after('<button id="btnEditarUsuario" disabled class="btn btn-sm btn-info ms-5" data-toggle="modal" data-target="#modalUsuarios" onclick="ClicEditarUusario()"><i class="fas fa-pen"></i> Editar</button>');
@@ -278,6 +278,7 @@
         $('#btnNuevoUsuario').on('click', function() {
             LimpiarDatosModal();
             $('#modalUsuariosTitulo').text('Nuevo usuario');
+            $('#divPassword').show();
             idUsuario = -1;
         });
 
@@ -301,7 +302,7 @@
             });
         });
 
-        // Listener para mostrar o esconder inputs de cookie timeout en función del checkbox
+        // Listener para mostrar o esconder inputs de contraseña cuando se edita un usuario en funcion del cheeckbox
         $('#checkboxPassword').change(function() {
             if ($(this).is(':checked')) {
                 $('#divPassword').show();
